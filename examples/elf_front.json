@@ -1,0 +1,13 @@
+{
+  "character_summary": "a tall, lanky elf archer with a long cape",
+  "style": "lanky elf",
+  "preset": "stylized",
+  "view": "front",
+  "rest_pose": "A_pose",
+  "overrides": {"leg_scale": 1.15, "arm_scale": 1.15, "torso_scale": 0.95},
+  "optional_bones": ["chest", "neck", "hands"],
+  "extra_bones": [
+    {"name": "extra_cape", "parent": "chest", "direction_deg": -90, "length_ratio": 0.45, "segments": 3, "layer": "behind"}
+  ],
+  "assumptions": ["'lanky' maps to arm and leg scale 1.15"]
+}

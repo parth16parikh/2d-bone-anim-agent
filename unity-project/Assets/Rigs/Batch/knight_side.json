@@ -1,0 +1,622 @@
+{
+  "schema_version": "1.0",
+  "rig_name": "knight_side",
+  "source_prompt": "armoured knight with a big sword and a cape",
+  "units": "unity_world",
+  "pixels_per_unit": 100,
+  "height": 2.0,
+  "view": "side",
+  "facing": "right",
+  "rest_pose": "side_neutral",
+  "style": "heroic knight",
+  "bones": [
+    {
+      "id": 0,
+      "name": "root",
+      "parent_id": -1,
+      "world_head": [
+        0.0,
+        0.0
+      ],
+      "world_tail": [
+        0.0,
+        0.05
+      ],
+      "local_position": [
+        0.0,
+        0.0
+      ],
+      "local_rotation_deg": 90.0,
+      "length": 0.05,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 1,
+      "name": "hip",
+      "parent_id": 0,
+      "world_head": [
+        0.0,
+        1.0
+      ],
+      "world_tail": [
+        0.0,
+        1.1325
+      ],
+      "local_position": [
+        1.0,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.1325,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 2,
+      "name": "spine",
+      "parent_id": 1,
+      "world_head": [
+        0.0,
+        1.1325
+      ],
+      "world_tail": [
+        0.0,
+        1.364375
+      ],
+      "local_position": [
+        0.1325,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.231875,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 3,
+      "name": "chest",
+      "parent_id": 2,
+      "world_head": [
+        0.0,
+        1.364375
+      ],
+      "world_tail": [
+        0.0,
+        1.6625
+      ],
+      "local_position": [
+        0.231875,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.298125,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 4,
+      "name": "neck",
+      "parent_id": 3,
+      "world_head": [
+        0.0,
+        1.6625
+      ],
+      "world_tail": [
+        0.0,
+        1.75
+      ],
+      "local_position": [
+        0.298125,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.0875,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 5,
+      "name": "head",
+      "parent_id": 4,
+      "world_head": [
+        0.0,
+        1.75
+      ],
+      "world_tail": [
+        0.0,
+        2.0
+      ],
+      "local_position": [
+        0.0875,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.25,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 6,
+      "name": "upper_arm_L",
+      "parent_id": 3,
+      "world_head": [
+        -0.03,
+        1.6625
+      ],
+      "world_tail": [
+        0.037202,
+        1.281379
+      ],
+      "local_position": [
+        0.298125,
+        0.03
+      ],
+      "local_rotation_deg": -170.0,
+      "length": 0.387,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "upper_arm_R"
+    },
+    {
+      "id": 7,
+      "name": "upper_arm_R",
+      "parent_id": 3,
+      "world_head": [
+        0.0,
+        1.6625
+      ],
+      "world_tail": [
+        0.067202,
+        1.281379
+      ],
+      "local_position": [
+        0.298125,
+        0.0
+      ],
+      "local_rotation_deg": -170.0,
+      "length": 0.387,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "upper_arm_L"
+    },
+    {
+      "id": 8,
+      "name": "forearm_L",
+      "parent_id": 6,
+      "world_head": [
+        0.037202,
+        1.281379
+      ],
+      "world_tail": [
+        0.091901,
+        0.971165
+      ],
+      "local_position": [
+        0.387,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.315,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "forearm_R"
+    },
+    {
+      "id": 9,
+      "name": "forearm_R",
+      "parent_id": 7,
+      "world_head": [
+        0.067202,
+        1.281379
+      ],
+      "world_tail": [
+        0.121901,
+        0.971165
+      ],
+      "local_position": [
+        0.387,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.315,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "forearm_L"
+    },
+    {
+      "id": 10,
+      "name": "hand_L",
+      "parent_id": 8,
+      "world_head": [
+        0.091901,
+        0.971165
+      ],
+      "world_tail": [
+        0.126283,
+        0.776173
+      ],
+      "local_position": [
+        0.315,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.198,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "hand_R"
+    },
+    {
+      "id": 11,
+      "name": "hand_R",
+      "parent_id": 9,
+      "world_head": [
+        0.121901,
+        0.971165
+      ],
+      "world_tail": [
+        0.156283,
+        0.776173
+      ],
+      "local_position": [
+        0.315,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.198,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "hand_L"
+    },
+    {
+      "id": 12,
+      "name": "thigh_L",
+      "parent_id": 1,
+      "world_head": [
+        -0.03,
+        1.0
+      ],
+      "world_tail": [
+        -0.03,
+        0.54
+      ],
+      "local_position": [
+        0.0,
+        0.03
+      ],
+      "local_rotation_deg": 180.0,
+      "length": 0.46,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "thigh_R"
+    },
+    {
+      "id": 13,
+      "name": "thigh_R",
+      "parent_id": 1,
+      "world_head": [
+        0.0,
+        1.0
+      ],
+      "world_tail": [
+        0.0,
+        0.54
+      ],
+      "local_position": [
+        0.0,
+        0.0
+      ],
+      "local_rotation_deg": 180.0,
+      "length": 0.46,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "thigh_L"
+    },
+    {
+      "id": 14,
+      "name": "shin_L",
+      "parent_id": 12,
+      "world_head": [
+        -0.03,
+        0.54
+      ],
+      "world_tail": [
+        -0.03,
+        0.08
+      ],
+      "local_position": [
+        0.46,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.46,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "shin_R"
+    },
+    {
+      "id": 15,
+      "name": "shin_R",
+      "parent_id": 13,
+      "world_head": [
+        0.0,
+        0.54
+      ],
+      "world_tail": [
+        0.0,
+        0.08
+      ],
+      "local_position": [
+        0.46,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.46,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "shin_L"
+    },
+    {
+      "id": 16,
+      "name": "foot_L",
+      "parent_id": 14,
+      "world_head": [
+        -0.03,
+        0.08
+      ],
+      "world_tail": [
+        0.245,
+        0.08
+      ],
+      "local_position": [
+        0.46,
+        0.0
+      ],
+      "local_rotation_deg": 90.0,
+      "length": 0.275,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "foot_R"
+    },
+    {
+      "id": 17,
+      "name": "foot_R",
+      "parent_id": 15,
+      "world_head": [
+        0.0,
+        0.08
+      ],
+      "world_tail": [
+        0.275,
+        0.08
+      ],
+      "local_position": [
+        0.46,
+        0.0
+      ],
+      "local_rotation_deg": 90.0,
+      "length": 0.275,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "foot_L"
+    },
+    {
+      "id": 18,
+      "name": "toe_L",
+      "parent_id": 16,
+      "world_head": [
+        0.245,
+        0.08
+      ],
+      "world_tail": [
+        0.3275,
+        0.08
+      ],
+      "local_position": [
+        0.275,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.0825,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": "toe_R"
+    },
+    {
+      "id": 19,
+      "name": "toe_R",
+      "parent_id": 17,
+      "world_head": [
+        0.275,
+        0.08
+      ],
+      "world_tail": [
+        0.3575,
+        0.08
+      ],
+      "local_position": [
+        0.275,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.0825,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": "toe_L"
+    },
+    {
+      "id": 20,
+      "name": "jaw",
+      "parent_id": 5,
+      "world_head": [
+        0.0,
+        1.8375
+      ],
+      "world_tail": [
+        0.070711,
+        1.766789
+      ],
+      "local_position": [
+        0.0875,
+        0.0
+      ],
+      "local_rotation_deg": -135.0,
+      "length": 0.1,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 21,
+      "name": "extra_sword",
+      "parent_id": 11,
+      "world_head": [
+        0.156283,
+        0.776173
+      ],
+      "world_tail": [
+        1.002007,
+        0.468355
+      ],
+      "local_position": [
+        0.198,
+        0.0
+      ],
+      "local_rotation_deg": 60.0,
+      "length": 0.9,
+      "depth": 1,
+      "layer": "front",
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 22,
+      "name": "extra_cape_1",
+      "parent_id": 3,
+      "world_head": [
+        0.0,
+        1.6625
+      ],
+      "world_tail": [
+        -0.057883,
+        1.334231
+      ],
+      "local_position": [
+        0.298125,
+        0.0
+      ],
+      "local_rotation_deg": 170.0,
+      "length": 0.333333,
+      "depth": 0,
+      "layer": "behind",
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 23,
+      "name": "extra_cape_2",
+      "parent_id": 22,
+      "world_head": [
+        -0.057883,
+        1.334231
+      ],
+      "world_tail": [
+        -0.115765,
+        1.005961
+      ],
+      "local_position": [
+        0.333333,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.333333,
+      "depth": 0,
+      "layer": "behind",
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 24,
+      "name": "extra_cape_3",
+      "parent_id": 23,
+      "world_head": [
+        -0.115765,
+        1.005961
+      ],
+      "world_tail": [
+        -0.173648,
+        0.677692
+      ],
+      "local_position": [
+        0.333333,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.333333,
+      "depth": 0,
+      "layer": "behind",
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    }
+  ],
+  "metadata": {
+    "generator": "rig-agent/0.1.0",
+    "model": null,
+    "iterations": 1,
+    "assumptions": [
+      "side view, because a knight with a big sword suits a platformer"
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+# Golden eval set (LLD 4.1): ~50 prompts across standard, view-selection, stylized
+# proportions, proportion-modifier, accessory, ambiguous, and adversarial categories.
+# Each case: {prompt, view?, expected: {...}}. Populated in the evals milestone.
+cases: []

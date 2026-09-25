@@ -1,0 +1,13 @@
+{
+  "character_summary": "armoured knight with a big sword and a cape",
+  "style": "heroic knight",
+  "preset": "heroic",
+  "view": "side",
+  "rest_pose": "side_neutral",
+  "optional_bones": ["chest", "neck", "hands", "toes", "jaw"],
+  "extra_bones": [
+    {"name": "extra_sword", "parent": "hand_R", "direction_deg": -20, "length_ratio": 0.45},
+    {"name": "extra_cape", "parent": "chest", "direction_deg": -100, "length_ratio": 0.5, "segments": 3, "layer": "behind"}
+  ],
+  "assumptions": ["side view, because a knight with a big sword suits a platformer"]
+}

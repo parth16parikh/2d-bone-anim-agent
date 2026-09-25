@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rig viewer</title>
+<style>
+  :root {
+    --bg: #f4f5f8; --panel: #ffffff; --ink: #1d2330; --muted: #667085; --line: #dde1e8;
+    --stage-bg: #fbfcfd; --grid: #e7eaf0; --ground: #8a93a5;
+    --c-left: #2f6fed; --c-right: #e8590c; --c-center: #2b8a3e; --c-extra: #9c36b5; --c-none: #8a93a5;
+    --sel: #111827; --bad: #e03131; --good: #2b8a3e; --warn: #f08c00; --accent: #2f6fed;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b; --panel: #1b1f27; --ink: #e6e9ef; --muted: #98a1b3; --line: #2b313c;
+      --stage-bg: #0f1217; --grid: #1e232c; --ground: #6b7385;
+      --c-left: #5c9dff; --c-right: #ff8f4d; --c-center: #51cf66; --c-extra: #cc5de8; --c-none: #6b7385;
+      --sel: #f8f9fa; --bad: #ff6b6b; --good: #51cf66; --warn: #fcc419; --accent: #5c9dff;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--ink); font: 14px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+  h1 { font-size: 17px; margin: 0; overflow-wrap: anywhere; }
+  h2 { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  h3 { font-size: 13px; margin: 0 0 6px; }
+  .muted { color: var(--muted); margin: 0; }
+
+  .app { display: grid; grid-template-columns: 340px 1fr; height: 100vh; }
+  .sidebar { background: var(--panel); border-right: 1px solid var(--line); overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 18px; }
+  main { display: flex; flex-direction: column; min-width: 0; }
+
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  .toolbar label { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
+  .toolbar .sep { width: 1px; height: 18px; background: var(--line); }
+  button, select, .filebtn { font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+  button:hover, select:hover, .filebtn:hover { border-color: var(--accent); }
+  .filebtn input { display: none; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  .stage-wrap { position: relative; flex: 1; min-height: 0; }
+  #stage { position: absolute; inset: 0; overflow: hidden; touch-action: none; cursor: grab; }
+  #stage:active { cursor: grabbing; }
+  #stage svg { display: block; }
+  .empty { display: grid; place-items: center; height: 100%; color: var(--muted); text-align: center; padding: 24px; }
+
+  .card { position: absolute; top: 12px; right: 12px; width: 230px; max-height: calc(100% - 24px); overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 0; }
+  dt { color: var(--muted); }
+  dd { margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+
+  .statusbar { display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center; padding: 6px 16px; background: var(--panel); border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+  .statusbar .grow { flex: 1; }
+  .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+  #coords { font-variant-numeric: tabular-nums; min-width: 170px; }
+
+  #notice { font-size: 13px; }
+  #notice.error { color: var(--bad); }
+  #notice.info { color: var(--muted); }
+  .prompt { margin: 8px 0 0; font-style: italic; color: var(--muted); }
+  .assume { margin: 6px 0 0; padding-left: 18px; color: var(--muted); }
+
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-weight: 600; font-size: 12px; margin: 0 0 8px; }
+  .badge.pass { background: color-mix(in srgb, var(--good) 18%, transparent); color: var(--good); }
+  .badge.fail { background: color-mix(in srgb, var(--bad) 18%, transparent); color: var(--bad); }
+  .issues { list-style: none; margin: 0 0 8px; padding: 0; }
+  .issues li { padding: 6px 8px; border-left: 3px solid var(--bad); background: var(--bg); margin-bottom: 4px; border-radius: 0 4px 4px 0; cursor: pointer; font-size: 12.5px; }
+  .metrics { font-size: 12px; }
+
+  #tree { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+  #tree li { display: flex; align-items: center; gap: 6px; padding-top: 3px; padding-bottom: 3px; padding-right: 6px; border-radius: 4px; cursor: pointer; }
+  #tree li:hover { background: var(--bg); }
+  #tree li.active { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+  #tree li.bad { color: var(--bad); }
+  #tree .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c-center); flex: none; }
+  #tree li.left .dot { background: var(--c-left); }
+  #tree li.right .dot { background: var(--c-right); }
+  #tree li.extra .dot { background: var(--c-extra); }
+  .chip { font-size: 10.5px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 6px; margin-left: auto; }
+  .chip + .chip { margin-left: 0; }
+  .chip.ik { color: var(--accent); }
+
+  /* the drawing */
+  .grid { stroke: var(--grid); stroke-width: 1; }
+  .ground { stroke: var(--ground); stroke-width: 2.5; }
+  .axis { stroke: var(--grid); stroke-width: 1.5; }
+  .height { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 6 5; }
+  .bounds { fill: none; stroke: var(--warn); stroke-width: 1.5; stroke-dasharray: 8 6; }
+  .link { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 3 3; }
+  .tick { font-size: 10px; fill: var(--muted); }
+  .bone { fill-opacity: .55; stroke-width: 1.6; stroke-linejoin: round; cursor: pointer; }
+  .bone.extra { fill-opacity: .45; }
+  .bone.hover { fill-opacity: .85; }
+  .bone.bad { stroke: var(--bad); stroke-width: 2.6; }
+  .joint { fill: var(--panel); stroke: var(--ink); stroke-width: 1.2; pointer-events: none; }
+  .label { font-size: 11px; fill: var(--ink); stroke: var(--stage-bg); stroke-width: 3; paint-order: stroke; pointer-events: none; }
+  .sel-outline { fill: none; stroke: var(--sel); stroke-width: 3; pointer-events: none; }
+  .parent-outline { fill: none; stroke: var(--sel); stroke-width: 1.6; stroke-dasharray: 4 3; pointer-events: none; }
+  .child-outline { fill: none; stroke: var(--sel); stroke-width: 1.2; opacity: .7; pointer-events: none; }
+  .issue-ring { fill: none; stroke: var(--bad); stroke-width: 2.5; pointer-events: none; }
+
+  body.dragging::after { content: "Drop skeleton.json (and validation_report.json)"; position: fixed; inset: 12px; display: grid; place-items: center; border: 2px dashed var(--accent); border-radius: 12px; background: color-mix(in srgb, var(--bg) 88%, transparent); font-size: 18px; color: var(--accent); z-index: 10; }
+
+  @media (max-width: 820px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; min-height: 100vh; }
+    .sidebar { max-height: 44vh; border-right: 0; border-bottom: 1px solid var(--line); }
+    .stage-wrap { min-height: 60vh; }
+    .card { position: static; width: auto; margin: 8px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <section>
+      <h1 id="rigTitle">Rig viewer</h1>
+      <p class="muted">Draws a <code>skeleton.json</code> from <code>rig-agent</code>.</p>
+    </section>
+    <section id="rigsSection" hidden>
+      <h2>Rigs in out/</h2>
+      <select id="rigList" size="1" style="width:100%" aria-label="Choose a rig from the out folder"></select>
+      <p class="muted" id="rigListNote" style="margin-top:6px"></p>
+    </section>
+    <section>
+      <h2>Load</h2>
+      <div class="row">
+        <label class="filebtn">Choose files<input id="pick" type="file" accept=".json,application/json" multiple></label>
+        <select id="sample" aria-label="Load a sample"></select>
+      </div>
+      <p class="muted" style="margin-top:8px">Or drop <code>skeleton.json</code> and <code>validation_report.json</code> anywhere on the page.</p>
+      <p id="notice" role="status"></p>
+    </section>
+    <section><h2>Rig</h2><div id="meta"><p class="muted">Nothing loaded yet.</p></div></section>
+    <section><h2>Validation</h2><div id="report"><p class="muted">Nothing loaded yet.</p></div></section>
+    <section><h2>Hierarchy</h2><ul id="tree"></ul></section>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <label><input type="checkbox" id="opt-labels" data-opt="labels" checked> Labels</label>
+      <label><input type="checkbox" id="opt-joints" data-opt="joints" checked> Pivots</label>
+      <label><input type="checkbox" id="opt-links" data-opt="links" checked> Offsets</label>
+      <label><input type="checkbox" id="opt-grid" data-opt="grid" checked> Grid</label>
+      <label><input type="checkbox" id="opt-bounds" data-opt="bounds"> Validator box</label>
+      <label><input type="checkbox" id="opt-depth" data-opt="depth" checked> Depth order</label>
+      <label><input type="checkbox" id="opt-extras" data-opt="extras" checked> Extras</label>
+      <label><input type="checkbox" id="opt-flip" data-opt="flip"> Face left</label>
+      <span class="sep"></span>
+      <label>Colour
+        <select id="opt-color" data-opt="color"><option value="side">left / right</option><option value="depth">depth</option><option value="ik">IK chain</option></select>
+      </label>
+      <button id="fit" title="Fit to view (F)">Fit</button>
+      <button id="savePng">Save PNG</button>
+      <label title="When opened with ?src=..., reload when the file changes"><input type="checkbox" id="opt-watch" checked> Auto-reload</label>
+    </div>
+    <div class="stage-wrap">
+      <div id="stage"></div>
+      <div id="details" class="card"><p class="muted">Hover or click a bone.</p></div>
+    </div>
+    <div class="statusbar">
+      <span id="coords">x -   y -</span>
+      <span id="legend"></span>
+      <span class="grow"></span>
+      <span id="watchState"></span>
+      <span>scroll = zoom · drag = pan · click = select · F = fit · L = labels</span>
+    </div>
+  </main>
+</div>
+<script src="samples.js"></script>
+<script src="viewer.js"></script>
+</body>
+</html>

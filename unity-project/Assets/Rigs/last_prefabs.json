@@ -1,0 +1,13 @@
+{
+    "ok": true,
+    "folder": "Assets/Prefabs/Rigs",
+    "errors": [],
+    "results": [
+        {
+            "rig": "chibi_knight_with_a_big_sword",
+            "path": "Assets/Prefabs/Rigs/chibi_knight_with_a_big_sword.prefab",
+            "status": "created",
+            "message": ""
+        }
+    ]
+}

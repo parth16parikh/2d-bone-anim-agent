@@ -1,0 +1,23 @@
+{
+  "character_summary": "a chibi knight with a big sword",
+  "style": "chibi knight",
+  "preset": "chibi",
+  "view": "front",
+  "rest_pose": "A_pose",
+  "optional_bones": [
+    "hands"
+  ],
+  "extra_bones": [
+    {
+      "name": "extra_sword",
+      "parent": "hand_R",
+      "direction_deg": -25.0,
+      "length_ratio": 0.42
+    }
+  ],
+  "assumptions": [
+    "no view was given, so front view",
+    "big sword means a held weapon extra",
+    "chibi implies a compact build"
+  ]
+}

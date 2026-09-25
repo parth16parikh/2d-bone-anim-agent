@@ -1,0 +1,13 @@
+{
+  "character_summary": "chibi mage with twin ponytails, a pointy hat and a staff",
+  "style": "chibi mage",
+  "preset": "chibi",
+  "view": "front",
+  "rest_pose": "T_pose",
+  "optional_bones": ["hands"],
+  "extra_bones": [
+    {"name": "extra_hat", "parent": "head", "direction_deg": 90, "length_ratio": 0.15},
+    {"name": "extra_ponytail", "parent": "head", "attach_at": "head", "direction_deg": -60, "length_ratio": 0.3, "segments": 2, "layer": "behind", "mirror": true},
+    {"name": "extra_staff", "parent": "hand_R", "direction_deg": -90, "length_ratio": 0.6}
+  ]
+}

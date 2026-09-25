@@ -216,3 +216,24 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# rig-agent default output directory
+out/
+
+# Unity project (unity-project/): keep Assets, Packages and ProjectSettings; ignore what Unity regenerates
+unity-project/[Ll]ibrary/
+unity-project/[Tt]emp/
+unity-project/[Oo]bj/
+unity-project/[Bb]uild/
+unity-project/[Bb]uilds/
+unity-project/[Ll]ogs/
+unity-project/[Uu]ser[Ss]ettings/
+unity-project/[Mm]emory[Cc]aptures/
+unity-project/*.csproj
+unity-project/*.sln
+unity-project/*.slnx
+unity-project/*.suo
+unity-project/*.user
+unity-project/.vs/
+unity-project/.idea/
+unity-project/.vscode/

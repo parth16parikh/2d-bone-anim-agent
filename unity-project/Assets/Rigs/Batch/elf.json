@@ -1,0 +1,526 @@
+{
+  "schema_version": "1.0",
+  "rig_name": "elf",
+  "source_prompt": "",
+  "units": "unity_world",
+  "pixels_per_unit": 100,
+  "height": 2.0,
+  "view": "front",
+  "facing": null,
+  "rest_pose": "A_pose",
+  "style": "lanky elf",
+  "bones": [
+    {
+      "id": 0,
+      "name": "root",
+      "parent_id": -1,
+      "world_head": [
+        0.0,
+        0.0
+      ],
+      "world_tail": [
+        0.0,
+        0.05
+      ],
+      "local_position": [
+        0.0,
+        0.0
+      ],
+      "local_rotation_deg": 90.0,
+      "length": 0.05,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 1,
+      "name": "hip",
+      "parent_id": 0,
+      "world_head": [
+        0.0,
+        0.925287
+      ],
+      "world_tail": [
+        0.0,
+        1.063602
+      ],
+      "local_position": [
+        0.925287,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.138314,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 2,
+      "name": "spine",
+      "parent_id": 1,
+      "world_head": [
+        0.0,
+        1.063602
+      ],
+      "world_tail": [
+        0.0,
+        1.305651
+      ],
+      "local_position": [
+        0.138314,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.24205,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 3,
+      "name": "chest",
+      "parent_id": 2,
+      "world_head": [
+        0.0,
+        1.305651
+      ],
+      "world_tail": [
+        0.0,
+        1.616858
+      ],
+      "local_position": [
+        0.24205,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.311207,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 4,
+      "name": "neck",
+      "parent_id": 3,
+      "world_head": [
+        0.0,
+        1.616858
+      ],
+      "world_tail": [
+        0.0,
+        1.680715
+      ],
+      "local_position": [
+        0.311207,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.063857,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 5,
+      "name": "head",
+      "parent_id": 4,
+      "world_head": [
+        0.0,
+        1.680715
+      ],
+      "world_tail": [
+        0.0,
+        2.0
+      ],
+      "local_position": [
+        0.063857,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.319285,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 6,
+      "name": "upper_arm_L",
+      "parent_id": 3,
+      "world_head": [
+        0.3,
+        1.56396
+      ],
+      "world_tail": [
+        0.573226,
+        1.290734
+      ],
+      "local_position": [
+        0.258309,
+        -0.3
+      ],
+      "local_rotation_deg": -135.0,
+      "length": 0.3864,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "upper_arm_R"
+    },
+    {
+      "id": 7,
+      "name": "upper_arm_R",
+      "parent_id": 3,
+      "world_head": [
+        -0.3,
+        1.56396
+      ],
+      "world_tail": [
+        -0.573226,
+        1.290734
+      ],
+      "local_position": [
+        0.258309,
+        0.3
+      ],
+      "local_rotation_deg": 135.0,
+      "length": 0.3864,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "upper_arm_L"
+    },
+    {
+      "id": 8,
+      "name": "forearm_L",
+      "parent_id": 6,
+      "world_head": [
+        0.573226,
+        1.290734
+      ],
+      "world_tail": [
+        0.800914,
+        1.063046
+      ],
+      "local_position": [
+        0.3864,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.322,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "forearm_R"
+    },
+    {
+      "id": 9,
+      "name": "forearm_R",
+      "parent_id": 7,
+      "world_head": [
+        -0.573226,
+        1.290734
+      ],
+      "world_tail": [
+        -0.800914,
+        1.063046
+      ],
+      "local_position": [
+        0.3864,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.322,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "forearm_L"
+    },
+    {
+      "id": 10,
+      "name": "hand_L",
+      "parent_id": 8,
+      "world_head": [
+        0.800914,
+        1.063046
+      ],
+      "world_tail": [
+        0.950538,
+        0.913422
+      ],
+      "local_position": [
+        0.322,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.2116,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "hand_R"
+    },
+    {
+      "id": 11,
+      "name": "hand_R",
+      "parent_id": 9,
+      "world_head": [
+        -0.800914,
+        1.063046
+      ],
+      "world_tail": [
+        -0.950538,
+        0.913422
+      ],
+      "local_position": [
+        0.322,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.2116,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "hand_L"
+    },
+    {
+      "id": 12,
+      "name": "thigh_L",
+      "parent_id": 1,
+      "world_head": [
+        0.133333,
+        0.925287
+      ],
+      "world_tail": [
+        0.133333,
+        0.519549
+      ],
+      "local_position": [
+        0.0,
+        -0.133333
+      ],
+      "local_rotation_deg": 180.0,
+      "length": 0.405738,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "thigh_R"
+    },
+    {
+      "id": 13,
+      "name": "thigh_R",
+      "parent_id": 1,
+      "world_head": [
+        -0.133333,
+        0.925287
+      ],
+      "world_tail": [
+        -0.133333,
+        0.519549
+      ],
+      "local_position": [
+        0.0,
+        0.133333
+      ],
+      "local_rotation_deg": 180.0,
+      "length": 0.405738,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "thigh_L"
+    },
+    {
+      "id": 14,
+      "name": "shin_L",
+      "parent_id": 12,
+      "world_head": [
+        0.133333,
+        0.519549
+      ],
+      "world_tail": [
+        0.133333,
+        0.08
+      ],
+      "local_position": [
+        0.405738,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.439549,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "shin_R"
+    },
+    {
+      "id": 15,
+      "name": "shin_R",
+      "parent_id": 13,
+      "world_head": [
+        -0.133333,
+        0.519549
+      ],
+      "world_tail": [
+        -0.133333,
+        0.08
+      ],
+      "local_position": [
+        0.405738,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.439549,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "shin_L"
+    },
+    {
+      "id": 16,
+      "name": "foot_L",
+      "parent_id": 14,
+      "world_head": [
+        0.133333,
+        0.08
+      ],
+      "world_tail": [
+        0.466667,
+        0.08
+      ],
+      "local_position": [
+        0.439549,
+        0.0
+      ],
+      "local_rotation_deg": 90.0,
+      "length": 0.333333,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "foot_R"
+    },
+    {
+      "id": 17,
+      "name": "foot_R",
+      "parent_id": 15,
+      "world_head": [
+        -0.133333,
+        0.08
+      ],
+      "world_tail": [
+        -0.466667,
+        0.08
+      ],
+      "local_position": [
+        0.439549,
+        0.0
+      ],
+      "local_rotation_deg": -90.0,
+      "length": 0.333333,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "foot_L"
+    },
+    {
+      "id": 18,
+      "name": "extra_cape_1",
+      "parent_id": 3,
+      "world_head": [
+        0.0,
+        1.616858
+      ],
+      "world_tail": [
+        0.0,
+        1.316858
+      ],
+      "local_position": [
+        0.311207,
+        0.0
+      ],
+      "local_rotation_deg": 180.0,
+      "length": 0.3,
+      "depth": 0,
+      "layer": "behind",
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 19,
+      "name": "extra_cape_2",
+      "parent_id": 18,
+      "world_head": [
+        0.0,
+        1.316858
+      ],
+      "world_tail": [
+        0.0,
+        1.016858
+      ],
+      "local_position": [
+        0.3,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.3,
+      "depth": 0,
+      "layer": "behind",
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 20,
+      "name": "extra_cape_3",
+      "parent_id": 19,
+      "world_head": [
+        0.0,
+        1.016858
+      ],
+      "world_tail": [
+        0.0,
+        0.716858
+      ],
+      "local_position": [
+        0.3,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.3,
+      "depth": 0,
+      "layer": "behind",
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    }
+  ],
+  "metadata": {
+    "generator": "rig-agent/0.1.0",
+    "model": null,
+    "iterations": 1,
+    "assumptions": [
+      "'lanky' maps to arm and leg scale 1.15"
+    ]
+  }
+}

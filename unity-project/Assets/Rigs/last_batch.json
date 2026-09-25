@@ -1,0 +1,1783 @@
+{
+    "ok": true,
+    "errors": [],
+    "rigs": [
+        {
+            "ok": true,
+            "file": "Assets/Rigs/Batch/elf.json",
+            "rig_name": "elf",
+            "view": "front",
+            "bone_count": 21,
+            "root_path": "RigAgent_Output/elf",
+            "max_head_error": 9.098254167838604e-7,
+            "max_tail_error": 9.835895298238029e-7,
+            "errors": [],
+            "bones": [
+                {
+                    "id": 0,
+                    "name": "root",
+                    "parent": "",
+                    "path": "RigAgent_Output/elf/root",
+                    "world_head": [
+                        0.0,
+                        0.0
+                    ],
+                    "world_tail": [
+                        -7.450580596923828e-9,
+                        0.05000000819563866
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 1,
+                    "name": "hip",
+                    "parent": "root",
+                    "path": "RigAgent_Output/elf/root/hip",
+                    "world_head": [
+                        -1.1920928955078126e-7,
+                        0.925287127494812
+                    ],
+                    "world_tail": [
+                        -1.1920928955078126e-7,
+                        1.0636011362075806
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 2,
+                    "name": "spine",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/elf/root/hip/spine",
+                    "world_head": [
+                        -1.1920928955078126e-7,
+                        1.0636011362075806
+                    ],
+                    "world_tail": [
+                        -1.1920928955078126e-7,
+                        1.305651068687439
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 3,
+                    "name": "chest",
+                    "parent": "spine",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest",
+                    "world_head": [
+                        -1.1920928955078126e-7,
+                        1.305651068687439
+                    ],
+                    "world_tail": [
+                        -2.384185791015625e-7,
+                        1.6168582439422608
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 4,
+                    "name": "neck",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/neck",
+                    "world_head": [
+                        -2.384185791015625e-7,
+                        1.6168582439422608
+                    ],
+                    "world_tail": [
+                        -2.384185791015625e-7,
+                        1.6807153224945069
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 5,
+                    "name": "head",
+                    "parent": "neck",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/neck/head",
+                    "world_head": [
+                        -2.384185791015625e-7,
+                        1.6807153224945069
+                    ],
+                    "world_tail": [
+                        -2.384185791015625e-7,
+                        2.000000238418579
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 6,
+                    "name": "upper_arm_L",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/upper_arm_L",
+                    "world_head": [
+                        0.29999980330467226,
+                        1.5639604330062867
+                    ],
+                    "world_tail": [
+                        0.5732260346412659,
+                        1.290734052658081
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 7,
+                    "name": "upper_arm_R",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/upper_arm_R",
+                    "world_head": [
+                        -0.30000028014183047,
+                        1.5639601945877076
+                    ],
+                    "world_tail": [
+                        -0.573226273059845,
+                        1.290734052658081
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 8,
+                    "name": "forearm_L",
+                    "parent": "upper_arm_L",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/upper_arm_L/forearm_L",
+                    "world_head": [
+                        0.5732260346412659,
+                        1.290734052658081
+                    ],
+                    "world_tail": [
+                        0.8009145259857178,
+                        1.0630457401275635
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 9,
+                    "name": "forearm_R",
+                    "parent": "upper_arm_R",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/upper_arm_R/forearm_R",
+                    "world_head": [
+                        -0.573226273059845,
+                        1.290734052658081
+                    ],
+                    "world_tail": [
+                        -0.8009147644042969,
+                        1.0630455017089844
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 10,
+                    "name": "hand_L",
+                    "parent": "forearm_L",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/upper_arm_L/forearm_L/hand_L",
+                    "world_head": [
+                        0.8009145259857178,
+                        1.0630457401275635
+                    ],
+                    "world_tail": [
+                        0.9505382776260376,
+                        0.9134219288825989
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 11,
+                    "name": "hand_R",
+                    "parent": "forearm_R",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R",
+                    "world_head": [
+                        -0.8009147644042969,
+                        1.0630455017089844
+                    ],
+                    "world_tail": [
+                        -0.9505385160446167,
+                        0.913421630859375
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 12,
+                    "name": "thigh_L",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/elf/root/hip/thigh_L",
+                    "world_head": [
+                        0.13333289325237275,
+                        0.9252871870994568
+                    ],
+                    "world_tail": [
+                        0.1333329826593399,
+                        0.5195490717887878
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 13,
+                    "name": "thigh_R",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/elf/root/hip/thigh_R",
+                    "world_head": [
+                        -0.13333313167095185,
+                        0.9252870678901672
+                    ],
+                    "world_tail": [
+                        -0.13333304226398469,
+                        0.5195490717887878
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 14,
+                    "name": "shin_L",
+                    "parent": "thigh_L",
+                    "path": "RigAgent_Output/elf/root/hip/thigh_L/shin_L",
+                    "world_head": [
+                        0.1333329826593399,
+                        0.5195490717887878
+                    ],
+                    "world_tail": [
+                        0.13333308696746827,
+                        0.08000006526708603
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 15,
+                    "name": "shin_R",
+                    "parent": "thigh_R",
+                    "path": "RigAgent_Output/elf/root/hip/thigh_R/shin_R",
+                    "world_head": [
+                        -0.13333304226398469,
+                        0.5195490717887878
+                    ],
+                    "world_tail": [
+                        -0.13333293795585633,
+                        0.08000004291534424
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 16,
+                    "name": "foot_L",
+                    "parent": "shin_L",
+                    "path": "RigAgent_Output/elf/root/hip/thigh_L/shin_L/foot_L",
+                    "world_head": [
+                        0.13333308696746827,
+                        0.08000006526708603
+                    ],
+                    "world_tail": [
+                        0.4666661322116852,
+                        0.08000010251998902
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 17,
+                    "name": "foot_R",
+                    "parent": "shin_R",
+                    "path": "RigAgent_Output/elf/root/hip/thigh_R/shin_R/foot_R",
+                    "world_head": [
+                        -0.13333293795585633,
+                        0.08000004291534424
+                    ],
+                    "world_tail": [
+                        -0.46666601300239565,
+                        0.08000001311302185
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 18,
+                    "name": "extra_cape_1",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/extra_cape_1",
+                    "world_head": [
+                        -2.384185791015625e-7,
+                        1.6168582439422608
+                    ],
+                    "world_tail": [
+                        -9.298245373656755e-8,
+                        1.316858172416687
+                    ],
+                    "depth": 0,
+                    "layer": "behind"
+                },
+                {
+                    "id": 19,
+                    "name": "extra_cape_2",
+                    "parent": "extra_cape_1",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/extra_cape_1/extra_cape_2",
+                    "world_head": [
+                        -9.298245373656755e-8,
+                        1.316858172416687
+                    ],
+                    "world_tail": [
+                        -6.675561792235385e-8,
+                        1.0168581008911133
+                    ],
+                    "depth": 0,
+                    "layer": "behind"
+                },
+                {
+                    "id": 20,
+                    "name": "extra_cape_3",
+                    "parent": "extra_cape_2",
+                    "path": "RigAgent_Output/elf/root/hip/spine/chest/extra_cape_1/extra_cape_2/extra_cape_3",
+                    "world_head": [
+                        -6.675561792235385e-8,
+                        1.0168581008911133
+                    ],
+                    "world_tail": [
+                        1.9075862667250477e-8,
+                        0.7168580293655396
+                    ],
+                    "depth": 0,
+                    "layer": "behind"
+                }
+            ]
+        },
+        {
+            "ok": true,
+            "file": "Assets/Rigs/Batch/knight.json",
+            "rig_name": "knight",
+            "view": "side",
+            "bone_count": 25,
+            "root_path": "RigAgent_Output/knight",
+            "max_head_error": 0.0000014313067140392378,
+            "max_tail_error": 0.0000014313067140392378,
+            "errors": [],
+            "bones": [
+                {
+                    "id": 0,
+                    "name": "root",
+                    "parent": "",
+                    "path": "RigAgent_Output/knight/root",
+                    "world_head": [
+                        0.0,
+                        0.0
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.05000000819563866
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 1,
+                    "name": "hip",
+                    "parent": "root",
+                    "path": "RigAgent_Output/knight/root/hip",
+                    "world_head": [
+                        -1.1920928955078126e-7,
+                        1.0000001192092896
+                    ],
+                    "world_tail": [
+                        -1.1920928955078126e-7,
+                        1.1325000524520875
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 2,
+                    "name": "spine",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight/root/hip/spine",
+                    "world_head": [
+                        -1.1920928955078126e-7,
+                        1.1325000524520875
+                    ],
+                    "world_tail": [
+                        -1.1920928955078126e-7,
+                        1.364375114440918
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 3,
+                    "name": "chest",
+                    "parent": "spine",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest",
+                    "world_head": [
+                        -1.1920928955078126e-7,
+                        1.364375114440918
+                    ],
+                    "world_tail": [
+                        -2.384185791015625e-7,
+                        1.6625001430511475
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 4,
+                    "name": "neck",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/neck",
+                    "world_head": [
+                        -2.384185791015625e-7,
+                        1.6625001430511475
+                    ],
+                    "world_tail": [
+                        -2.384185791015625e-7,
+                        1.750000238418579
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 5,
+                    "name": "head",
+                    "parent": "neck",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/neck/head",
+                    "world_head": [
+                        -2.384185791015625e-7,
+                        1.750000238418579
+                    ],
+                    "world_tail": [
+                        -2.384185791015625e-7,
+                        2.000000238418579
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 6,
+                    "name": "upper_arm_L",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/upper_arm_L",
+                    "world_head": [
+                        -0.03000020980834961,
+                        1.6625001430511475
+                    ],
+                    "world_tail": [
+                        0.037201762199401858,
+                        1.2813794612884522
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 7,
+                    "name": "upper_arm_R",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/upper_arm_R",
+                    "world_head": [
+                        -2.384185791015625e-7,
+                        1.6625001430511475
+                    ],
+                    "world_tail": [
+                        0.06720173358917237,
+                        1.2813794612884522
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 8,
+                    "name": "forearm_L",
+                    "parent": "upper_arm_L",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/upper_arm_L/forearm_L",
+                    "world_head": [
+                        0.037201762199401858,
+                        1.2813794612884522
+                    ],
+                    "world_tail": [
+                        0.09190094470977783,
+                        0.9711650609970093
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 9,
+                    "name": "forearm_R",
+                    "parent": "upper_arm_R",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/upper_arm_R/forearm_R",
+                    "world_head": [
+                        0.06720173358917237,
+                        1.2813794612884522
+                    ],
+                    "world_tail": [
+                        0.12190103530883789,
+                        0.9711650609970093
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 10,
+                    "name": "hand_L",
+                    "parent": "forearm_L",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/upper_arm_L/forearm_L/hand_L",
+                    "world_head": [
+                        0.09190094470977783,
+                        0.9711650609970093
+                    ],
+                    "world_tail": [
+                        0.1262834072113037,
+                        0.7761731147766113
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 11,
+                    "name": "hand_R",
+                    "parent": "forearm_R",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R",
+                    "world_head": [
+                        0.12190103530883789,
+                        0.9711650609970093
+                    ],
+                    "world_tail": [
+                        0.15628337860107423,
+                        0.7761731147766113
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 12,
+                    "name": "thigh_L",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight/root/hip/thigh_L",
+                    "world_head": [
+                        -0.03000009059906006,
+                        1.0000001192092896
+                    ],
+                    "world_tail": [
+                        -0.029999971389770509,
+                        0.5400000214576721
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 13,
+                    "name": "thigh_R",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight/root/hip/thigh_R",
+                    "world_head": [
+                        -1.1920928955078126e-7,
+                        1.0000001192092896
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.5400000214576721
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 14,
+                    "name": "shin_L",
+                    "parent": "thigh_L",
+                    "path": "RigAgent_Output/knight/root/hip/thigh_L/shin_L",
+                    "world_head": [
+                        -0.029999971389770509,
+                        0.5400000214576721
+                    ],
+                    "world_tail": [
+                        -0.029999971389770509,
+                        0.07999998331069946
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 15,
+                    "name": "shin_R",
+                    "parent": "thigh_R",
+                    "path": "RigAgent_Output/knight/root/hip/thigh_R/shin_R",
+                    "world_head": [
+                        0.0,
+                        0.5400000214576721
+                    ],
+                    "world_tail": [
+                        1.1920928955078126e-7,
+                        0.07999999076128006
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 16,
+                    "name": "foot_L",
+                    "parent": "shin_L",
+                    "path": "RigAgent_Output/knight/root/hip/thigh_L/shin_L/foot_L",
+                    "world_head": [
+                        -0.029999971389770509,
+                        0.07999998331069946
+                    ],
+                    "world_tail": [
+                        0.24500012397766114,
+                        0.08000007271766663
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 17,
+                    "name": "foot_R",
+                    "parent": "shin_R",
+                    "path": "RigAgent_Output/knight/root/hip/thigh_R/shin_R/foot_R",
+                    "world_head": [
+                        1.1920928955078126e-7,
+                        0.07999999076128006
+                    ],
+                    "world_tail": [
+                        0.2750002145767212,
+                        0.08000007271766663
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 18,
+                    "name": "toe_L",
+                    "parent": "foot_L",
+                    "path": "RigAgent_Output/knight/root/hip/thigh_L/shin_L/foot_L/toe_L",
+                    "world_head": [
+                        0.24500012397766114,
+                        0.08000007271766663
+                    ],
+                    "world_tail": [
+                        0.32750022411346438,
+                        0.0800001323223114
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 19,
+                    "name": "toe_R",
+                    "parent": "foot_R",
+                    "path": "RigAgent_Output/knight/root/hip/thigh_R/shin_R/foot_R/toe_R",
+                    "world_head": [
+                        0.2750002145767212,
+                        0.08000007271766663
+                    ],
+                    "world_tail": [
+                        0.35750019550323489,
+                        0.0800001323223114
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 20,
+                    "name": "jaw",
+                    "parent": "head",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/neck/head/jaw",
+                    "world_head": [
+                        -2.384185791015625e-7,
+                        1.8375002145767213
+                    ],
+                    "world_tail": [
+                        0.07071042060852051,
+                        1.766789436340332
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 21,
+                    "name": "extra_sword",
+                    "parent": "hand_R",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R/extra_sword",
+                    "world_head": [
+                        0.15628337860107423,
+                        0.7761731147766113
+                    ],
+                    "world_tail": [
+                        1.0020071268081666,
+                        0.46835511922836306
+                    ],
+                    "depth": 1,
+                    "layer": "front"
+                },
+                {
+                    "id": 22,
+                    "name": "extra_cape_1",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/extra_cape_1",
+                    "world_head": [
+                        -2.384185791015625e-7,
+                        1.6625001430511475
+                    ],
+                    "world_tail": [
+                        -0.05788278579711914,
+                        1.3342312574386597
+                    ],
+                    "depth": 0,
+                    "layer": "behind"
+                },
+                {
+                    "id": 23,
+                    "name": "extra_cape_2",
+                    "parent": "extra_cape_1",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/extra_cape_1/extra_cape_2",
+                    "world_head": [
+                        -0.05788278579711914,
+                        1.3342312574386597
+                    ],
+                    "world_tail": [
+                        -0.11576557159423828,
+                        1.0059622526168824
+                    ],
+                    "depth": 0,
+                    "layer": "behind"
+                },
+                {
+                    "id": 24,
+                    "name": "extra_cape_3",
+                    "parent": "extra_cape_2",
+                    "path": "RigAgent_Output/knight/root/hip/spine/chest/extra_cape_1/extra_cape_2/extra_cape_3",
+                    "world_head": [
+                        -0.11576557159423828,
+                        1.0059622526168824
+                    ],
+                    "world_tail": [
+                        -0.17364823818206788,
+                        0.6776933073997498
+                    ],
+                    "depth": 0,
+                    "layer": "behind"
+                }
+            ]
+        },
+        {
+            "ok": true,
+            "file": "Assets/Rigs/Batch/knight2.json",
+            "rig_name": "knight2",
+            "view": "side",
+            "bone_count": 20,
+            "root_path": "RigAgent_Output/knight2",
+            "max_head_error": 0.0000013121962183504366,
+            "max_tail_error": 0.0000015772722008478013,
+            "errors": [],
+            "bones": [
+                {
+                    "id": 0,
+                    "name": "root",
+                    "parent": "",
+                    "path": "RigAgent_Output/knight2/root",
+                    "world_head": [
+                        0.0,
+                        0.0
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.05000000819563866
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 1,
+                    "name": "hip",
+                    "parent": "root",
+                    "path": "RigAgent_Output/knight2/root/hip",
+                    "world_head": [
+                        0.0,
+                        0.5690520405769348
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.7088190317153931
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 2,
+                    "name": "spine",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight2/root/hip/spine",
+                    "world_head": [
+                        0.0,
+                        0.7088190317153931
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.9184700846672058
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 3,
+                    "name": "chest",
+                    "parent": "spine",
+                    "path": "RigAgent_Output/knight2/root/hip/spine/chest",
+                    "world_head": [
+                        0.0,
+                        0.9184700846672058
+                    ],
+                    "world_tail": [
+                        0.0,
+                        1.2678881883621216
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 4,
+                    "name": "head",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/knight2/root/hip/spine/chest/head",
+                    "world_head": [
+                        0.0,
+                        1.2678881883621216
+                    ],
+                    "world_tail": [
+                        -2.384185791015625e-7,
+                        2.0000011920928957
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 5,
+                    "name": "upper_arm_L",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/knight2/root/hip/spine/chest/upper_arm_L",
+                    "world_head": [
+                        0.0,
+                        1.2678881883621216
+                    ],
+                    "world_tail": [
+                        0.03914618492126465,
+                        1.0458779335021973
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 6,
+                    "name": "upper_arm_R",
+                    "parent": "chest",
+                    "path": "RigAgent_Output/knight2/root/hip/spine/chest/upper_arm_R",
+                    "world_head": [
+                        -0.03000020980834961,
+                        1.2678881883621216
+                    ],
+                    "world_tail": [
+                        0.00914621353149414,
+                        1.0458779335021973
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 7,
+                    "name": "forearm_L",
+                    "parent": "upper_arm_L",
+                    "path": "RigAgent_Output/knight2/root/hip/spine/chest/upper_arm_L/forearm_L",
+                    "world_head": [
+                        0.03914618492126465,
+                        1.0458779335021973
+                    ],
+                    "world_tail": [
+                        0.0741720199584961,
+                        0.8472372889518738
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 8,
+                    "name": "forearm_R",
+                    "parent": "upper_arm_R",
+                    "path": "RigAgent_Output/knight2/root/hip/spine/chest/upper_arm_R/forearm_R",
+                    "world_head": [
+                        0.00914621353149414,
+                        1.0458779335021973
+                    ],
+                    "world_tail": [
+                        0.044172048568725589,
+                        0.8472372889518738
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 9,
+                    "name": "hand_L",
+                    "parent": "forearm_L",
+                    "path": "RigAgent_Output/knight2/root/hip/spine/chest/upper_arm_L/forearm_L/hand_L",
+                    "world_head": [
+                        0.0741720199584961,
+                        0.8472372889518738
+                    ],
+                    "world_tail": [
+                        0.10939836502075196,
+                        0.6474591493606567
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 10,
+                    "name": "hand_R",
+                    "parent": "forearm_R",
+                    "path": "RigAgent_Output/knight2/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R",
+                    "world_head": [
+                        0.044172048568725589,
+                        0.8472372889518738
+                    ],
+                    "world_tail": [
+                        0.07939839363098145,
+                        0.6474592089653015
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 11,
+                    "name": "thigh_L",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight2/root/hip/thigh_L",
+                    "world_head": [
+                        0.0,
+                        0.5690520405769348
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.35797902941703799
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 12,
+                    "name": "thigh_R",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight2/root/hip/thigh_R",
+                    "world_head": [
+                        -0.029999971389770509,
+                        0.56905198097229
+                    ],
+                    "world_tail": [
+                        -0.029999971389770509,
+                        0.35797902941703799
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 13,
+                    "name": "shin_L",
+                    "parent": "thigh_L",
+                    "path": "RigAgent_Output/knight2/root/hip/thigh_L/shin_L",
+                    "world_head": [
+                        0.0,
+                        0.35797902941703799
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.10000099241733551
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 14,
+                    "name": "shin_R",
+                    "parent": "thigh_R",
+                    "path": "RigAgent_Output/knight2/root/hip/thigh_R/shin_R",
+                    "world_head": [
+                        -0.029999971389770509,
+                        0.35797902941703799
+                    ],
+                    "world_tail": [
+                        -0.029999971389770509,
+                        0.10000098496675492
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 15,
+                    "name": "foot_L",
+                    "parent": "shin_L",
+                    "path": "RigAgent_Output/knight2/root/hip/thigh_L/shin_L/foot_L",
+                    "world_head": [
+                        0.0,
+                        0.10000099241733551
+                    ],
+                    "world_tail": [
+                        0.6600003242492676,
+                        0.10000115633010864
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 16,
+                    "name": "foot_R",
+                    "parent": "shin_R",
+                    "path": "RigAgent_Output/knight2/root/hip/thigh_R/shin_R/foot_R",
+                    "world_head": [
+                        -0.029999971389770509,
+                        0.10000098496675492
+                    ],
+                    "world_tail": [
+                        0.630000114440918,
+                        0.10000115633010864
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 17,
+                    "name": "toe_L",
+                    "parent": "foot_L",
+                    "path": "RigAgent_Output/knight2/root/hip/thigh_L/shin_L/foot_L/toe_L",
+                    "world_head": [
+                        0.6600003242492676,
+                        0.10000115633010864
+                    ],
+                    "world_tail": [
+                        0.8580002784729004,
+                        0.10000133514404297
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 18,
+                    "name": "toe_R",
+                    "parent": "foot_R",
+                    "path": "RigAgent_Output/knight2/root/hip/thigh_R/shin_R/foot_R/toe_R",
+                    "world_head": [
+                        0.630000114440918,
+                        0.10000115633010864
+                    ],
+                    "world_tail": [
+                        0.8280003070831299,
+                        0.10000133514404297
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 19,
+                    "name": "extra_sword",
+                    "parent": "hand_L",
+                    "path": "RigAgent_Output/knight2/root/hip/spine/chest/upper_arm_L/forearm_L/hand_L/extra_sword",
+                    "world_head": [
+                        0.10939836502075196,
+                        0.6474591493606567
+                    ],
+                    "world_tail": [
+                        0.8888216018676758,
+                        0.19745945930480958
+                    ],
+                    "depth": 1,
+                    "layer": "front"
+                }
+            ]
+        },
+        {
+            "ok": true,
+            "file": "Assets/Rigs/Batch/knight3.json",
+            "rig_name": "knight3",
+            "view": "side",
+            "bone_count": 21,
+            "root_path": "RigAgent_Output/knight3",
+            "max_head_error": 0.0000012105316500310437,
+            "max_tail_error": 0.000001360358510282822,
+            "errors": [],
+            "bones": [
+                {
+                    "id": 0,
+                    "name": "root",
+                    "parent": "",
+                    "path": "RigAgent_Output/knight3/root",
+                    "world_head": [
+                        0.0,
+                        0.0
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.05000000819563866
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 1,
+                    "name": "hip",
+                    "parent": "root",
+                    "path": "RigAgent_Output/knight3/root/hip",
+                    "world_head": [
+                        0.0,
+                        0.6206900477409363
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.7520531415939331
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 2,
+                    "name": "spine",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight3/root/hip/spine",
+                    "world_head": [
+                        0.0,
+                        0.7520531415939331
+                    ],
+                    "world_tail": [
+                        0.0,
+                        1.1461421251296998
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 3,
+                    "name": "spine_2",
+                    "parent": "spine",
+                    "path": "RigAgent_Output/knight3/root/hip/spine/spine_2",
+                    "world_head": [
+                        0.0,
+                        1.1461421251296998
+                    ],
+                    "world_tail": [
+                        0.0,
+                        1.2775051593780518
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 4,
+                    "name": "neck",
+                    "parent": "spine_2",
+                    "path": "RigAgent_Output/knight3/root/hip/spine/spine_2/neck",
+                    "world_head": [
+                        0.0,
+                        1.2775051593780518
+                    ],
+                    "world_tail": [
+                        0.0,
+                        1.3431861400604249
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 5,
+                    "name": "head",
+                    "parent": "neck",
+                    "path": "RigAgent_Output/knight3/root/hip/spine/spine_2/neck/head",
+                    "world_head": [
+                        0.0,
+                        1.3431861400604249
+                    ],
+                    "world_tail": [
+                        -4.76837158203125e-7,
+                        2.000000238418579
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 6,
+                    "name": "upper_arm_L",
+                    "parent": "spine_2",
+                    "path": "RigAgent_Output/knight3/root/hip/spine/spine_2/upper_arm_L",
+                    "world_head": [
+                        -0.03000020980834961,
+                        1.2775051593780518
+                    ],
+                    "world_tail": [
+                        0.010163307189941407,
+                        1.0497260093688965
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 7,
+                    "name": "upper_arm_R",
+                    "parent": "spine_2",
+                    "path": "RigAgent_Output/knight3/root/hip/spine/spine_2/upper_arm_R",
+                    "world_head": [
+                        0.0,
+                        1.2775051593780518
+                    ],
+                    "world_tail": [
+                        0.040163516998291019,
+                        1.0497260093688965
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 8,
+                    "name": "forearm_L",
+                    "parent": "upper_arm_L",
+                    "path": "RigAgent_Output/knight3/root/hip/spine/spine_2/upper_arm_L/forearm_L",
+                    "world_head": [
+                        0.010163307189941407,
+                        1.0497260093688965
+                    ],
+                    "world_tail": [
+                        0.04609966278076172,
+                        0.8459229469299316
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 9,
+                    "name": "forearm_R",
+                    "parent": "upper_arm_R",
+                    "path": "RigAgent_Output/knight3/root/hip/spine/spine_2/upper_arm_R/forearm_R",
+                    "world_head": [
+                        0.040163516998291019,
+                        1.0497260093688965
+                    ],
+                    "world_tail": [
+                        0.07609939575195313,
+                        0.8459229469299316
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 10,
+                    "name": "hand_L",
+                    "parent": "forearm_L",
+                    "path": "RigAgent_Output/knight3/root/hip/spine/spine_2/upper_arm_L/forearm_L/hand_L",
+                    "world_head": [
+                        0.04609966278076172,
+                        0.8459229469299316
+                    ],
+                    "world_tail": [
+                        0.08460760116577149,
+                        0.6275319457054138
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 11,
+                    "name": "hand_R",
+                    "parent": "forearm_R",
+                    "path": "RigAgent_Output/knight3/root/hip/spine/spine_2/upper_arm_R/forearm_R/hand_R",
+                    "world_head": [
+                        0.07609939575195313,
+                        0.8459229469299316
+                    ],
+                    "world_tail": [
+                        0.1146078109741211,
+                        0.6275319457054138
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 12,
+                    "name": "thigh_L",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight3/root/hip/thigh_L",
+                    "world_head": [
+                        -0.03000020980834961,
+                        0.6206899881362915
+                    ],
+                    "world_tail": [
+                        -0.03000020980834961,
+                        0.38638004660606387
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 13,
+                    "name": "thigh_R",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight3/root/hip/thigh_R",
+                    "world_head": [
+                        0.0,
+                        0.6206900477409363
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.38638004660606387
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 14,
+                    "name": "shin_L",
+                    "parent": "thigh_L",
+                    "path": "RigAgent_Output/knight3/root/hip/thigh_L/shin_L",
+                    "world_head": [
+                        -0.03000020980834961,
+                        0.38638004660606387
+                    ],
+                    "world_tail": [
+                        -0.03000020980834961,
+                        0.10000099241733551
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 15,
+                    "name": "shin_R",
+                    "parent": "thigh_R",
+                    "path": "RigAgent_Output/knight3/root/hip/thigh_R/shin_R",
+                    "world_head": [
+                        0.0,
+                        0.38638004660606387
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.10000099241733551
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 16,
+                    "name": "foot_L",
+                    "parent": "shin_L",
+                    "path": "RigAgent_Output/knight3/root/hip/thigh_L/shin_L/foot_L",
+                    "world_head": [
+                        -0.03000020980834961,
+                        0.10000099241733551
+                    ],
+                    "world_tail": [
+                        0.570000171661377,
+                        0.10000115633010864
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 17,
+                    "name": "foot_R",
+                    "parent": "shin_R",
+                    "path": "RigAgent_Output/knight3/root/hip/thigh_R/shin_R/foot_R",
+                    "world_head": [
+                        0.0,
+                        0.10000099241733551
+                    ],
+                    "world_tail": [
+                        0.6000003814697266,
+                        0.10000115633010864
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 18,
+                    "name": "toe_L",
+                    "parent": "foot_L",
+                    "path": "RigAgent_Output/knight3/root/hip/thigh_L/shin_L/foot_L/toe_L",
+                    "world_head": [
+                        0.570000171661377,
+                        0.10000115633010864
+                    ],
+                    "world_tail": [
+                        0.7500004768371582,
+                        0.1000012755393982
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 19,
+                    "name": "toe_R",
+                    "parent": "foot_R",
+                    "path": "RigAgent_Output/knight3/root/hip/thigh_R/shin_R/foot_R/toe_R",
+                    "world_head": [
+                        0.6000003814697266,
+                        0.10000115633010864
+                    ],
+                    "world_tail": [
+                        0.7800002098083496,
+                        0.1000012755393982
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 20,
+                    "name": "extra_sword",
+                    "parent": "hand_R",
+                    "path": "RigAgent_Output/knight3/root/hip/spine/spine_2/upper_arm_R/forearm_R/hand_R/extra_sword",
+                    "world_head": [
+                        0.1146078109741211,
+                        0.6275319457054138
+                    ],
+                    "world_tail": [
+                        0.8940310478210449,
+                        0.17753207683563233
+                    ],
+                    "depth": 1,
+                    "layer": "front"
+                }
+            ]
+        },
+        {
+            "ok": true,
+            "file": "Assets/Rigs/Batch/knight_run.json",
+            "rig_name": "knight_run",
+            "view": "side",
+            "bone_count": 20,
+            "root_path": "RigAgent_Output/knight_run",
+            "max_head_error": 8.606004939792911e-7,
+            "max_tail_error": 9.610960205463926e-7,
+            "errors": [],
+            "bones": [
+                {
+                    "id": 0,
+                    "name": "root",
+                    "parent": "",
+                    "path": "RigAgent_Output/knight_run/root",
+                    "world_head": [
+                        0.0,
+                        0.0
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.05000000819563866
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 1,
+                    "name": "hip",
+                    "parent": "root",
+                    "path": "RigAgent_Output/knight_run/root/hip",
+                    "world_head": [
+                        0.0,
+                        0.6000000834465027
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.7333330512046814
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 2,
+                    "name": "spine",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight_run/root/hip/spine",
+                    "world_head": [
+                        0.0,
+                        0.7333330512046814
+                    ],
+                    "world_tail": [
+                        0.0,
+                        1.1333330869674683
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 3,
+                    "name": "spine_2",
+                    "parent": "spine",
+                    "path": "RigAgent_Output/knight_run/root/hip/spine/spine_2",
+                    "world_head": [
+                        0.0,
+                        1.1333330869674683
+                    ],
+                    "world_tail": [
+                        0.0,
+                        1.2666661739349366
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 4,
+                    "name": "head",
+                    "parent": "spine_2",
+                    "path": "RigAgent_Output/knight_run/root/hip/spine/spine_2/head",
+                    "world_head": [
+                        0.0,
+                        1.2666661739349366
+                    ],
+                    "world_tail": [
+                        -4.76837158203125e-7,
+                        1.9999991655349732
+                    ],
+                    "depth": 0,
+                    "layer": ""
+                },
+                {
+                    "id": 5,
+                    "name": "upper_arm_L",
+                    "parent": "spine_2",
+                    "path": "RigAgent_Output/knight_run/root/hip/spine/spine_2/upper_arm_L",
+                    "world_head": [
+                        -0.03000020980834961,
+                        1.2666661739349366
+                    ],
+                    "world_tail": [
+                        0.00959157943725586,
+                        1.0421299934387208
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 6,
+                    "name": "upper_arm_R",
+                    "parent": "spine_2",
+                    "path": "RigAgent_Output/knight_run/root/hip/spine/spine_2/upper_arm_R",
+                    "world_head": [
+                        0.0,
+                        1.2666661739349366
+                    ],
+                    "world_tail": [
+                        0.03959178924560547,
+                        1.0421299934387208
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 7,
+                    "name": "forearm_L",
+                    "parent": "upper_arm_L",
+                    "path": "RigAgent_Output/knight_run/root/hip/spine/spine_2/upper_arm_L/forearm_L",
+                    "world_head": [
+                        0.00959157943725586,
+                        1.0421299934387208
+                    ],
+                    "world_tail": [
+                        0.045015811920166019,
+                        0.8412292003631592
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 8,
+                    "name": "forearm_R",
+                    "parent": "upper_arm_R",
+                    "path": "RigAgent_Output/knight_run/root/hip/spine/spine_2/upper_arm_R/forearm_R",
+                    "world_head": [
+                        0.03959178924560547,
+                        1.0421299934387208
+                    ],
+                    "world_tail": [
+                        0.07501602172851563,
+                        0.8412292003631592
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 9,
+                    "name": "hand_L",
+                    "parent": "forearm_L",
+                    "path": "RigAgent_Output/knight_run/root/hip/spine/spine_2/upper_arm_L/forearm_L/hand_L",
+                    "world_head": [
+                        0.045015811920166019,
+                        0.8412292003631592
+                    ],
+                    "world_tail": [
+                        0.0741887092590332,
+                        0.6757814884185791
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 10,
+                    "name": "hand_R",
+                    "parent": "forearm_R",
+                    "path": "RigAgent_Output/knight_run/root/hip/spine/spine_2/upper_arm_R/forearm_R/hand_R",
+                    "world_head": [
+                        0.07501602172851563,
+                        0.8412292003631592
+                    ],
+                    "world_tail": [
+                        0.10418891906738281,
+                        0.6757814288139343
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 11,
+                    "name": "thigh_L",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight_run/root/hip/thigh_L",
+                    "world_head": [
+                        -0.03000020980834961,
+                        0.6000000238418579
+                    ],
+                    "world_tail": [
+                        -0.03000020980834961,
+                        0.37500008940696719
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 12,
+                    "name": "thigh_R",
+                    "parent": "hip",
+                    "path": "RigAgent_Output/knight_run/root/hip/thigh_R",
+                    "world_head": [
+                        0.0,
+                        0.6000000834465027
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.37500008940696719
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 13,
+                    "name": "shin_L",
+                    "parent": "thigh_L",
+                    "path": "RigAgent_Output/knight_run/root/hip/thigh_L/shin_L",
+                    "world_head": [
+                        -0.03000020980834961,
+                        0.37500008940696719
+                    ],
+                    "world_tail": [
+                        -0.03000020980834961,
+                        0.1000000387430191
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 14,
+                    "name": "shin_R",
+                    "parent": "thigh_R",
+                    "path": "RigAgent_Output/knight_run/root/hip/thigh_R/shin_R",
+                    "world_head": [
+                        0.0,
+                        0.37500008940696719
+                    ],
+                    "world_tail": [
+                        0.0,
+                        0.1000000387430191
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 15,
+                    "name": "foot_L",
+                    "parent": "shin_L",
+                    "path": "RigAgent_Output/knight_run/root/hip/thigh_L/shin_L/foot_L",
+                    "world_head": [
+                        -0.03000020980834961,
+                        0.1000000387430191
+                    ],
+                    "world_tail": [
+                        0.570000171661377,
+                        0.10000020265579224
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 16,
+                    "name": "foot_R",
+                    "parent": "shin_R",
+                    "path": "RigAgent_Output/knight_run/root/hip/thigh_R/shin_R/foot_R",
+                    "world_head": [
+                        0.0,
+                        0.1000000387430191
+                    ],
+                    "world_tail": [
+                        0.6000003814697266,
+                        0.10000020265579224
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 17,
+                    "name": "toe_L",
+                    "parent": "foot_L",
+                    "path": "RigAgent_Output/knight_run/root/hip/thigh_L/shin_L/foot_L/toe_L",
+                    "world_head": [
+                        0.570000171661377,
+                        0.10000020265579224
+                    ],
+                    "world_tail": [
+                        0.7500004768371582,
+                        0.10000032186508179
+                    ],
+                    "depth": -1,
+                    "layer": ""
+                },
+                {
+                    "id": 18,
+                    "name": "toe_R",
+                    "parent": "foot_R",
+                    "path": "RigAgent_Output/knight_run/root/hip/thigh_R/shin_R/foot_R/toe_R",
+                    "world_head": [
+                        0.6000003814697266,
+                        0.10000020265579224
+                    ],
+                    "world_tail": [
+                        0.7800002098083496,
+                        0.10000032186508179
+                    ],
+                    "depth": 1,
+                    "layer": ""
+                },
+                {
+                    "id": 19,
+                    "name": "extra_sword",
+                    "parent": "hand_R",
+                    "path": "RigAgent_Output/knight_run/root/hip/spine/spine_2/upper_arm_R/forearm_R/hand_R/extra_sword",
+                    "world_head": [
+                        0.10418891906738281,
+                        0.6757814288139343
+                    ],
+                    "world_tail": [
+                        0.8836121559143066,
+                        0.22578150033950807
+                    ],
+                    "depth": 1,
+                    "layer": "front"
+                }
+            ]
+        }
+    ]
+}
