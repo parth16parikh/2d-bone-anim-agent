@@ -314,7 +314,7 @@ def test_progress_lines_follow_the_flow(tmp_path):
     _, lines = run(FakePlanner(BAD_1, GOOD), tmp_path)
     text = "\n".join(lines)
     for expected in (
-        "[guard] Input guard (gpt-5.4-nano)", "[guard] accepted", "[plan 1/3] Planner (gpt-5.4-mini)",
+        "[guard] Input guard (gpt-5.4-mini)", "[guard] accepted", "[plan 1/3] Planner (gpt-5.4-mini)",
         "-> list_vocabulary()", "[plan 1/3] done: 3 model calls", "[build] ", "[validate] attempt 1: FAILED",
         "mirror_coincident", "[plan 2/3] Repairing", "[validate] attempt 2: PASSED", "[export] wrote",
     ):  # fmt: skip

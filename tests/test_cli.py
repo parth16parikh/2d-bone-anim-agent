@@ -250,7 +250,7 @@ def test_a_spec_that_fails_the_dry_run_exits_with_1(monkeypatch, capsys):
 def test_plan_prints_numbered_stages_with_models_and_timings(fake_llm, capsys):
     main(["plan", "a chibi knight"])
     err = capsys.readouterr().err
-    assert "[1/3] Input guard (gpt-5.4-nano) ..." in err
+    assert "[1/3] Input guard (gpt-5.4-mini) ..." in err
     assert "[2/3] Planner (gpt-5.4-mini) ..." in err
     assert "3 model calls, 2 tool calls, 10 tokens in, 5 out" in err
     assert "[3/3] Dry run: PASSED" in err and "Finished in" in err

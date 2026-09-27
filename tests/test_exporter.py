@@ -4,6 +4,7 @@ import pytest
 
 from layout_helpers import bone, good_skeleton
 from rig_agent.export.json_exporter import (
+    RENDER_FILE,
     REPORT_FILE,
     SKELETON_FILE,
     NotARigFolderError,
@@ -118,3 +119,21 @@ def test_a_rig_missing_its_report_can_still_be_deleted(tmp_path):
     result = delete_rig(folder)
     assert result.removed_files == [SKELETON_FILE]
     assert result.folder_removed and not folder.exists()
+
+
+def test_a_render_is_deleted_with_its_rig(tmp_path):
+    folder = tmp_path / "knight"
+    export(good_skeleton(), a_report(), folder)
+    (folder / RENDER_FILE).write_bytes(b"png")
+    result = delete_rig(folder)
+    assert sorted(result.removed_files) == sorted([SKELETON_FILE, REPORT_FILE, RENDER_FILE])
+    assert result.folder_removed and not folder.exists()
+
+
+def test_a_render_alone_is_not_a_rig_folder(tmp_path):
+    folder = tmp_path / "knight"
+    folder.mkdir()
+    (folder / RENDER_FILE).write_bytes(b"png")
+    with pytest.raises(NotARigFolderError):
+        delete_rig(folder)
+    assert (folder / RENDER_FILE).is_file()

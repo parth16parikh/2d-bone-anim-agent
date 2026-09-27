@@ -150,6 +150,33 @@ def test_an_invalid_answer_is_retried_with_the_validation_error():
     assert retries and "side_neutral" in str(retries[0].content)
 
 
+def test_a_rejected_answer_is_recorded_with_its_reason():
+    bad = dict(GOOD, rest_pose="side_neutral")
+    script = Script(("final", bad), ("final", GOOD))
+    result = plan("a knight", agent=script.agent())
+    assert len(result.output_retries) == 1
+    assert "side_neutral" in result.output_retries[0]
+
+
+def test_a_clean_answer_has_no_recorded_retries():
+    script = Script(("dry_run_validate", GOOD), ("final", GOOD))
+    assert plan("a knight", agent=script.agent()).output_retries == ()
+
+
+def test_a_tool_called_with_bad_arguments_is_not_a_rejected_answer():
+    """Only the RigSpec output counts (Q1); a knowledge tool's argument error does not."""
+    script = Script(("dry_run_validate", {"view": "diagonal"}), ("final", GOOD))
+    result = plan("a knight", agent=script.agent())
+    tool_retries = [
+        p
+        for m in script.requests[1]
+        for p in getattr(m, "parts", [])
+        if isinstance(p, RetryPromptPart) and p.tool_name == "dry_run_validate"
+    ]
+    assert tool_retries  # the tool call really was sent back...
+    assert result.output_retries == ()  # ...and is not counted as a rejected RigSpec
+
+
 def test_answers_that_never_validate_end_in_an_error():
     bad = dict(GOOD, view="side")
     script = Script(("final", bad))

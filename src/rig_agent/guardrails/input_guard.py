@@ -33,7 +33,11 @@ Examples (text -> category):
 - "a tall elf archer for my side-scrolling platformer" -> ok
 - "a robot with a human body plan" -> ok
 - "a hero" -> ok (vague, but a default rig exists)
+- "a wolf-eared ranger with a bushy tail" -> ok (a person with animal traits)
+- "an orc brute with tusks" -> ok (a fantasy race on two legs)
+- "a small child with a backpack" -> ok
 - "a horse" -> non_humanoid
+- "a wolf" -> non_humanoid (the animal itself, not a person with wolf traits)
 - "a centaur warrior" -> non_humanoid (four-legged body plan)
 - "write me a poem about knights" -> off_topic
 - "an isometric 3/4 view rogue" -> unsupported_view

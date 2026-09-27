@@ -71,7 +71,7 @@ uv run rig-agent run "ninja for my platformer" --view side --out out/ninja
 **On the terminal** (progress goes to stderr, the result to stdout):
 
 ```
-[guard] Input guard (gpt-5.4-nano) ...
+[guard] Input guard (gpt-5.4-mini) ...
 [guard] accepted
 [plan 1/3] Planner (gpt-5.4-mini) ...
   [  2.1s] -> list_vocabulary()
@@ -156,7 +156,7 @@ uv run rig-agent delete out/knight out/elf         # several, in one call
 uv run rig-agent delete --all --out out            # every rig under out/
 ```
 
-Removes only `skeleton.json` and `validation_report.json` from each folder (never anything else you put there), and removes the folder itself only if that leaves it empty. A folder that has neither file (a typo, or a folder the agent never wrote to) is refused rather than silently skipped, and any other file in it (a `spec.json` copy, your own notes) is left alone and keeps the folder from being removed. `--all` uses the same rig discovery as `unity-apply-all`, so it skips (and reports) a folder whose `skeleton.json` cannot be read, and is a no-op, not an error, when `out/` is already empty. It never touches Unity or your prefabs. **Exit code:** 0 all named folders deleted, 2 a folder did not exist or wasn't a rig folder, or the arguments were wrong (both `--all` and folders, or neither).
+Removes only `skeleton.json` and `validation_report.json` from each folder, plus the `skeleton.png` render if there is one (never anything else you put there), and removes the folder itself only if that leaves it empty. A folder that has neither file (a typo, or a folder the agent never wrote to) is refused rather than silently skipped, and any other file in it (a `spec.json` copy, your own notes) is left alone and keeps the folder from being removed. `--all` uses the same rig discovery as `unity-apply-all`, so it skips (and reports) a folder whose `skeleton.json` cannot be read, and is a no-op, not an error, when `out/` is already empty. It never touches Unity or your prefabs. **Exit code:** 0 all named folders deleted, 2 a folder did not exist or wasn't a rig folder, or the arguments were wrong (both `--all` and folders, or neither).
 
 ---
 
@@ -248,7 +248,53 @@ Useful URL options: `&select=hand_R`, `&color=depth` (or `ik`), `&labels=0`, `&b
 
 Mouse: scroll to zoom, drag to pan, click a bone for details. Keys: `F` fit, `L` labels, `Esc` deselect.
 
+**As a PNG, offline (for evals, or to attach somewhere):**
+
+```bash
+uv run python -m evals.render_skeleton out/knight                   # -> out/knight/skeleton.png
+uv run python -m evals.render_skeleton --all out --dest renders      # -> renders/<rig>.png, every rig
+uv run python -m evals.render_skeleton out/knight --color depth      # or ik; --no-labels; --size 1200
+```
+
+The same drawing as the viewer, plus a header with the rig name, PASSED/FAILED, view, bone count and prompt, and a colour legend. It needs no model and no Unity, and the same rig always gives the same image. A folder that can't be read is skipped with a message (exit code 1); bad arguments exit with 2.
+
 **What to check:** the shape looks like a person, arms and legs are symmetric (front) or stacked near and far (side), accessories point away from the body, dashed lines appear only at the limb roots, hip and jaw, and the red rings mark bones named in validation issues.
+
+---
+
+## 3b. Evals: the golden set and Q1-Q13
+
+```bash
+uv run python -m evals.run --category accessory --k 1       # 10 live runs, a cheap first look
+uv run python -m evals.run --case std_villager --case adv_horse --k 3
+uv run python -m evals.run                                  # everything: 58 cases x 3 = 174 live runs
+uv run python -m evals.run --rescore evals/results/20260927-184406   # no model calls
+```
+
+| Option | Meaning |
+|---|---|
+| `--k N` | runs per case (default 3; Q10 consistency needs at least 2) |
+| `--case ID` / `--category C` / `--limit N` | a subset (repeatable filters; ids and categories are in `evals/golden.yaml`) |
+| `--render` | also draw each delivered rig to `skeleton.png` |
+| `--unity` | also deliver each rig to the open Unity Editor, which measures Q13 |
+| `--usd-per-mtok-in X --usd-per-mtok-out Y` | your model's prices per million tokens, for the Q12 cost (none are built in) |
+| `--yes` | don't ask before a live run (needed when not in a terminal) |
+| `--rescore DIR` | recompute `metrics.json` and `report.md` from a finished run's `records.jsonl` |
+| `--guard-only` | run only the input guard on each prompt: measures Q9 (recall, false rejections) for a few cents, with no planner and no rigs |
+| `--guard-model MODEL` | use this guard model instead of the configured one (for example `gpt-5.4-mini`), without editing the config; works with full runs too |
+
+**Comparing guard models** (cheap, guard only):
+```bash
+uv run python -m evals.run --guard-only                              # the configured guard (mini)
+uv run python -m evals.run --guard-only --guard-model gpt-5.4-nano   # the same prompts on nano
+```
+Compare the two `report.md` files: Q9 recall (≥ 95%) and the false-reject rate (≤ 2%).
+
+**Cost:** every run calls the guard and the planner, like `rig-agent run`. Start with `--k 1` on a category and look at the `Q12 p50 tokens` line before running everything.
+
+**Output:** `evals/results/<timestamp>/` (git-ignored) holds `records.jsonl`, `metrics.json`, `report.md` and `rigs/<case>__<run>/`. The report has the metric table (overall, front, side, target, pass/FAIL), runs by category, and every failed expectation (for example `view: expected side, got front` or `extras F1 0.67: expected hair x2; got hair x1`). An interrupted run keeps every finished record, so `--rescore` still works on it.
+
+**Exit code:** 0 when the run (or rescore) finished, whatever the metrics say; 1 if you cancel at the prompt; 2 for bad arguments.
 
 ---
 
@@ -261,7 +307,7 @@ Mouse: scroll to zoom, drag to pan, click a bone for details. Keys: `F` fit, `L`
 | `uv run pytest -m live` | 3 tests that call the **real** API (need a key, cost a few cents). Skipped otherwise. | ~30 s |
 | `uv run ruff check .` | Lint. | <1 s |
 | `uv run ruff format src tests scripts` | Auto-format. | <1 s |
-| `uv run mypy src` | Type check. | ~5 s |
+| `uv run mypy src evals` | Type check. | ~5 s |
 | `node --test viewer/viewer.test.js` | Only the viewer's tests (needs Node). | <1 s |
 | `uv run pytest -m unity` | 5 tests against a **real, running Unity** with the MCP server started (skipped if unreachable). They add rigs to the open scene. | ~10 s |
 
@@ -327,6 +373,8 @@ uv run rig-agent build --spec examples/knight_side.json --out out/knight
 | `spec.json` (any name) | `plan --out` | `build --spec` (you can edit it) |
 | `<out>/skeleton.json` | `run`, `build` | the viewer; the Unity importer |
 | `<out>/validation_report.json` | `run`, `build` | the viewer; you |
+| `<out>/skeleton.png` | `python -m evals.render_skeleton` | you; the eval harness |
+| `evals/results/<timestamp>/` | `python -m evals.run` | you: `report.md`; `--rescore`: `records.jsonl` |
 
 `skeleton.json` key fields: `view`, `rest_pose`, `height`, and a `bones` list (each with `id`, `name`, `parent_id`, `world_head`, `world_tail`, `local_position`, `local_rotation_deg`, `length`, `depth`, `layer`, `ik_chain`, `mirror_of`), and an `ik_chains` list (schema 1.1) naming each arm and leg chain's root, joint and effector bones and which side of the limb line its elbow or knee bends to (`bend_side`).
 

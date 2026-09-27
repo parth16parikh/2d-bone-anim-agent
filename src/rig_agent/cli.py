@@ -30,6 +30,7 @@ from rig_agent.graph.build_graph import run_rig
 from rig_agent.graph.nodes import default_deps
 from rig_agent.guardrails.input_guard import check_input
 from rig_agent.llm import MissingApiKeyError
+from rig_agent.observability.tracing import configure as configure_tracing
 from rig_agent.schemas.rig_spec import RigSpec
 from rig_agent.unity.batch import collect_rigs
 from rig_agent.unity.delivery import UnityDelivery
@@ -395,6 +396,7 @@ def _delete(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    configure_tracing()
     parser = argparse.ArgumentParser(prog="rig-agent", description="2D humanoid rig agent")
     commands = parser.add_subparsers(dest="command", required=True)
 

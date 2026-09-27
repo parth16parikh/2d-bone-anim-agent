@@ -239,3 +239,5 @@ unity-project/.idea/
 unity-project/.vscode/
 
 .claude
+# eval runs (python -m evals.run): one timestamped folder each
+evals/results/

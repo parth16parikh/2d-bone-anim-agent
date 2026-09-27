@@ -151,11 +151,31 @@ def test_the_guard_prompt_carries_the_rules_and_examples():
     assert prompt.count("->") >= 8
 
 
-def test_the_guard_agent_uses_the_configured_small_model(monkeypatch):
+def test_the_guard_prompt_accepts_people_with_animal_traits():
+    """The first full eval (2026-09-27) found 11 of 13 false rejections were people with animal
+    ears, tails, wings or horns, rejected as non_humanoid; the prompt now draws that line."""
+    prompt = build_guard_prompt()
+    assert "animal traits" in prompt
+    assert "do not make it non-humanoid" in prompt
+    assert "children included" in prompt
+    assert '"a wolf-eared ranger with a bushy tail" -> ok' in prompt
+    assert '"a wolf" -> non_humanoid' in prompt  # the animal itself is still rejected
+
+
+def test_the_guard_examples_do_not_copy_the_golden_prompts():
+    """Otherwise the eval would measure memorised examples, not the guard."""
+    from evals.golden import load_golden
+
+    prompt = build_guard_prompt()
+    for case in load_golden().cases:
+        assert f'"{case.prompt}"' not in prompt, case.id
+
+
+def test_the_guard_agent_uses_the_configured_guard_model(monkeypatch):
     monkeypatch.setattr("rig_agent.guardrails.input_guard.settings.openai_api_key", "sk-test")
     monkeypatch.setattr("rig_agent.guardrails.input_guard.settings.anthropic_api_key", None)
     agent = build_guard_agent()
-    assert agent.model.model_name == "gpt-5.4-nano"
+    assert agent.model.model_name == "gpt-5.4-mini"
 
 
 def test_the_guard_agent_can_take_a_test_model():

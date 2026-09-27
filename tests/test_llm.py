@@ -11,7 +11,7 @@ def config(**kw):
 def test_defaults_use_the_given_endpoint_and_models():
     s = config()
     assert s.openai_base_url == "https://api.openai.com/v1"
-    assert (s.planner_model, s.guard_model) == ("gpt-5.4-mini", "gpt-5.4-nano")
+    assert (s.planner_model, s.guard_model) == ("gpt-5.4-mini", "gpt-5.4-mini")
     assert s.openai_api_key is None and s.primary_provider == "openai"
 
 
@@ -80,7 +80,7 @@ def test_only_openai_key_gives_a_plain_openai_model():
     planner = build_model("planner", config(openai_api_key="k"))
     guard = build_model("guard", config(openai_api_key="k"))
     assert isinstance(planner, OpenAIChatModel) and planner.model_name == "gpt-5.4-mini"
-    assert isinstance(guard, OpenAIChatModel) and guard.model_name == "gpt-5.4-nano"
+    assert isinstance(guard, OpenAIChatModel) and guard.model_name == "gpt-5.4-mini"
 
 
 def test_only_anthropic_key_gives_an_anthropic_model():

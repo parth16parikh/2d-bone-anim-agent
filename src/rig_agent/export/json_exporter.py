@@ -8,6 +8,7 @@ from rig_agent.schemas.validation import ValidationReport
 
 SKELETON_FILE = "skeleton.json"
 REPORT_FILE = "validation_report.json"
+RENDER_FILE = "skeleton.png"  # written by evals/render_skeleton.py; deleted with the rig
 
 
 @dataclass(frozen=True)
@@ -19,7 +20,7 @@ class ExportResult:
 @dataclass(frozen=True)
 class DeleteResult:
     folder: Path
-    removed_files: list[str]  # SKELETON_FILE and/or REPORT_FILE, whichever existed
+    removed_files: list[str]  # SKELETON_FILE, REPORT_FILE and RENDER_FILE, whichever existed
     folder_removed: bool  # true if the folder was empty afterwards and was removed too
 
 
@@ -39,9 +40,10 @@ def export(skeleton: Skeleton, report: ValidationReport, out_dir: str | Path) ->
 
 
 def delete_rig(folder: str | Path) -> DeleteResult:
-    """Remove a rig's skeleton.json and validation_report.json from folder.
+    """Remove a rig's skeleton.json and validation_report.json from folder, and its skeleton.png
+    render if there is one (it is drawn from skeleton.json, so it would be stale on its own).
 
-    Only those two files are ever removed. The folder itself is removed too, but only if that
+    Only those files are ever removed. The folder itself is removed too, but only if that
     leaves it empty; anything else you put there (notes, a spec.json copy) is left untouched and
     so is the folder. Raises NotARigFolderError if the folder has neither file, so a typo or an
     unrelated folder is never silently a no-op.
@@ -52,6 +54,8 @@ def delete_rig(folder: str | Path) -> DeleteResult:
         raise NotARigFolderError(
             f"'{directory}' has neither {SKELETON_FILE} nor {REPORT_FILE}; nothing to delete"
         )
+    if (directory / RENDER_FILE).is_file():
+        present.append(RENDER_FILE)
     for name in present:
         (directory / name).unlink()
     removed = directory.is_dir() and not any(directory.iterdir())

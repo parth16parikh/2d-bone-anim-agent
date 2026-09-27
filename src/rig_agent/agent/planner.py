@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from pydantic_ai import Agent
+from pydantic_ai.messages import ModelMessage, RetryPromptPart
 from pydantic_ai.models import Model
 from pydantic_ai.settings import ModelSettings
 from pydantic_ai.usage import UsageLimits
@@ -103,6 +104,33 @@ class PlanResult:
     tool_calls: int
     input_tokens: int
     output_tokens: int
+    # why each rejected RigSpec was rejected, before the one returned was accepted (LLD Q1, Q9b)
+    output_retries: tuple[str, ...] = ()
+
+
+OUTPUT_TOOL_PREFIX = "final_result"  # Pydantic AI's name for the tool that returns the output
+
+
+def rejected_outputs(messages: list[ModelMessage]) -> tuple[str, ...]:
+    """The schema errors the model's RigSpec outputs were sent back with, one line each.
+
+    Only output retries count: a knowledge tool called with bad arguments is the model using its
+    tools, not a RigSpec that failed to parse.
+    """
+    reasons = []
+    for message in messages:
+        for part in message.parts:
+            if not isinstance(part, RetryPromptPart):
+                continue
+            if part.tool_name is not None and not part.tool_name.startswith(OUTPUT_TOOL_PREFIX):
+                continue
+            content = part.content
+            if isinstance(content, list) and content:
+                first = content[0]
+                reasons.append(str(first.get("msg", first)))
+            else:
+                reasons.append(str(content).splitlines()[0] if str(content) else "retry")
+    return tuple(reasons)
 
 
 def plan(
@@ -140,4 +168,5 @@ def plan(
         tool_calls=usage.tool_calls,
         input_tokens=usage.input_tokens,
         output_tokens=usage.output_tokens,
+        output_retries=rejected_outputs(result.all_messages()),
     )

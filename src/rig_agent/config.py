@@ -21,7 +21,8 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     openai_base_url: str = "https://api.openai.com/v1"
     planner_model: str = "gpt-5.4-mini"
-    guard_model: str = "gpt-5.4-nano"
+    # mini, not nano: see GUARD_MODEL_COMPARISON.md (nano rejected 3.3% of valid prompts, mini 0%)
+    guard_model: str = "gpt-5.4-mini"
 
     anthropic_api_key: str | None = None
     anthropic_planner_model: str = "claude-sonnet-5"

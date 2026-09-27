@@ -37,15 +37,22 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/rig_agent"]
 
+# Tracing (LLD 3.9, Phase H1) is optional: no LOGFIRE_TOKEN means nothing is ever sent anywhere,
+# same as OPENAI_API_KEY/ANTHROPIC_API_KEY. Spans still exist locally even when unconfigured, which
+# is exactly what most of the test suite does (it never calls observability.tracing.configure());
+# this silences the resulting "not configured" warning instead of forcing every test to configure it.
+[tool.logfire]
+ignore_no_config = true
+
 [tool.ruff]
 line-length = 100
-src = ["src", "tests"]
+src = ["src", "tests", "."]  # "." makes the root-level evals package first-party
 extend-exclude = ["unity-project"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 norecursedirs = ["unity-project", "out", ".venv"]
-pythonpath = ["tests"]
+pythonpath = ["tests", "."]  # "." so the evals package imports
 asyncio_mode = "auto"
 addopts = "-m 'not live and not unity'"
 markers = [

@@ -6,6 +6,7 @@ from typing import Any
 from langgraph.graph import END, START, StateGraph
 
 from rig_agent.graph.nodes import GraphDeps, RigNodes, default_deps
+from rig_agent.observability.tracing import traced_node
 from rig_agent.schemas.state import RigState, UsageTotals
 from rig_agent.vocabulary.bones import View
 
@@ -31,7 +32,7 @@ def build_graph(deps: GraphDeps | None = None, checkpointer: Any = None):
         "reject",
         "fail",
     ):
-        graph.add_node(name, getattr(nodes, name))
+        graph.add_node(name, traced_node(name, getattr(nodes, name)))
 
     graph.add_edge(START, "input_guard")
     graph.add_conditional_edges(

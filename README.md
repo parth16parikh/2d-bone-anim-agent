@@ -28,7 +28,7 @@ src/rig_agent/
   unity/          MCP client, delivery, batch import, prefabs, and the C# scripts (unity/csharp/)
   viewer_server.py  local server for the viewer (`rig-agent view`)
   observability/  Logfire tracing setup
-evals/            golden.yaml, offline skeleton renderer, Q1-Q13 metrics
+evals/            golden.yaml (58 cases), eval runner, Q1-Q13 metrics, offline skeleton renderer
 examples/         hand-written RigSpec files for `rig-agent build`
 viewer/           browser viewer for skeleton.json (index.html, viewer.js, samples.js)
 unity-project/    the Unity project the rigs are built in (Assets/, Packages/, ProjectSettings/)
@@ -48,7 +48,7 @@ uv run pytest
 
 > Every command, when to run it and what it produces: see [`COMMANDS.md`](COMMANDS.md).
 
-Status: the deterministic core, the planner agent, the LangGraph repair loop, the browser viewer and the Unity delivery are done. The evals (Phase H) are not built yet.
+Status: the deterministic core, the planner agent, the LangGraph repair loop, the browser viewer and the Unity delivery are done. The evals (Phase H) are built too: Logfire tracing (H1), the offline PNG renderer (H2), the 58-prompt golden set (H3) and the Q1-Q13 eval runner (H4).
 
 **Everything in one command** (needs an API key in `.env`):
 
@@ -63,7 +63,7 @@ If you set both `OPENAI_API_KEY` and `ANTHROPIC_API_KEY`, the second provider is
 
 The two commands below run the same steps separately.
 
-**1. Plan a spec from a description** (needs `OPENAI_API_KEY` in `.env`; uses `gpt-5.4-nano` as the input guard and `gpt-5.4-mini` as the planner):
+**1. Plan a spec from a description** (needs `OPENAI_API_KEY` in `.env`; uses `gpt-5.4-mini` as both the input guard and the planner):
 
 ```bash
 uv run rig-agent plan "chibi knight with a big sword" --out spec.json
@@ -149,4 +149,31 @@ URL options: `?sample=knight_side`, `?src=/out/knight/skeleton.json` (with `rig-
 
 The samples are generated from `examples/*.json` by `uv run python scripts/make_viewer_samples.py`; a test fails if they go stale. The viewer's logic has its own tests: `node --test viewer/viewer.test.js` (also run by `pytest`).
 
-Checks used during development: `uv run pytest -q`, `uv run ruff check .`, `uv run mypy src`.
+## Evals (golden set and Q1-Q13)
+
+`evals/golden.yaml` holds 58 prompts in the seven categories of LLD 4.1, each with **expected attributes** rather than coordinates: a view, proportion ranges, accessory groups, a bone-count range, or "should be rejected". `evals/run.py` sends them through the real pipeline k times and computes Q1-Q13 (LLD 4.2), overall and per view.
+
+```bash
+uv run python -m evals.run --category accessory --k 1       # a small live run first
+uv run python -m evals.run                                  # all 58 cases x k=3 = 174 runs
+uv run python -m evals.run --rescore evals/results/<run>    # recompute metrics, no model calls
+# --case ID, --limit N, --render (PNG per rig), --unity (Q13),
+# --usd-per-mtok-in X --usd-per-mtok-out Y (Q12 cost), --yes (skip the cost confirmation)
+# --guard-only (only the input guard: Q9, cheap), --guard-model MODEL (try another guard model)
+```
+
+A live run calls the real models (it asks first). Each run writes to `evals/results/<timestamp>/`: `records.jsonl` (one line per run, saved as it finishes), `metrics.json`, `report.md` (the metric table with each LLD target, and every failed expectation), and `rigs/<case>__<run>/`. Pass/fail is shown only where the LLD sets a target. A metric that can't be measured from the runs (for example Q13 without `--unity`, or cost without prices) shows `-` with the reason, never a made-up number.
+
+Why the input guard uses gpt-5.4-mini rather than nano: [`GUARD_MODEL_COMPARISON.md`](GUARD_MODEL_COMPARISON.md).
+
+## Rendering rigs to PNG (evals)
+
+`evals/render_skeleton.py` draws a saved rig to a PNG for review and for the eval harness's vision judge. It needs no model and no Unity, and the same rig always gives the same image. The picture matches the viewer, with a header showing the rig name, pass/fail, view, bone count and the prompt.
+
+```bash
+uv run python -m evals.render_skeleton out/knight out/elf          # writes out/<rig>/skeleton.png
+uv run python -m evals.render_skeleton --all out --dest renders     # renders/<rig>.png for every rig
+# options: --color side|depth|ik, --no-labels, --size N (default 800)
+```
+
+It needs Pillow from the `eval` extra (`uv sync --all-extras` installs it). `rig-agent delete` also removes a rig's `skeleton.png`.
