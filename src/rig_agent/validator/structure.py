@@ -2,10 +2,12 @@
 
 import re
 from collections import Counter
+from itertools import pairwise
 
 from rig_agent.schemas.skeleton import Skeleton
 from rig_agent.schemas.validation import IssueCode, ValidationIssue
 from rig_agent.vocabulary.bones import BONES, REQUIRED_BONES, resolve_parent
+from rig_agent.vocabulary.poses import ik_chain_defs, ik_tags
 
 MAX_BONES = 40
 MAX_EXTRA_BONES = 16
@@ -113,6 +115,7 @@ def check_structure(skeleton: Skeleton) -> list[ValidationIssue]:
 
     if not {i.code for i in issues} & (FATAL | {IssueCode.MISSING_REQUIRED_BONE}):
         issues += _check_parents(skeleton)
+        issues += _check_ik_chains(skeleton)
     return issues
 
 
@@ -131,6 +134,71 @@ def _check_parents(skeleton: Skeleton) -> list[ValidationIssue]:
                 _issue(
                     IssueCode.WRONG_PARENT,
                     f"'{b.name}' hangs from '{actual}' but should hang from '{expected}'",
+                    [b.name],
+                )
+            )
+    return issues
+
+
+def _check_ik_chains(skeleton: Skeleton) -> list[ValidationIssue]:
+    """ik_chains (schema 1.1) must list exactly the chains this rig has, with the vocabulary's
+    roles and bend sides, and the bone tags must agree with them (LLD 2.9)."""
+    if skeleton.schema_version == "1.0":
+        return []  # 1.0 files have no ik_chains
+    names = {b.name for b in skeleton.bones}
+    by_id = {b.id: b for b in skeleton.bones}
+    by_name = {b.name: b for b in skeleton.bones}
+    expected = {c.name: c for c in ik_chain_defs(names, skeleton.view)}
+    actual = {c.name: c for c in skeleton.ik_chains}
+    issues = []
+
+    if len(actual) != len(skeleton.ik_chains):
+        issues.append(_issue(IssueCode.INVALID_IK_CHAIN, "an IK chain is listed twice"))
+    for name in sorted(set(expected) - set(actual)):
+        issues.append(_issue(IssueCode.INVALID_IK_CHAIN, f"IK chain '{name}' is missing"))
+    for name in sorted(set(actual) - set(expected)):
+        issues.append(
+            _issue(IssueCode.INVALID_IK_CHAIN, f"'{name}' is not an IK chain of this rig")
+        )
+
+    for name in sorted(set(actual) & set(expected)):
+        chain, want = actual[name], expected[name]
+        roles = (chain.root, chain.joint, chain.effector)
+        if roles != (want.root, want.joint, want.effector):
+            issues.append(
+                _issue(
+                    IssueCode.INVALID_IK_CHAIN,
+                    f"IK chain '{name}' has bones {roles}, expected "
+                    f"{(want.root, want.joint, want.effector)}",
+                )
+            )
+            continue
+        bones = [b for b in roles if b is not None]
+        for parent, child in pairwise(bones):
+            if by_id.get(by_name[child].parent_id) is not by_name[parent]:
+                issues.append(
+                    _issue(
+                        IssueCode.INVALID_IK_CHAIN,
+                        f"IK chain '{name}': '{child}' does not hang from '{parent}'",
+                        [parent, child],
+                    )
+                )
+        if chain.bend_side != want.bend_side:
+            issues.append(
+                _issue(
+                    IssueCode.INVALID_IK_CHAIN,
+                    f"IK chain '{name}': bend_side '{chain.bend_side}' should be "
+                    f"'{want.bend_side}' in the {skeleton.view} view",
+                )
+            )
+
+    tags = ik_tags(names)
+    for b in skeleton.bones:
+        if b.ik_chain != tags.get(b.name):
+            issues.append(
+                _issue(
+                    IssueCode.INVALID_IK_CHAIN,
+                    f"'{b.name}' is tagged '{b.ik_chain}' but belongs to '{tags.get(b.name)}'",
                     [b.name],
                 )
             )

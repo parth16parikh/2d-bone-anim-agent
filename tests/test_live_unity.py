@@ -4,7 +4,8 @@
 
 They need Unity open on the project in UNITY_PROJECT_PATH with the MCP for Unity server started,
 and are skipped when it cannot be reached. They change the open scene (objects under
-RigAgent_Output only); use Tools > Rig Agent > Clear Output to remove them.
+RigAgent_Output only; use Tools > Rig Agent > Clear Output to remove them) and write a placeholder
+sprite and a skeleton asset per rig into Assets/Rigs/Generated/.
 """
 
 from pathlib import Path

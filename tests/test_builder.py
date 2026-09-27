@@ -197,5 +197,5 @@ def test_every_optional_subset_builds_in_both_views():
 
 def test_the_json_is_plain_data():
     data = json.loads(build_skeleton(make_spec(**ELF)).model_dump_json())
-    assert data["schema_version"] == "1.0" and data["units"] == "unity_world"
+    assert data["schema_version"] == "1.1" and data["units"] == "unity_world"
     assert isinstance(data["bones"][0]["world_head"], list)

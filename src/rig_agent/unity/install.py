@@ -1,12 +1,14 @@
 """Copies the C# scripts into a Unity project (LLD 3.11a). Nothing outside Assets/RigAgent and
 Assets/Rigs is ever written."""
 
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from rig_agent.unity.contract import RIGS_DIR, SCRIPTS_DIR
 
 CSHARP_DIR = Path(__file__).parent / "csharp"
+ANIMATION_PACKAGE = "com.unity.2d.animation"  # draws the bones and holds the skeleton asset
 
 
 class UnityProjectError(ValueError):
@@ -35,7 +37,24 @@ def check_project(project: str | Path) -> Path:
             f"'{path}' is not a Unity project (it needs Assets/ and ProjectSettings/). "
             "Set UNITY_PROJECT_PATH to the folder that contains them."
         )
+    if not _has_package(path, ANIMATION_PACKAGE):
+        raise UnityProjectError(
+            f"the Unity project needs the 2D Animation package ({ANIMATION_PACKAGE}): the rig's "
+            "bones are drawn and stored with it. Install it in Window > Package Manager."
+        )
     return path
+
+
+def _has_package(project: Path, package: str) -> bool:
+    """True if the package is a direct dependency (manifest) or resolved (packages-lock)."""
+    for name, key in (("manifest.json", "dependencies"), ("packages-lock.json", "dependencies")):
+        try:
+            data = json.loads((project / "Packages" / name).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if package in (data.get(key) or {}):
+            return True
+    return False
 
 
 def install_scripts(project: str | Path) -> InstallResult:

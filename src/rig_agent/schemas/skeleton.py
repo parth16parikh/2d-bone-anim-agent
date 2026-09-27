@@ -5,9 +5,10 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from rig_agent.vocabulary.bones import View
-from rig_agent.vocabulary.poses import RestPose
+from rig_agent.vocabulary.poses import BendSide, RestPose
 
-SCHEMA_VERSION: Literal["1.0"] = "1.0"
+SCHEMA_VERSION: Literal["1.1"] = "1.1"
+READABLE_VERSIONS = ("1.0", "1.1")  # 1.1 added ik_chains; 1.0 files are still read
 
 Point = tuple[float, float]
 
@@ -32,6 +33,19 @@ class Bone(_Strict):
     mirror_of: str | None = None
 
 
+class IKChainInfo(_Strict):
+    """A 2-bone limb an IK solver can drive (LLD 2.9). The roles are written out, so a reader
+    does not have to work them out from the bone tags."""
+
+    name: str  # arm_L, arm_R, leg_L or leg_R
+    root: str  # bone name: upper arm or thigh
+    joint: str  # bone name: forearm or shin
+    effector: str | None  # bone name: hand or foot. None when the rig has no hands
+    # Which side of the line root -> target the elbow or knee sits on, looking from the root:
+    # "left" is the counter-clockwise side. Stays valid however the limb is posed.
+    bend_side: BendSide
+
+
 class Metadata(_Strict):
     generator: str
     model: str | None = None
@@ -40,7 +54,7 @@ class Metadata(_Strict):
 
 
 class Skeleton(_Strict):
-    schema_version: Literal["1.0"] = SCHEMA_VERSION
+    schema_version: Literal["1.0", "1.1"] = SCHEMA_VERSION
     rig_name: str
     source_prompt: str
     units: Literal["unity_world"] = "unity_world"
@@ -51,4 +65,5 @@ class Skeleton(_Strict):
     rest_pose: RestPose
     style: str
     bones: list[Bone]
+    ik_chains: list[IKChainInfo] = Field(default_factory=list)  # schema 1.1
     metadata: Metadata

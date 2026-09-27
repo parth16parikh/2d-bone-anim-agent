@@ -19,7 +19,13 @@ from rig_agent.agent.tools import dry_run_validate
 from rig_agent.builder.errors import BuildError
 from rig_agent.builder.skeleton_builder import build_skeleton
 from rig_agent.config import settings
-from rig_agent.export.json_exporter import export, load_skeleton
+from rig_agent.export.json_exporter import (
+    SKELETON_FILE,
+    NotARigFolderError,
+    delete_rig,
+    export,
+    load_skeleton,
+)
 from rig_agent.graph.build_graph import run_rig
 from rig_agent.graph.nodes import default_deps
 from rig_agent.guardrails.input_guard import check_input
@@ -95,6 +101,8 @@ def _build(args: argparse.Namespace) -> int:
         _say("      " + ", ".join(shown))
 
     _say(f"[4/4] Exporting to {args.out} ...")
+    if (args.out / SKELETON_FILE).is_file():
+        _say(f"      note: replacing the rig already at {args.out}")
     result = export(skeleton, report, args.out)
     _say(f"      wrote {result.skeleton_path.name} and {result.report_path.name}")
     _say(f"Finished in {elapsed(started)}.")
@@ -174,7 +182,7 @@ def _run(args: argparse.Namespace) -> int:
         view=args.view,
         unity_mode=args.unity,
         out_dir=str(args.out),
-        deps=default_deps(say=_say, prefab=prefab),
+        deps=default_deps(say=_say, prefab=prefab, ik=not args.no_ik),
     )
     status = state["status"]
     usage = state["usage"]
@@ -283,7 +291,7 @@ def _unity_apply(args: argparse.Namespace) -> int:
     except PrefabFolderError as error:
         print(error, file=sys.stderr)
         return 2
-    result = UnityDelivery(say=_say, prefab=prefab).deliver(skeleton)
+    result = UnityDelivery(say=_say, prefab=prefab, ik=not args.no_ik).deliver(skeleton)
     detail = f" ({result.detail})" if result.detail else ""
     print(f"unity: {result.status}{detail}")
     return {"applied": 0, "failed": 1}.get(result.status, 2)
@@ -305,7 +313,7 @@ def _unity_apply_all(args: argparse.Namespace) -> int:
         return 2
     _say(f"Found {len(rigs)} rig(s) in {args.out}/: {', '.join(r.name for r in rigs)}")
 
-    result = UnityDelivery(say=_say, prefab=prefab).deliver_all(rigs)
+    result = UnityDelivery(say=_say, prefab=prefab, ik=not args.no_ik).deliver_all(rigs)
     width = max(len(o.name) for o in result.rigs) if result.rigs else 0
     for outcome in result.rigs:
         print(f"  {outcome.name:<{width}}  {outcome.status:<8} {outcome.detail}")
@@ -337,6 +345,11 @@ def _view(args: argparse.Namespace) -> int:
 
 def _add_prefab_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
+        "--no-ik",
+        action="store_true",
+        help="do not set up arm and leg IK in Unity (default: a Limb solver per arm and leg)",
+    )
+    parser.add_argument(
         "--prefab-dir",
         metavar="ASSETS_PATH",
         help="also save each verified rig as a prefab in this folder of the Unity project, "
@@ -347,6 +360,38 @@ def _add_prefab_arguments(parser: argparse.ArgumentParser) -> None:
         action="store_true",
         help="replace a prefab that already exists (default: keep it, it may have been edited)",
     )
+
+
+def _delete(args: argparse.Namespace) -> int:
+    if args.all and args.folders:
+        print("give either folders or --all, not both", file=sys.stderr)
+        return 2
+    if not args.all and not args.folders:
+        print("give one or more rig folders to delete, or --all", file=sys.stderr)
+        return 2
+
+    if args.all:
+        rigs, skipped = collect_rigs(args.out)
+        for item in skipped:
+            print(f"skipped {item.source}: {item.reason}", file=sys.stderr)
+        folders = [rig.source.parent for rig in rigs]
+        if not folders:
+            print(f"{args.out}/ is already empty (no rigs found).")
+            return 0
+    else:
+        folders = args.folders
+
+    exit_code = 0
+    for folder in folders:
+        try:
+            result = delete_rig(folder)
+        except NotARigFolderError as error:
+            print(error, file=sys.stderr)
+            exit_code = 2
+            continue
+        kept = " (folder kept: not empty)" if not result.folder_removed else ""
+        print(f"deleted {folder}: {', '.join(result.removed_files)}{kept}")
+    return exit_code
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -408,6 +453,18 @@ def main(argv: list[str] | None = None) -> int:
     build.add_argument("--out", type=Path, default=Path("out"), help="output directory")
     build.add_argument("--prompt", default="", help="text recorded as the skeleton's source_prompt")
     build.set_defaults(handler=_build)
+
+    deleter = commands.add_parser(
+        "delete", help="remove one or more rigs (skeleton.json + validation_report.json) from out/"
+    )
+    deleter.add_argument(
+        "folders", nargs="*", type=Path, help="rig folders to delete, e.g. out/knight"
+    )
+    deleter.add_argument("--all", action="store_true", help="delete every rig folder under --out")
+    deleter.add_argument(
+        "--out", type=Path, default=Path("out"), help="used with --all: the folder to clear"
+    )
+    deleter.set_defaults(handler=_delete)
 
     args = parser.parse_args(argv)
     return args.handler(args)

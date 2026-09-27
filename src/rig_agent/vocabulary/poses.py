@@ -7,6 +7,7 @@ from typing import Literal
 from rig_agent.vocabulary.bones import BONES
 
 RestPose = Literal["A_pose", "T_pose", "side_neutral"]
+BendSide = Literal["left", "right"]
 
 SHOULDER_TILT_DEG = 10.0  # shoulder bones point this far below horizontal
 TOE_LENGTH_FACTOR = 0.3  # toe length as a fraction of the foot length
@@ -67,6 +68,50 @@ IK_CHAINS: tuple[IKChain, ...] = (
     IKChain("leg_L", "thigh_L", "shin_L", "foot_L"),
     IKChain("leg_R", "thigh_R", "shin_R", "foot_R"),
 )
+
+
+# Which side of the line from a chain's root toward its target the joint (elbow or knee) sits on,
+# looking from the root toward the target: "left" is the counter-clockwise side (LLD 2.9). This is
+# what a limb solver needs (Unity's LimbSolver2D.flip) and it stays the same however the limb is
+# posed. Side view faces right (+X): elbows point back, knees forward. Front view (the character's
+# left is screen +X): elbows point outward and down, knees outward.
+_BEND_SIDE: dict[str, dict[str, BendSide]] = {
+    "front": {"arm_L": "right", "arm_R": "left", "leg_L": "left", "leg_R": "right"},
+    "side": {"arm_L": "right", "arm_R": "right", "leg_L": "left", "leg_R": "left"},
+}
+
+
+def bend_side(chain_name: str, view: str) -> BendSide:
+    """ "left" or "right": the side of the root-to-target line that the elbow or knee sits on."""
+    return _BEND_SIDE[view][chain_name]
+
+
+@dataclass(frozen=True)
+class IKChainDef:
+    """A chain as it appears in a rig: the same roles as IKChain, with the effector missing when
+    the rig has no hands, and the bend side for the rig's view."""
+
+    name: str
+    root: str
+    joint: str
+    effector: str | None
+    bend_side: BendSide
+
+
+def ik_chain_defs(present: Collection[str], view: str) -> list[IKChainDef]:
+    """The chains a rig with these bones has. A chain needs its root and joint bones; the
+    effector is None for an arm without a hand (LLD 2.9)."""
+    return [
+        IKChainDef(
+            c.name,
+            c.root,
+            c.joint,
+            c.effector if c.effector in present else None,
+            bend_side(c.name, view),
+        )
+        for c in IK_CHAINS
+        if c.root in present and c.joint in present
+    ]
 
 
 def ik_tags(present: Collection[str]) -> dict[str, str]:

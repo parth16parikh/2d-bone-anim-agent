@@ -4,6 +4,7 @@ apply():       make sure the C# scripts are installed, write Assets/Rigs/skeleto
                trigger the import menu item through the MCP allowlist.
 verify():      read the importer's report, compare it with the JSON, and check the console. When
                prefab options are set, a verified rig is then saved as a prefab.
+IK is on by default; pass ik=False to build the bones without solvers.
 deliver_all(): build every rig from out/ in one go, side by side, then verify each one.
 
 A failure here never invalidates the rig: the JSON is already delivered (LLD 3.13).
@@ -28,6 +29,7 @@ from rig_agent.unity.contract import (
     IMPORT_ALL_MENU,
     IMPORT_LOG_TAG,
     IMPORT_MENU,
+    IMPORT_OPTIONS_FILE,
     OUTPUT_ROOT,
     PREFAB_FILE,
     PREFAB_REPORT_FILE,
@@ -38,7 +40,7 @@ from rig_agent.unity.contract import (
 )
 from rig_agent.unity.install import UnityProjectError, install_scripts, scripts_installed
 from rig_agent.unity.mcp_client import UnityMcpClient, UnityMcpError, UnityUnavailable, run_sync
-from rig_agent.unity.prefab import PrefabOptions
+from rig_agent.unity.prefab import PrefabOptions, rig_asset_folder
 from rig_agent.unity.verify import compare_import
 
 Say = Callable[[str], None]
@@ -76,6 +78,7 @@ class UnityDelivery:
         compile_wait: float = 120.0,
         say: Say = _silent,
         prefab: PrefabOptions | None = None,
+        ik: bool = True,
     ):
         self.target = target
         self.project = Path(project) if project else settings.unity_project_path
@@ -84,6 +87,7 @@ class UnityDelivery:
         self.compile_wait = compile_wait
         self.say = say
         self.prefab = prefab
+        self.ik = ik
         self._report_mtime_before = 0
 
     # ---- public, synchronous API ------------------------------------------------------------
@@ -142,6 +146,11 @@ class UnityDelivery:
             report = rigs / REPORT_FILE
             self._report_mtime_before = report.stat().st_mtime_ns if report.exists() else 0
             (rigs / SKELETON_FILE).write_text(skeleton.model_dump_json(indent=2), encoding="utf-8")
+            options = {
+                "asset_folder": rig_asset_folder(skeleton.rig_name, self.prefab),
+                "ik": self.ik,
+            }
+            (rigs / IMPORT_OPTIONS_FILE).write_text(json.dumps(options), encoding="utf-8")
             await unity.clear_console()
             await unity.call_tool("execute_menu_item", {"menu_path": IMPORT_MENU})
             self.say(f"[unity] import triggered for '{skeleton.rig_name}'")
@@ -168,7 +177,7 @@ class UnityDelivery:
         project = self._project_dir()
         report_path = project / RIGS_DIR / REPORT_FILE
         report = await self._wait_for_json(report_path, self._report_mtime_before, "import report")
-        problems = compare_import(skeleton, report)
+        problems = compare_import(skeleton, report, expect_ik=self.ik)
 
         async with self._client() as unity:
             errors = await unity.console_messages(["error"])
@@ -207,14 +216,17 @@ class UnityDelivery:
             await unity.wait_until_ready(self.compile_wait)
             await self._ensure_scripts(unity, project)
 
-            files = []
+            files, asset_folders = [], []
             (project / BATCH_DIR).mkdir(parents=True, exist_ok=True)
             for rig in rigs:
                 (project / BATCH_DIR / f"{rig.name}.json").write_text(
                     rig.skeleton.model_dump_json(indent=2), encoding="utf-8"
                 )
                 files.append(f"{BATCH_DIR}/{rig.name}.json")
-            (folder / BATCH_FILE).write_text(json.dumps({"files": files}), encoding="utf-8")
+                # a rig that will get a prefab keeps its sprite and skeleton beside it
+                asset_folders.append(rig_asset_folder(rig.name, self.prefab, rig.passed is True))
+            manifest = {"files": files, "asset_folders": asset_folders, "ik": self.ik}
+            (folder / BATCH_FILE).write_text(json.dumps(manifest), encoding="utf-8")
 
             report_path = folder / BATCH_REPORT_FILE
             before = report_path.stat().st_mtime_ns if report_path.exists() else 0
@@ -228,7 +240,9 @@ class UnityDelivery:
             for rig in rigs:
                 one = by_name.get(rig.name)
                 problems = (
-                    compare_import(rig.skeleton, one) if one else ["Unity did not report this rig"]
+                    compare_import(rig.skeleton, one, expect_ik=self.ik)
+                    if one
+                    else ["Unity did not report this rig"]
                 )
                 more = f" (+{len(problems) - 3} more)" if len(problems) > 3 else ""
                 outcomes[rig.name] = (

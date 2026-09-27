@@ -19,6 +19,7 @@ class FakeUnity:
         self.calls: list[tuple[str, dict[str, Any]]] = []
         self.state: dict[str, Any] = json.loads(json.dumps(READY))
         self.not_ready_reads = 0  # the next N state reads say "compiling"
+        self.empty_state_reads = 0  # the next N state reads have no data at all (a domain reload)
         self.reply: dict[str, Any] | None = None  # force every tool reply
         self.console: list[str] = []
         self.on_menu = None  # called when execute_menu_item runs (simulates the importer)
@@ -104,6 +105,9 @@ class FakeUnity:
         @server.resource("mcpforunity://editor/state")
         def editor_state() -> str:
             payload = json.loads(json.dumps(self.state))
+            if self.empty_state_reads > 0:
+                self.empty_state_reads -= 1
+                return json.dumps({"success": True, "data": None})
             if self.not_ready_reads > 0:
                 self.not_ready_reads -= 1
                 payload["advice"] = {"ready_for_tools": False, "blocking_reasons": ["compiling"]}

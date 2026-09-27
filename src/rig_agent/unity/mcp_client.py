@@ -188,14 +188,15 @@ class UnityMcpClient:
         return _parse("".join(getattr(part, "text", "") for part in result.contents))
 
     async def editor_state(self) -> dict[str, Any]:
-        return (await self.read_resource(STATE_URI)).get("data", {})
+        # while Unity recompiles the reply can carry "data": null; that just means "not ready"
+        return (await self.read_resource(STATE_URI)).get("data") or {}
 
     async def wait_until_ready(self, timeout: float = 60.0, poll: float = 0.5) -> dict[str, Any]:
         """Wait until Unity says tools can be used (not compiling, no domain reload)."""
         deadline = asyncio.get_running_loop().time() + timeout
         while True:
             state = await self.editor_state()
-            advice = state.get("advice", {})
+            advice = state.get("advice") or {}
             if advice.get("ready_for_tools"):
                 return state
             if asyncio.get_running_loop().time() >= deadline:

@@ -20,6 +20,7 @@ class IssueCode(StrEnum):
     WRONG_PARENT = "wrong_parent"
     TOO_MANY_BONES = "too_many_bones"
     TOO_MANY_EXTRA_BONES = "too_many_extra_bones"
+    INVALID_IK_CHAIN = "invalid_ik_chain"
     # geometry (LLD 3.8.2, 2.4.4, 2.6, 2.7)
     NON_POSITIVE_LENGTH = "non_positive_length"
     DISCONNECTED_JOINT = "disconnected_joint"

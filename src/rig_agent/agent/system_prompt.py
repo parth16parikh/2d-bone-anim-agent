@@ -52,6 +52,26 @@ stocky, dwarf mean leg_scale 0.85 and a lower heads_tall; long shins mean thigh_
 big hands mean hand_size 1.4; big feet mean foot_size 1.3; long neck mean neck_scale 1.4; big head \
 means head_scale 1.2. Check unusual choices with describe_proportions.
 
+Explicit ratios and extreme requests. Every proportion field is a SHARE of the same fixed height, \
+not an absolute size, so making one part much bigger always makes the rest relatively smaller, and \
+the other way round. When the description gives an explicit ratio or comparison ("head at least \
+twice the body", "arms much longer than the legs", "very short legs"), move every field that \
+affects both sides in the same pass, not one small nudge: for a much bigger head, lower \
+base.heads_tall toward 2 AND base.leg_ratio and base.arm_ratio toward 0.25 together, drop neck (and \
+usually chest) from optional_bones so its length folds into the head bone instead of a separate \
+neck bone, and prefer the preset with the biggest neck_hu (heroic donates the most this way, chibi \
+the least) unless the description needs that preset's other proportions. Leave head_scale at 1.0 \
+once heads_tall, leg_ratio and arm_ratio are already at their floor: the floors are on the \
+RESULTING proportions, not the numbers you typed, and any head_scale above 1.0 shrinks the whole \
+column further, pushing the resulting heads_tall and leg_ratio below their own floor and failing \
+validation, exactly backwards from what it looks like it should do. Read describe_proportions' \
+derived values (not just its ratios) after every change, not only at the end, and back a field off \
+the moment a derived value it affects drops out of range, rather than pushing it further. For much \
+longer legs or arms, raise their base ratio toward 0.6 or 0.55 instead. Push every relevant field to \
+its limit, read describe_proportions' ratios to check the real figure against what was asked, and \
+only if it is still out of reach say so in an assumption with the ratio you actually reached, \
+instead of a mild, unverified guess.
+
 Optional bones. Include chest, neck and hands by default. Drop chest and neck for a chibi or a \
 deliberately minimal rig, and drop hands for a character without hands. In the front view add \
 shoulders for shoulder armor, pauldrons, epaulettes, heroic or broad or muscular characters, or an \
@@ -92,7 +112,9 @@ extra bones."""
 TOOL_POLICY = """\
 1. Call list_vocabulary, get_view_rules and get_preset first, as you need them.
 2. Draft the RigSpec. Use describe_proportions when you set base numbers or multipliers, and \
-list_existing_bones before choosing extra-bone parents.
+list_existing_bones before choosing extra-bone parents. When the description gave an explicit \
+ratio, read describe_proportions' ratios and keep adjusting until they are as close as the \
+vocabulary allows, not just until dry_run_validate stops reporting errors.
 3. Call dry_run_validate on your draft before the final answer. If it reports errors, fix them and \
 call it again. Warnings do not have to be fixed.
 4. Give the final answer only when the last dry run had no errors."""
@@ -175,6 +197,36 @@ def _example_specs() -> list[tuple[str, View | None, RigSpec]]:
                          "length_ratio": 0.45, "segments": 3, "layer": "behind"},
                     ],
                     "assumptions": ["an elf is taller: 8.5 heads", "long-legged means leg_scale 1.15"],
+                }
+            ),
+        ),
+        (
+            "a monster with a head at least twice the size of its body, wielding a spike hammer",
+            None,
+            RigSpec.model_validate(
+                {
+                    "character_summary": "a monster with a huge head and a spike hammer",
+                    "style": "monster",
+                    "preset": "heroic",
+                    "view": "front",
+                    "rest_pose": "A_pose",
+                    "optional_bones": ["hands"],
+                    "base": {"heads_tall": 2.0, "leg_ratio": 0.25, "arm_ratio": 0.25},
+                    "extra_bones": [
+                        {"name": "extra_spike_hammer", "parent": "hand_R", "direction_deg": -160,
+                         "length_ratio": 0.12},
+                    ],
+                    "assumptions": [
+                        (
+                            "no view given, so front view; huge head means neck and chest "
+                            "dropped, so the neck's length folds into the head bone"
+                        ),
+                        (
+                            "heroic preset chosen for its large neck_hu (donates the most into "
+                            "the head); heads_tall, leg_ratio and arm_ratio pushed to their floor"
+                        ),
+                        "head reaches 2.08x the rest of the body, meeting the request",
+                    ],
                 }
             ),
         ),

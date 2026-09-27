@@ -6,6 +6,7 @@ import pytest
 
 from rig_agent.cli import main
 from rig_agent.export.json_exporter import load_report, load_skeleton
+from unity_helpers import make_project
 
 EXAMPLES = Path(__file__).resolve().parent.parent / "examples"
 SPECS = sorted(EXAMPLES.glob("*.json"))
@@ -326,17 +327,19 @@ def fake_graph(monkeypatch):
     def install(*steps, guard=ACCEPT, **kw):
         planner = FakePlanner(*steps, **kw)
 
-        def deps_with_progress(say=None, prefab=None):
+        def deps_with_progress(say=None, prefab=None, ik=True):
             deps = make_deps(planner, guard=guard)
             if say:
                 deps.say = say
             install.prefab_seen.append(prefab)
+            install.ik_seen.append(ik)
             return deps
 
         monkeypatch.setattr("rig_agent.cli.default_deps", deps_with_progress)
         return planner
 
     install.prefab_seen = []
+    install.ik_seen = []
     return install
 
 
@@ -418,12 +421,14 @@ class _FakeUnityDelivery:
     delivered: ClassVar[list] = []
 
     prefabs: ClassVar[list] = []
+    ik_flags: ClassVar[list] = []
     batch: ClassVar[list] = []
     batch_result = None
 
     def __init__(self, *args, **kwargs):
         self.say = kwargs.get("say")
         type(self).prefabs.append(kwargs.get("prefab"))
+        type(self).ik_flags.append(kwargs.get("ik"))
 
     def deliver(self, skeleton):
         type(self).delivered.append(skeleton)
@@ -442,6 +447,7 @@ class _FakeUnityDelivery:
 def fake_delivery(monkeypatch):
     _FakeUnityDelivery.delivered = []
     _FakeUnityDelivery.prefabs = []
+    _FakeUnityDelivery.ik_flags = []
     _FakeUnityDelivery.batch = []
     _FakeUnityDelivery.batch_result = None
     monkeypatch.setattr("rig_agent.cli.settings.unity_prefab_dir", "")
@@ -500,13 +506,18 @@ def test_unity_check_says_when_nothing_is_listening(capsys):
 
 
 def test_unity_install_copies_the_scripts(tmp_path, capsys):
-    (tmp_path / "Assets").mkdir()
-    (tmp_path / "ProjectSettings").mkdir()
+    make_project(tmp_path)
     assert main(["unity-install", "--project", str(tmp_path)]) == 0
     out = capsys.readouterr().out
-    assert out.count("installed:") == 3 and "Unity will now recompile" in out
+    assert out.count("installed:") == 6 and "Unity will now recompile" in out
     assert main(["unity-install", "--project", str(tmp_path)]) == 0
-    assert capsys.readouterr().out.count("unchanged:") == 3
+    assert capsys.readouterr().out.count("unchanged:") == 6
+
+
+def test_unity_install_needs_the_2d_animation_package(tmp_path, capsys):
+    make_project(tmp_path, packages={})
+    assert main(["unity-install", "--project", str(tmp_path)]) == 2
+    assert "needs the 2D Animation package" in capsys.readouterr().err
 
 
 def test_unity_install_refuses_a_non_unity_folder(tmp_path, capsys):
@@ -520,8 +531,7 @@ def test_unity_check_shows_the_script_status_for_a_configured_project(
     from fake_unity import FakeUnity
     from rig_agent.unity.mcp_client import check_unity
 
-    (tmp_path / "Assets").mkdir()
-    (tmp_path / "ProjectSettings").mkdir()
+    make_project(tmp_path)
     monkeypatch.setattr("rig_agent.cli.check_unity", lambda url: check_unity(FakeUnity().server))
     monkeypatch.setattr("rig_agent.cli.settings.unity_project_path", tmp_path)
     main(["unity-check"])
@@ -618,3 +628,122 @@ def test_unity_apply_all_mentions_skipped_files(fake_delivery, tmp_path, capsys)
 def test_unity_apply_all_exit_codes(fake_delivery, tmp_path, status, code):
     fake_delivery.batch_result = BatchResult(status=status, detail="why")
     assert main(["unity-apply-all", "--out", str(_out_with_rigs(tmp_path, "knight"))]) == code
+
+
+# ---- delete ----------------------------------------------------------------------------------------
+
+
+def _build_at(spec, out_dir):
+    return main(["build", "--spec", str(spec), "--out", str(out_dir)])
+
+
+def test_delete_removes_a_single_rig(tmp_path, capsys):
+    folder = tmp_path / "knight"
+    _build_at(EXAMPLES / "knight_side.json", folder)
+    capsys.readouterr()
+    assert main(["delete", str(folder)]) == 0
+    out = capsys.readouterr().out
+    assert "deleted" in out and "skeleton.json" in out and "validation_report.json" in out
+    assert not folder.exists()
+
+
+def test_delete_takes_several_folders_in_one_call(tmp_path, capsys):
+    a, b = tmp_path / "a", tmp_path / "b"
+    _build_at(EXAMPLES / "knight_side.json", a)
+    _build_at(EXAMPLES / "elf_front.json", b)
+    assert main(["delete", str(a), str(b)]) == 0
+    assert not a.exists() and not b.exists()
+
+
+def test_delete_reports_but_does_not_stop_on_a_bad_path(tmp_path, capsys):
+    good = tmp_path / "knight"
+    _build_at(EXAMPLES / "knight_side.json", good)
+    missing = tmp_path / "nope"
+    capsys.readouterr()
+    assert main(["delete", str(missing), str(good)]) == 2
+    err = capsys.readouterr().err
+    assert "nope" in err and "neither" in err
+    assert not good.exists()  # the good one was still deleted
+
+
+def test_delete_refuses_a_folder_it_did_not_write(tmp_path, capsys):
+    folder = tmp_path / "not_a_rig"
+    folder.mkdir()
+    (folder / "notes.txt").write_text("mine")
+    assert main(["delete", str(folder)]) == 2
+    assert (folder / "notes.txt").is_file()
+
+
+def test_delete_needs_folders_or_all_not_neither_or_both(tmp_path, capsys):
+    assert main(["delete"]) == 2
+    assert "give one or more rig folders" in capsys.readouterr().err
+    assert main(["delete", str(tmp_path), "--all"]) == 2
+    assert "not both" in capsys.readouterr().err
+
+
+def test_delete_all_clears_every_rig_under_out(tmp_path, capsys):
+    out = _out_with_rigs(tmp_path, "knight", "elf")
+    capsys.readouterr()
+    assert main(["delete", "--all", "--out", str(out)]) == 0
+    out_text = capsys.readouterr().out
+    assert "deleted" in out_text
+    assert not (out / "knight").exists() and not (out / "elf").exists()
+    assert out.is_dir()  # the out/ folder itself is kept
+
+
+def test_delete_all_on_an_empty_out_is_a_no_op_not_an_error(tmp_path, capsys):
+    empty = tmp_path / "empty"
+    assert main(["delete", "--all", "--out", str(empty)]) == 0
+    assert "already empty" in capsys.readouterr().out
+
+
+def test_delete_all_skips_and_reports_unreadable_rigs(tmp_path, capsys):
+    out = _out_with_rigs(tmp_path, "knight")
+    (out / "broken").mkdir()
+    (out / "broken" / "skeleton.json").write_text("{nope")
+    assert main(["delete", "--all", "--out", str(out)]) == 0
+    assert "skipped" in capsys.readouterr().err
+    assert not (out / "knight").exists()
+    assert (out / "broken").is_dir()  # untouched: it was never recognised as a rig
+
+
+def test_build_and_run_note_when_replacing_an_existing_rig(tmp_path, capsys):
+    folder = tmp_path / "knight"
+    _build_at(EXAMPLES / "knight_side.json", folder)
+    capsys.readouterr()
+    _build_at(EXAMPLES / "knight_side.json", folder)
+    assert "replacing the rig already at" in capsys.readouterr().err
+
+
+def test_build_does_not_warn_about_replacing_a_fresh_folder(tmp_path, capsys):
+    folder = tmp_path / "knight"
+    capsys.readouterr()
+    _build_at(EXAMPLES / "knight_side.json", folder)
+    assert "replacing the rig already at" not in capsys.readouterr().err
+
+
+def test_run_also_notes_when_replacing_an_existing_rig(fake_graph, tmp_path, capsys):
+    fake_graph(GOOD_SPEC)
+    main(["run", "a chibi knight", "--out", str(tmp_path)])
+    capsys.readouterr()
+    fake_graph(GOOD_SPEC)
+    main(["run", "a chibi knight", "--out", str(tmp_path)])
+    assert "[export] note: replacing the rig already at" in capsys.readouterr().err
+
+
+def test_ik_is_on_unless_no_ik_is_given(fake_delivery, fake_graph, tmp_path):
+    path = _built_skeleton(tmp_path)
+    main(["unity-apply", str(path)])
+    assert fake_delivery.ik_flags[-1] is True
+    main(["unity-apply", str(path), "--no-ik"])
+    assert fake_delivery.ik_flags[-1] is False
+    out = _out_with_rigs(tmp_path / "rigs", "knight")
+    main(["unity-apply-all", "--out", str(out), "--no-ik"])
+    assert fake_delivery.ik_flags[-1] is False
+
+
+def test_run_passes_no_ik_to_the_unity_step(fake_graph, tmp_path):
+    fake_graph(GOOD_SPEC)
+    args = ["run", "a knight", "--unity", "--out", str(tmp_path)]
+    assert main(args) == 0 and fake_graph.ik_seen[-1] is True
+    assert main([*args, "--no-ik"]) == 0 and fake_graph.ik_seen[-1] is False

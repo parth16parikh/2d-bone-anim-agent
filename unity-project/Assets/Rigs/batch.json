@@ -1,1 +1,1 @@
-{"files": ["Assets/Rigs/Batch/elf.json", "Assets/Rigs/Batch/knight.json", "Assets/Rigs/Batch/knight2.json", "Assets/Rigs/Batch/knight3.json", "Assets/Rigs/Batch/knight_run.json"]}
+{"files": ["Assets/Rigs/Batch/chibi_mage_front.json", "Assets/Rigs/Batch/elf_front.json", "Assets/Rigs/Batch/knight_side.json"], "asset_folders": ["Assets/Rigs/Generated/chibi_mage_front", "Assets/Rigs/Generated/elf_front", "Assets/Rigs/Generated/knight_side"], "ik": true}

@@ -7,6 +7,9 @@ so a bad path is refused on both sides.
 import re
 from dataclasses import dataclass
 
+from rig_agent.unity.batch import safe_name
+from rig_agent.unity.contract import GENERATED_DIR
+
 _SEGMENT = re.compile(r"^[A-Za-z0-9 _.\-()]+$")
 
 
@@ -41,3 +44,12 @@ class PrefabOptions:
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "folder", check_prefab_folder(self.folder))
+
+
+def rig_asset_folder(
+    rig_name: str, prefab: PrefabOptions | None, prefab_wanted: bool = True
+) -> str:
+    """Where a rig's placeholder sprite and skeleton asset go: beside its prefab when a prefab is
+    wanted (<prefab folder>/<rig>), otherwise in the generated folder."""
+    base = prefab.folder if prefab and prefab_wanted else GENERATED_DIR
+    return f"{base}/{safe_name(rig_name)}"

@@ -1,0 +1,371 @@
+fileFormatVersion: 2
+guid: 6fa86c76d083b4e028346256471b6af6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3844012195045897503
+    second: monster_with_a_huge_head_and_a_spike_ham_placeholder_0
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 9
+  spritePivot: {x: 0.48997134, y: 0.06896552}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: monster_with_a_huge_head_and_a_spike_ham_placeholder_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 349
+        height: 232
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f15faf599bca85530800000000000000
+      internalID: 3844012195045897503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones:
+    - name: root
+      guid: 29d4dfe4afeb4d3ea0ac4ac63e8598a5
+      position: {x: 171, y: 16, z: 0}
+      rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+      length: 5
+      parentId: -1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: hip
+      guid: d73588394b35922db14feb23392a84e7
+      position: {x: 50, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 3
+      parentId: 0
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: spine
+      guid: 5949e65e4c329466f6606ddd7ede9303
+      position: {x: 3, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 12
+      parentId: 1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: neck
+      guid: 04dda02bc4e9e3eef1e78b8cce0303a5
+      position: {x: 12, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 35
+      parentId: 2
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: head
+      guid: f4f85287d6787e193c5cff6badf27302
+      position: {x: 35, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 100
+      parentId: 3
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: upper_arm_L
+      guid: fe49afa6337f32cbf12d9b096334af5d
+      position: {x: -8.2776, y: -115, z: 0}
+      rotation: {x: 0, y: 0, z: -0.9238795, w: 0.38268343}
+      length: 21.5
+      parentId: 2
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: upper_arm_R
+      guid: e472a3566cd3f5a32bc50de139a31c0b
+      position: {x: -8.2776, y: 115, z: 0}
+      rotation: {x: 0, y: 0, z: 0.9238795, w: 0.38268343}
+      length: 21.5
+      parentId: 2
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: forearm_L
+      guid: ed367b36b90836ad075fd063155baad9
+      position: {x: 21.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 17.5
+      parentId: 5
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: forearm_R
+      guid: 4072a9a7fb2efb9bbe78ccded5b7727e
+      position: {x: 21.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 17.5
+      parentId: 6
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: hand_L
+      guid: e2c1516ebbd1a1f3a055be9969af614f
+      position: {x: 17.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 11
+      parentId: 7
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: hand_R
+      guid: c1f8cbfba19539557c9fb65e0ec99a36
+      position: {x: 17.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 11
+      parentId: 8
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: thigh_L
+      guid: a80fb4057326fb123b0c744c9c887bc2
+      position: {x: 0, y: -45, z: 0}
+      rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+      length: 21
+      parentId: 1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: thigh_R
+      guid: 4c91417f544f909b5c9a0c814d01c0e4
+      position: {x: 0, y: 45, z: 0}
+      rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+      length: 21
+      parentId: 1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: shin_L
+      guid: 0804703931ae4e14d2a84a5180464878
+      position: {x: 21, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 21
+      parentId: 11
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: shin_R
+      guid: b9d2fc05102ba93b91f3b346d01b5e4b
+      position: {x: 21, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 21
+      parentId: 12
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: foot_L
+      guid: 250fd4c0f5876ff0a921ffd7ab724307
+      position: {x: 21, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+      length: 110
+      parentId: 13
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: foot_R
+      guid: a0766bd1a426a32af57eb401886f34af
+      position: {x: 21, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: -0.70710677, w: 0.70710677}
+      length: 110
+      parentId: 14
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: extra_spike_hammer
+      guid: f8509a6ada5d4bbd1d94209e692dfe75
+      position: {x: 11, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0.21643962, w: 0.976296}
+      length: 12
+      parentId: 9
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
+    vertices:
+    - {x: 163, y: 8}
+    - {x: 179, y: 8}
+    - {x: 163, y: 24}
+    - {x: 179, y: 24}
+    indices: 000000000100000002000000020000000100000003000000
+    edges:
+    - {x: 0, y: 1}
+    - {x: 1, y: 3}
+    - {x: 3, y: 2}
+    - {x: 2, y: 0}
+    weights:
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      monster_with_a_huge_head_and_a_spike_ham_placeholder_0: 3844012195045897503
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

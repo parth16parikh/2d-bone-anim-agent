@@ -20,3 +20,9 @@ IMPORT_ALL_MENU = "Tools/Rig Agent/Import All Rigs"  # imports the rigs listed i
 PREFAB_FILE = "prefab_request.json"  # {"folder": "Assets/...", "overwrite": false, "rigs": [...]}
 PREFAB_REPORT_FILE = "last_prefabs.json"  # {"ok", "results": [{"rig", "path", "status", ...}]}
 SAVE_PREFABS_MENU = "Tools/Rig Agent/Save Rigs As Prefabs"
+
+# Each imported rig gets a transparent placeholder sprite and a skeleton asset (so Unity's own bone
+# display works). They go into the rig's asset folder: GENERATED_DIR/<rig> by default, or
+# <prefab folder>/<rig> when prefabs are requested, so the prefab sits beside them.
+GENERATED_DIR = "Assets/Rigs/Generated"
+IMPORT_OPTIONS_FILE = "import_options.json"  # {"asset_folder": "...", "ik": true}, single import

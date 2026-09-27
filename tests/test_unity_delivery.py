@@ -109,6 +109,7 @@ def test_nothing_outside_the_two_folders_is_written(project, skeleton):
     fake = unity_with_importer(project, installed=False)
     delivery(fake, project).deliver(skeleton)
     written = {p.relative_to(project).parts[:2] for p in project.rglob("*") if p.is_file()}
+    written -= {("Packages", "manifest.json")}  # the fake project's own package list
     assert written <= {("Assets", "RigAgent"), ("Assets", "Rigs")}
 
 
@@ -123,7 +124,7 @@ def test_missing_scripts_are_installed_and_compiled_first(project, skeleton):
     assert (project / SCRIPTS_DIR / "Editor" / "RigImporter.cs").is_file()
     refresh = next(args for name, args in fake.calls if name == "refresh_unity")
     assert refresh == {"mode": "force", "compile": "request"}
-    assert any("installed 3 C# script(s)" in line for line in lines)
+    assert any("installed 6 C# script(s)" in line for line in lines)
 
 
 def test_installed_scripts_are_not_compiled_again(project, skeleton):
@@ -235,3 +236,40 @@ def test_verify_alone_fails_without_a_prior_import(project, skeleton):
     install_scripts(project)
     result = delivery(FakeUnity(), project, report_wait=0.4).verify(skeleton)
     assert result.status == "failed"
+
+
+# ---- where the rig's sprite and skeleton asset go -------------------------------------------------
+
+
+def test_a_single_import_defaults_to_the_generated_folder(project, skeleton):
+    delivery(unity_with_importer(project), project).deliver(skeleton)
+    options = json.loads((project / RIGS_DIR / "import_options.json").read_text())
+    assert options == {"asset_folder": f"Assets/Rigs/Generated/{skeleton.rig_name}", "ik": True}
+
+
+def test_with_a_prefab_folder_the_assets_go_beside_the_prefab(project, skeleton):
+    from rig_agent.unity.prefab import PrefabOptions
+
+    fake = unity_with_importer(project)
+    delivery(fake, project, prefab=PrefabOptions("Assets/Prefabs/Rigs")).apply(skeleton)
+    options = json.loads((project / RIGS_DIR / "import_options.json").read_text())
+    assert options["asset_folder"] == f"Assets/Prefabs/Rigs/{skeleton.rig_name}"
+
+
+# ---- turning IK off -------------------------------------------------------------------------------
+
+
+def test_ik_is_on_by_default_and_can_be_switched_off(project, skeleton):
+    delivery(unity_with_importer(project), project, ik=False).apply(skeleton)
+    assert json.loads((project / RIGS_DIR / "import_options.json").read_text())["ik"] is False
+
+
+def test_a_delivery_without_ik_does_not_expect_solvers(project, skeleton):
+    def no_ik(report):
+        report["ik"] = {"enabled": False, "solvers": []}
+
+    fake = unity_with_importer(project, no_ik)
+    assert delivery(fake, project, ik=False).deliver(skeleton).status == "applied"
+    fake = unity_with_importer(project, no_ik)
+    result = delivery(fake, project).deliver(skeleton)
+    assert result.status == "failed" and "IK was expected" in result.detail

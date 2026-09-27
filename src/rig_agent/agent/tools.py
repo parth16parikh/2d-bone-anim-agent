@@ -145,7 +145,21 @@ def get_view_rules(view: View) -> dict[str, Any]:
 
 def describe_proportions(rig_spec: RigSpec) -> dict[str, Any]:
     """The resulting proportions of a draft spec, with a warning for each value outside its
-    plausible range. Use it to sanity-check your reading of the description."""
+    plausible range, and ratios between the main parts. Use it to sanity-check your reading of
+    the description and to check an explicit size ratio the description asked for (LLD 2.4.4).
+
+    heads_tall can never go below 2 (its plausible range's floor), so the head SHAPE on its own
+    can never be more than half the character's total height. The head bone can still end up
+    bigger than that: when neck is left out of optional_bones its length folds into the head bone
+    instead, and how much it donates depends on the preset (heroic's neck_hu is the biggest, so
+    it donates the most; chibi's is the smallest). Pushing heads_tall, base.leg_ratio and
+    base.arm_ratio all the way to their floor together, dropping neck, and picking a preset with a
+    big neck_hu for that donation reaches the biggest head a valid rig can have. Leave head_scale
+    at 1.0 once those three are already at their floor: the floors below apply to these DERIVED
+    values, not the numbers you typed, and head_scale above 1.0 shrinks the whole column further,
+    pushing heads_tall and leg_ratio below their own floor instead of helping. Check the derived
+    values below (not just the ratios) after every change you make, and back a field off as soon
+    as one goes out of range, rather than pushing it further."""
     try:
         props = resolve_proportions(rig_spec)
     except BuildError as error:
@@ -158,15 +172,24 @@ def describe_proportions(rig_spec: RigSpec) -> dict[str, Any]:
         derived[name] = {"value": round(value, 3), "plausible": [low, high], "in_range": in_band}
         if not in_band:
             warnings.append(f"{name} is {value:.3f}, outside the plausible range {low}-{high}")
+    head, torso, leg, arm = props.head, props.torso_length, props.leg_length, props.arm_length
     return {
         "height": props.height,
         "lengths": {
             "head": round(props.head_only, 4),
             "neck": round(props.neck, 4),
-            "torso": round(props.torso_length, 4),
-            "leg_hip_to_ground": round(props.leg_length, 4),
-            "arm_shoulder_to_fingertips": round(props.arm_length, 4),
+            "torso": round(torso, 4),
+            "leg_hip_to_ground": round(leg, 4),
+            "arm_shoulder_to_fingertips": round(arm, 4),
             "shoulder_width": round(props.shoulder_width, 4),
+        },
+        "ratios": {
+            # "head" here is the built head bone: it includes the neck's length when neck is
+            # absent from optional_bones (LLD 2.3), so dropping neck grows this figure further.
+            "head_to_rest_of_body": round(head / (props.height - head), 3),
+            "leg_to_arm": round(leg / arm, 3) if arm else None,
+            "leg_to_torso": round(leg / torso, 3) if torso else None,
+            "arm_to_torso": round(arm / torso, 3) if torso else None,
         },
         "derived": derived,
         "warnings": warnings,

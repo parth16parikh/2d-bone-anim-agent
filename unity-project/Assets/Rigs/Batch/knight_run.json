@@ -491,6 +491,7 @@
       "mirror_of": null
     }
   ],
+  "ik_chains": [],
   "metadata": {
     "generator": "rig-agent/0.1.0",
     "model": "openai:gpt-5.4-mini",

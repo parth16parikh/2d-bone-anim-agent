@@ -237,3 +237,5 @@ unity-project/*.user
 unity-project/.vs/
 unity-project/.idea/
 unity-project/.vscode/
+
+.claude

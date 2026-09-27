@@ -23,6 +23,28 @@ def unity_report(skeleton, *, root="RigAgent_Output"):
         "root_path": f"{root}/{skeleton.rig_name}",
         "max_head_error": 1e-6,
         "max_tail_error": 1e-6,
+        "skin": {
+            "sprite_path": f"Assets/Rigs/Generated/{skeleton.rig_name}/{skeleton.rig_name}_placeholder.png",
+            "skeleton_path": f"Assets/Rigs/Generated/{skeleton.rig_name}/{skeleton.rig_name}_skeleton.asset",
+            "sprite_bones": len(skeleton.bones),
+            "bind_poses": len(skeleton.bones),
+            "has_weights": True,
+            "state": "Ready",
+        },
+        "ik": {
+            "enabled": True,
+            "solvers": [
+                {
+                    "chain": c.name,
+                    "effector": c.effector,
+                    "target": f"target_{c.effector}",
+                    "flip": c.bend_side == "right",
+                    "valid": True,
+                }
+                for c in skeleton.ik_chains
+                if c.effector
+            ],
+        },
         "errors": [],
         "bones": [
             {
@@ -40,9 +62,13 @@ def unity_report(skeleton, *, root="RigAgent_Output"):
     }
 
 
-def make_project(root: Path) -> Path:
+def make_project(root: Path, packages: dict | None = None) -> Path:
+    """A folder that looks like a Unity project with the 2D Animation package installed."""
     (root / "Assets").mkdir(parents=True, exist_ok=True)
     (root / "ProjectSettings").mkdir(parents=True, exist_ok=True)
+    (root / "Packages").mkdir(parents=True, exist_ok=True)
+    deps = {"com.unity.2d.animation": "14.0.3"} if packages is None else packages
+    (root / "Packages" / "manifest.json").write_text(json.dumps({"dependencies": deps}))
     return root
 
 
@@ -95,7 +121,7 @@ class FakePrefabs:
         self.requests.append(request)
         results = []
         for rig in request["rigs"]:
-            path = f"{request['folder']}/{rig}.prefab"
+            path = f"{request['folder']}/{rig}/{rig}.prefab"
             if rig in self.failing:
                 results.append({"rig": rig, "path": path, "status": "failed", "message": "boom"})
                 continue

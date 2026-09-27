@@ -12,6 +12,14 @@ namespace RigAgent
     /// Builds the bone hierarchy described by a skeleton.json in the open scene
     /// (LLD 3.4 #7, 3.11a). Everything it creates lives under one root object, RigAgent_Output.
     ///
+    /// Each rig also gets a transparent placeholder sprite and a SkeletonAsset holding its bones
+    /// (RigSkin), so Unity's own 2D Animation package draws the bones through a SpriteSkin.
+    /// They are written into the rig's asset folder: Assets/Rigs/Generated/<rig> by default, or
+    /// the folder named in Assets/Rigs/import_options.json (or per rig in the batch list).
+    ///
+    /// Arms and legs get 2D IK (RigIk): a Limb solver and a target per chain of ik_chains, so a
+    /// hand or foot can be dragged without detaching from its limb.
+    ///
     /// After building, it reads the real Transforms back and writes Assets/Rigs/last_import.json,
     /// so the Python side can verify what Unity actually created against the JSON.
     ///
@@ -35,10 +43,12 @@ namespace RigAgent
         public const string PrefabFile = "prefab_request.json";
         public const string PrefabReportFile = "last_prefabs.json";
         public const string MenuSavePrefabs = "Tools/Rig Agent/Save Rigs As Prefabs";
+        public const string GeneratedDir = "Assets/Rigs/Generated";
+        public const string OptionsFile = "import_options.json";
 
         const string MenuImportFile = "Tools/Rig Agent/Import Skeleton...";
         const string MenuClear = "Tools/Rig Agent/Clear Output";
-        const string SupportedSchema = "1.0";
+        static readonly string[] SupportedSchemas = { "1.0", "1.1" }; // 1.1 added ik_chains
         const float PositionTolerance = 1e-3f;
         const float BatchGap = 0.4f; // space between rigs placed side by side
 
@@ -62,6 +72,16 @@ namespace RigAgent
         }
 
         [Serializable]
+        public class IkChainData
+        {
+            public string name;
+            public string root;
+            public string joint;
+            public string effector; // empty when the rig has no hands
+            public string bend_side; // "left" or "right", looking from the root toward the target
+        }
+
+        [Serializable]
         public class SkeletonData
         {
             public string schema_version;
@@ -72,7 +92,9 @@ namespace RigAgent
             public string facing;
             public string rest_pose;
             public string style;
+            public int pixels_per_unit;
             public BoneData[] bones;
+            public IkChainData[] ik_chains; // schema 1.1; absent in 1.0
         }
 
         [Serializable]
@@ -99,14 +121,25 @@ namespace RigAgent
             public string root_path = "";
             public float max_head_error;
             public float max_tail_error;
+            public RigSkin.SkinReport skin = new RigSkin.SkinReport();
+            public RigIk.IkReport ik = new RigIk.IkReport();
             public List<string> errors = new List<string>();
             public List<BoneReport> bones = new List<BoneReport>();
+        }
+
+        [Serializable]
+        public class ImportOptions
+        {
+            public string asset_folder; // where this rig's sprite and skeleton asset go
+            public bool ik = true; // set up the arm and leg IK
         }
 
         [Serializable]
         public class BatchManifest
         {
             public string[] files;
+            public string[] asset_folders; // one per file; empty = the default folder
+            public bool ik = true;
         }
 
         [Serializable]
@@ -148,7 +181,16 @@ namespace RigAgent
         [MenuItem(MenuImportLatest)]
         public static void ImportLatest()
         {
-            ImportFromPath(Path.Combine(RigsDir, SkeletonFile));
+            string assetFolder = null;
+            bool ik = true;
+            string optionsPath = Path.Combine(RigsDir, OptionsFile);
+            if (File.Exists(optionsPath))
+            {
+                ImportOptions options = JsonUtility.FromJson<ImportOptions>(File.ReadAllText(optionsPath));
+                assetFolder = options?.asset_folder;
+                ik = options == null || options.ik;
+            }
+            ImportFromPath(Path.Combine(RigsDir, SkeletonFile), assetFolder, ik);
         }
 
         [MenuItem(MenuImportFile)]
@@ -177,8 +219,10 @@ namespace RigAgent
 
                 float cursor = 0f;
                 bool first = true;
-                foreach (string file in manifest.files)
+                for (int index = 0; index < manifest.files.Length; index++)
                 {
+                    string file = manifest.files[index];
+                    string assetFolder = manifest.asset_folders != null && index < manifest.asset_folders.Length ? manifest.asset_folders[index] : null;
                     var report = new ImportReport { file = file };
                     try
                     {
@@ -192,7 +236,7 @@ namespace RigAgent
                         if (first)
                             cursor = minX; // the first rig stays where its JSON puts it
                         first = false;
-                        Import(skeleton, new Vector2(cursor - minX, 0f), report);
+                        Import(skeleton, new Vector2(cursor - minX, 0f), report, assetFolder, manifest.ik);
                         cursor += (maxX - minX) + BatchGap;
                     }
                     catch (Exception e)
@@ -232,8 +276,7 @@ namespace RigAgent
                 PrefabRequest request = JsonUtility.FromJson<PrefabRequest>(File.ReadAllText(requestPath));
                 if (request == null || request.rigs == null || request.rigs.Length == 0)
                     throw new InvalidOperationException("the prefab request names no rigs");
-                report.folder = CheckPrefabFolder(request.folder);
-                EnsureFolder(report.folder);
+                report.folder = CheckAssetFolder(request.folder, "prefab folder");
 
                 GameObject output = FindOutputRoot();
                 foreach (string rig in request.rigs)
@@ -275,12 +318,12 @@ namespace RigAgent
         // ---- import ---------------------------------------------------------------------------
 
         /// <summary>Imports a skeleton.json and writes the verification report. Never throws.</summary>
-        public static ImportReport ImportFromPath(string path)
+        public static ImportReport ImportFromPath(string path, string assetFolder = null, bool ik = true)
         {
             var report = new ImportReport { file = path };
             try
             {
-                Import(ReadSkeleton(path), Vector2.zero, report);
+                Import(ReadSkeleton(path), Vector2.zero, report, assetFolder, ik);
             }
             catch (Exception e)
             {
@@ -308,10 +351,13 @@ namespace RigAgent
         }
 
         /// <summary>Builds one rig. origin moves the whole rig; the report stays in the rig's own space.</summary>
-        static void Import(SkeletonData skeleton, Vector2 origin, ImportReport report)
+        static void Import(SkeletonData skeleton, Vector2 origin, ImportReport report, string assetFolder, bool ik)
         {
             report.rig_name = skeleton.rig_name;
             report.view = skeleton.view;
+            assetFolder = string.IsNullOrEmpty(assetFolder)
+                ? GeneratedDir + "/" + RigSkin.SafeName(skeleton.rig_name)
+                : CheckAssetFolder(assetFolder, "asset folder");
 
             Undo.IncrementCurrentGroup();
             int undoGroup = Undo.GetCurrentGroup();
@@ -357,11 +403,30 @@ namespace RigAgent
                 transforms[bone.id] = go.transform;
             }
 
+            try
+            {
+                report.skin = RigSkin.Attach(rigRoot, skeleton, transforms, assetFolder);
+            }
+            catch (Exception e)
+            {
+                report.errors.Add("sprite and skeleton assets: " + e.Message);
+            }
+
+            try
+            {
+                report.ik = RigIk.Attach(rigRoot, skeleton, transforms, ik);
+            }
+            catch (Exception e)
+            {
+                report.errors.Add("IK setup: " + e.Message);
+            }
+
             ReadBack(skeleton, transforms, output.transform, origin, report);
 
             Selection.activeGameObject = rigRoot;
             EditorSceneManager.MarkSceneDirty(rigRoot.scene);
             Undo.CollapseUndoOperations(undoGroup);
+            SceneView.RepaintAll();
         }
 
         /// <summary>Reads the created Transforms back and compares them with the JSON.</summary>
@@ -407,8 +472,8 @@ namespace RigAgent
             var errors = new List<string>();
             if (skeleton == null || skeleton.bones == null || skeleton.bones.Length == 0)
                 throw new InvalidOperationException("the file has no bones (is it a skeleton.json?)");
-            if (skeleton.schema_version != SupportedSchema)
-                errors.Add($"unsupported schema_version '{skeleton.schema_version}' (expected {SupportedSchema})");
+            if (Array.IndexOf(SupportedSchemas, skeleton.schema_version) < 0)
+                errors.Add($"unsupported schema_version '{skeleton.schema_version}' (expected {string.Join(" or ", SupportedSchemas)})");
             if (string.IsNullOrEmpty(skeleton.rig_name))
                 errors.Add("rig_name is empty");
 
@@ -459,19 +524,19 @@ namespace RigAgent
         // ---- prefabs --------------------------------------------------------------------------
 
         /// <summary>The folder must be inside Assets; anything else is refused.</summary>
-        static string CheckPrefabFolder(string folder)
+        static string CheckAssetFolder(string folder, string what)
         {
             string cleaned = (folder ?? "").Trim().Replace('\\', '/').Trim('/');
             string[] parts = cleaned.Split('/');
             if (parts[0] != "Assets")
-                throw new InvalidOperationException($"the prefab folder must be inside Assets, got '{folder}'");
+                throw new InvalidOperationException($"the {what} must be inside Assets, got '{folder}'");
             foreach (string part in parts)
                 if (part.Length == 0 || part.StartsWith(".") || part.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
-                    throw new InvalidOperationException($"'{folder}' is not a usable prefab folder (bad part '{part}')");
+                    throw new InvalidOperationException($"'{folder}' is not a usable {what} (bad part '{part}')");
             return cleaned;
         }
 
-        static void EnsureFolder(string folder)
+        internal static void EnsureFolder(string folder)
         {
             string[] parts = folder.Split('/');
             string current = parts[0];
@@ -493,7 +558,10 @@ namespace RigAgent
                 if (rig == null)
                     throw new InvalidOperationException($"'{rigName}' is not under {OutputRoot} in the open scene");
 
-                result.path = folder + "/" + rigName + ".prefab";
+                // one folder per rig, next to its placeholder sprite and skeleton asset
+                string rigFolder = folder + "/" + RigSkin.SafeName(rigName);
+                EnsureFolder(rigFolder);
+                result.path = rigFolder + "/" + RigSkin.SafeName(rigName) + ".prefab";
                 bool exists = AssetDatabase.LoadAssetAtPath<GameObject>(result.path) != null;
                 if (exists && !overwrite)
                 {

@@ -244,8 +244,8 @@ def test_verified_rigs_are_saved_as_prefabs_in_the_chosen_folder(project, out):
         {"folder": "Assets/Prefabs/Rigs", "overwrite": False, "rigs": ["knight", "runner"]}
     ]
     assert [o.prefab for o in result.rigs] == [
-        "Assets/Prefabs/Rigs/knight.prefab",
-        "Assets/Prefabs/Rigs/runner.prefab",
+        "Assets/Prefabs/Rigs/knight/knight.prefab",
+        "Assets/Prefabs/Rigs/runner/runner.prefab",
     ]
 
 
@@ -335,7 +335,8 @@ def test_a_single_verified_rig_can_be_saved_as_a_prefab(project):
     fake, prefabs = single_unity(project)
     result = delivery(fake, project, PrefabOptions("Assets/Prefabs/Rigs")).deliver(skeleton)
     assert result.status == "applied"
-    assert f"prefab Assets/Prefabs/Rigs/{skeleton.rig_name}.prefab (created)" in result.detail
+    name = skeleton.rig_name
+    assert f"prefab Assets/Prefabs/Rigs/{name}/{name}.prefab (created)" in result.detail
     assert prefabs.requests[0]["rigs"] == [skeleton.rig_name]
 
 
@@ -376,3 +377,64 @@ def test_batch_positions_are_compared_in_each_rigs_own_space(project, out):
     rigs, _ = collect_rigs(out)
     for rig in rigs:
         assert compare_import(rig.skeleton, unity_report(rig.skeleton)) == []
+
+
+# ---- asset folders in a batch ----------------------------------------------------------------------
+
+
+def manifest(project):
+    return json.loads((project / RIGS_DIR / "batch.json").read_text())
+
+
+def test_a_batch_without_prefabs_uses_the_generated_folder_for_every_rig(project, out):
+    delivery(unity_for(project), project).deliver_all(collect_rigs(out)[0])
+    assert manifest(project)["asset_folders"] == [
+        "Assets/Rigs/Generated/knight",
+        "Assets/Rigs/Generated/runner",
+    ]
+
+
+def test_rigs_that_get_a_prefab_keep_their_assets_beside_it(project, out):
+    write_rig(out, "bad", passed=False)
+    write_rig(out, "unchecked", passed=None)
+    fake, _ = with_prefabs(project)
+    delivery(fake, project, PrefabOptions("Assets/Prefabs/Rigs")).deliver_all(collect_rigs(out)[0])
+    folders = dict(zip(manifest(project)["files"], manifest(project)["asset_folders"], strict=True))
+    by_name = {
+        path.rsplit("/", 1)[1].removesuffix(".json"): folder for path, folder in folders.items()
+    }
+    assert by_name["knight"] == "Assets/Prefabs/Rigs/knight"
+    assert by_name["runner"] == "Assets/Prefabs/Rigs/runner"
+    # no prefab for these, so nothing is written into the prefab folder
+    assert by_name["bad"] == "Assets/Rigs/Generated/bad"
+    assert by_name["unchecked"] == "Assets/Rigs/Generated/unchecked"
+
+
+def test_a_skin_problem_in_one_rig_fails_only_that_rig(project, out):
+    def break_skin(report):
+        if report["rig_name"] == "runner":
+            report["skin"]["state"] = "SpriteHasNoSkinningInformation"
+
+    result = delivery(unity_for(project, break_skin), project).deliver_all(collect_rigs(out)[0])
+    outcomes = {o.name: o for o in result.rigs}
+    assert outcomes["knight"].status == "applied"
+    assert (
+        outcomes["runner"].status == "failed"
+        and "SpriteSkin is not ready" in outcomes["runner"].detail
+    )
+
+
+def test_the_rig_asset_folder_helper():
+    from rig_agent.unity.prefab import rig_asset_folder
+
+    prefab = PrefabOptions("Assets/P")
+    assert rig_asset_folder("knight", prefab) == "Assets/P/knight"
+    assert rig_asset_folder("knight", prefab, prefab_wanted=False) == "Assets/Rigs/Generated/knight"
+    assert rig_asset_folder("knight 2!", None) == "Assets/Rigs/Generated/knight_2"
+
+
+def test_the_batch_manifest_says_whether_ik_is_wanted(project, out):
+    delivery(unity_for(project), project).deliver_all(collect_rigs(out)[0])
+    assert manifest(project)["ik"] is True
+    delivery(unity_for(project), project, ik=False).deliver_all(collect_rigs(out)[0])
+    assert manifest(project)["ik"] is False

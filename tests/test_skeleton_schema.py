@@ -7,7 +7,7 @@ from rig_agent.schemas.skeleton import Bone, Skeleton
 
 # The example from LLD 3.5b.
 LLD_EXAMPLE = {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "rig_name": "lanky_elf_archer",
     "source_prompt": "a tall, lanky elf archer with a long cape",
     "units": "unity_world",
@@ -49,6 +49,15 @@ LLD_EXAMPLE = {
             "mirror_of": "forearm_R",
         },
     ],
+    "ik_chains": [
+        {
+            "name": "arm_L",
+            "root": "upper_arm_L",
+            "joint": "forearm_L",
+            "effector": "hand_L",
+            "bend_side": "right",
+        }
+    ],
     "metadata": {
         "generator": "rig-agent/0.1",
         "model": "<provider:model>",
@@ -61,6 +70,28 @@ LLD_EXAMPLE = {
 def test_lld_example_round_trips_unchanged():
     skeleton = Skeleton.model_validate(LLD_EXAMPLE)
     assert skeleton.model_dump(mode="json") == LLD_EXAMPLE
+
+
+def test_a_1_0_file_without_ik_chains_is_still_read():
+    old = {k: v for k, v in LLD_EXAMPLE.items() if k != "ik_chains"} | {"schema_version": "1.0"}
+    skeleton = Skeleton.model_validate(old)
+    assert skeleton.schema_version == "1.0" and skeleton.ik_chains == []
+
+
+def test_the_bend_side_must_be_left_or_right():
+    chain = LLD_EXAMPLE["ik_chains"][0]
+    with pytest.raises(ValidationError):
+        Skeleton.model_validate(LLD_EXAMPLE | {"ik_chains": [chain | {"bend_side": "up"}]})
+
+
+def test_ik_chain_fields_are_strict():
+    chain = LLD_EXAMPLE["ik_chains"][0]
+    with pytest.raises(ValidationError):
+        Skeleton.model_validate(LLD_EXAMPLE | {"ik_chains": [chain | {"extra": 1}]})
+    with pytest.raises(ValidationError):
+        Skeleton.model_validate(
+            LLD_EXAMPLE | {"ik_chains": [{k: v for k, v in chain.items() if k != "joint"}]}
+        )
 
 
 def test_json_string_round_trip():
@@ -82,7 +113,7 @@ def test_defaults_for_a_minimal_skeleton():
         bones=[],
         metadata={"generator": "rig-agent/0.1"},
     )
-    assert skeleton.schema_version == "1.0"
+    assert skeleton.schema_version == "1.1" and skeleton.ik_chains == []
     assert skeleton.units == "unity_world"
     assert skeleton.pixels_per_unit == 100
     assert skeleton.metadata.iterations == 1

@@ -1,19 +1,60 @@
 {
     "ok": true,
     "file": "Assets/Rigs/skeleton.json",
-    "rig_name": "armoured_knight_with_a_big_sword_and_a_c",
-    "view": "side",
-    "bone_count": 25,
-    "root_path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c",
-    "max_head_error": 0.000001419624027221289,
-    "max_tail_error": 0.000001419624027221289,
+    "rig_name": "a_chibi_knight_with_a_small_sword",
+    "view": "front",
+    "bone_count": 17,
+    "root_path": "RigAgent_Output/a_chibi_knight_with_a_small_sword",
+    "max_head_error": 0.00017377738549839705,
+    "max_tail_error": 0.00017377738549839705,
+    "skin": {
+        "sprite_path": "Assets/Prefabs/Rigs/a_chibi_knight_with_a_small_sword/a_chibi_knight_with_a_small_sword_placeholder.png",
+        "skeleton_path": "Assets/Prefabs/Rigs/a_chibi_knight_with_a_small_sword/a_chibi_knight_with_a_small_sword_skeleton.asset",
+        "sprite_bones": 17,
+        "bind_poses": 17,
+        "has_weights": true,
+        "state": "Ready"
+    },
+    "ik": {
+        "enabled": true,
+        "solvers": [
+            {
+                "chain": "arm_L",
+                "effector": "hand_L",
+                "target": "target_hand_L",
+                "flip": true,
+                "valid": true
+            },
+            {
+                "chain": "arm_R",
+                "effector": "hand_R",
+                "target": "target_hand_R",
+                "flip": false,
+                "valid": true
+            },
+            {
+                "chain": "leg_L",
+                "effector": "foot_L",
+                "target": "target_foot_L",
+                "flip": false,
+                "valid": true
+            },
+            {
+                "chain": "leg_R",
+                "effector": "foot_R",
+                "target": "target_foot_R",
+                "flip": true,
+                "valid": true
+            }
+        ]
+    },
     "errors": [],
     "bones": [
         {
             "id": 0,
             "name": "root",
             "parent": "",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root",
             "world_head": [
                 0.0,
                 0.0
@@ -29,14 +70,14 @@
             "id": 1,
             "name": "hip",
             "parent": "root",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip",
             "world_head": [
-                -1.1920928955078126e-7,
-                1.0000001192092896
+                -5.960464477539063e-8,
+                0.6000000834465027
             ],
             "world_tail": [
-                -1.1920928955078126e-7,
-                1.1325000524520875
+                -5.960464477539063e-8,
+                0.7333330512046814
             ],
             "depth": 0,
             "layer": ""
@@ -45,369 +86,241 @@
             "id": 2,
             "name": "spine",
             "parent": "hip",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine",
             "world_head": [
-                -1.1920928955078126e-7,
-                1.1325000524520875
+                -5.960464477539063e-8,
+                0.7333330512046814
             ],
             "world_tail": [
                 -1.1920928955078126e-7,
-                1.364375114440918
+                1.2666661739349366
             ],
             "depth": 0,
             "layer": ""
         },
         {
             "id": 3,
-            "name": "chest",
+            "name": "head",
             "parent": "spine",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/head",
             "world_head": [
                 -1.1920928955078126e-7,
-                1.364375114440918
+                1.2666661739349366
             ],
             "world_tail": [
                 -2.384185791015625e-7,
-                1.6625001430511475
+                1.9999991655349732
             ],
             "depth": 0,
             "layer": ""
         },
         {
             "id": 4,
-            "name": "neck",
-            "parent": "chest",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/neck",
+            "name": "upper_arm_L",
+            "parent": "spine",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_L",
             "world_head": [
-                -2.384185791015625e-7,
-                1.6625001430511475
+                0.3999999463558197,
+                1.196136236190796
             ],
             "world_tail": [
-                -2.384185791015625e-7,
-                1.750000238418579
+                0.5611238479614258,
+                1.0348193645477296
             ],
-            "depth": 0,
+            "depth": 1,
             "layer": ""
         },
         {
             "id": 5,
-            "name": "head",
-            "parent": "neck",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/neck/head",
+            "name": "upper_arm_R",
+            "parent": "spine",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_R",
             "world_head": [
-                -2.384185791015625e-7,
-                1.750000238418579
+                -0.4000001847743988,
+                1.1961359977722169
             ],
             "world_tail": [
-                -2.384185791015625e-7,
-                2.000000238418579
+                -0.5611648559570313,
+                1.0348600149154664
             ],
-            "depth": 0,
+            "depth": 1,
             "layer": ""
         },
         {
             "id": 6,
-            "name": "upper_arm_L",
-            "parent": "chest",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/upper_arm_L",
+            "name": "forearm_L",
+            "parent": "upper_arm_L",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_L/forearm_L",
             "world_head": [
-                -0.030000241473317148,
-                1.6625001430511475
+                0.5611238479614258,
+                1.0348193645477296
             ],
             "world_tail": [
-                0.03720177337527275,
-                1.2813794612884522
+                0.7054669260978699,
+                0.8906629681587219
             ],
-            "depth": -1,
+            "depth": 1,
             "layer": ""
         },
         {
             "id": 7,
-            "name": "upper_arm_R",
-            "parent": "chest",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/upper_arm_R",
+            "name": "forearm_R",
+            "parent": "upper_arm_R",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_R/forearm_R",
             "world_head": [
-                -2.384185791015625e-7,
-                1.6625001430511475
+                -0.5611648559570313,
+                1.0348600149154664
             ],
             "world_tail": [
-                0.06720177829265595,
-                1.2813794612884522
+                -0.7054762244224548,
+                0.8906719088554382
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 8,
-            "name": "forearm_L",
-            "parent": "upper_arm_L",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/upper_arm_L/forearm_L",
+            "name": "hand_L",
+            "parent": "forearm_L",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_L/forearm_L/hand_L",
             "world_head": [
-                0.03720177337527275,
-                1.2813794612884522
+                0.7054669260978699,
+                0.8906629681587219
             ],
             "world_tail": [
-                0.09190099686384201,
-                0.9711650609970093
+                0.8242610096931458,
+                0.7718690633773804
             ],
-            "depth": -1,
+            "depth": 1,
             "layer": ""
         },
         {
             "id": 9,
-            "name": "forearm_R",
-            "parent": "upper_arm_R",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/upper_arm_R/forearm_R",
+            "name": "hand_R",
+            "parent": "forearm_R",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_R/forearm_R/hand_R",
             "world_head": [
-                0.06720177829265595,
-                1.2813794612884522
+                -0.7054762244224548,
+                0.8906719088554382
             ],
             "world_tail": [
-                0.1219010055065155,
-                0.9711650609970093
+                -0.8242701888084412,
+                0.7718779444694519
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 10,
-            "name": "hand_L",
-            "parent": "forearm_L",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/upper_arm_L/forearm_L/hand_L",
+            "name": "thigh_L",
+            "parent": "hip",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_L",
             "world_head": [
-                0.09190099686384201,
-                0.9711650609970093
+                0.19999997317790986,
+                0.6000001430511475
             ],
             "world_tail": [
-                0.12628336250782014,
-                0.7761731147766113
+                0.19999998807907105,
+                0.37500011920928957
             ],
-            "depth": -1,
+            "depth": 1,
             "layer": ""
         },
         {
             "id": 11,
-            "name": "hand_R",
-            "parent": "forearm_R",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R",
+            "name": "thigh_R",
+            "parent": "hip",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_R",
             "world_head": [
-                0.1219010055065155,
-                0.9711650609970093
+                -0.2000000923871994,
+                0.6000000238418579
             ],
             "world_tail": [
-                0.15628336369991303,
-                0.7761731147766113
+                -0.2001737803220749,
+                0.37500011920928957
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 12,
-            "name": "thigh_L",
-            "parent": "hip",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/thigh_L",
+            "name": "shin_L",
+            "parent": "thigh_L",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_L/shin_L",
             "world_head": [
-                -0.030000122264027597,
-                1.0000001192092896
+                0.19999998807907105,
+                0.37500011920928957
             ],
             "world_tail": [
-                -0.030000021681189538,
-                0.5400000214576721
+                0.20000006258487702,
+                0.10000006854534149
             ],
-            "depth": -1,
+            "depth": 1,
             "layer": ""
         },
         {
             "id": 13,
-            "name": "thigh_R",
-            "parent": "hip",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/thigh_R",
+            "name": "shin_R",
+            "parent": "thigh_R",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_R/shin_R",
             "world_head": [
-                -1.1920928955078126e-7,
-                1.0000001192092896
+                -0.2001737803220749,
+                0.37500011920928957
             ],
             "world_tail": [
-                -1.93901641409866e-8,
-                0.5400000214576721
+                -0.20000623166561128,
+                0.10000011324882508
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 14,
-            "name": "shin_L",
-            "parent": "thigh_L",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/thigh_L/shin_L",
+            "name": "foot_L",
+            "parent": "shin_L",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_L/shin_L/foot_L",
             "world_head": [
-                -0.030000021681189538,
-                0.5400000214576721
+                0.20000006258487702,
+                0.10000006854534149
             ],
             "world_tail": [
-                -0.029999930411577226,
-                0.07999998331069946
+                0.8000002503395081,
+                0.10000026226043701
             ],
-            "depth": -1,
+            "depth": 1,
             "layer": ""
         },
         {
             "id": 15,
-            "name": "shin_R",
-            "parent": "thigh_R",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/thigh_R/shin_R",
+            "name": "foot_R",
+            "parent": "shin_R",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_R/shin_R/foot_R",
             "world_head": [
-                -1.93901641409866e-8,
-                0.5400000214576721
+                -0.20000623166561128,
+                0.10000011324882508
             ],
             "world_tail": [
-                7.297838067188423e-8,
-                0.07999999076128006
+                -0.8000064492225647,
+                0.09999996423721314
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 16,
-            "name": "foot_L",
-            "parent": "shin_L",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/thigh_L/shin_L/foot_L",
-            "world_head": [
-                -0.029999930411577226,
-                0.07999998331069946
-            ],
-            "world_tail": [
-                0.24500015377998353,
-                0.08000007271766663
-            ],
-            "depth": -1,
-            "layer": ""
-        },
-        {
-            "id": 17,
-            "name": "foot_R",
-            "parent": "shin_R",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/thigh_R/shin_R/foot_R",
-            "world_head": [
-                7.297838067188423e-8,
-                0.07999999076128006
-            ],
-            "world_tail": [
-                0.2750001549720764,
-                0.08000007271766663
-            ],
-            "depth": 1,
-            "layer": ""
-        },
-        {
-            "id": 18,
-            "name": "toe_L",
-            "parent": "foot_L",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/thigh_L/shin_L/foot_L/toe_L",
-            "world_head": [
-                0.24500015377998353,
-                0.08000007271766663
-            ],
-            "world_tail": [
-                0.3275001645088196,
-                0.0800001323223114
-            ],
-            "depth": -1,
-            "layer": ""
-        },
-        {
-            "id": 19,
-            "name": "toe_R",
-            "parent": "foot_R",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/thigh_R/shin_R/foot_R/toe_R",
-            "world_head": [
-                0.2750001549720764,
-                0.08000007271766663
-            ],
-            "world_tail": [
-                0.3575001657009125,
-                0.0800001323223114
-            ],
-            "depth": 1,
-            "layer": ""
-        },
-        {
-            "id": 20,
-            "name": "jaw",
-            "parent": "head",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/neck/head/jaw",
-            "world_head": [
-                -2.384185791015625e-7,
-                1.8375002145767213
-            ],
-            "world_tail": [
-                0.0707104504108429,
-                1.766789436340332
-            ],
-            "depth": 0,
-            "layer": ""
-        },
-        {
-            "id": 21,
             "name": "extra_sword",
             "parent": "hand_R",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R/extra_sword",
+            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_R/forearm_R/hand_R/extra_sword",
             "world_head": [
-                0.15628336369991303,
-                0.7761731147766113
+                -0.8242701888084412,
+                0.7718779444694519
             ],
             "world_tail": [
-                1.002007007598877,
-                0.46835511922836306
+                -0.39125731587409975,
+                0.5218777656555176
             ],
             "depth": 1,
             "layer": "front"
-        },
-        {
-            "id": 22,
-            "name": "extra_cape_1",
-            "parent": "chest",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/extra_cape_1",
-            "world_head": [
-                -2.384185791015625e-7,
-                1.6625001430511475
-            ],
-            "world_tail": [
-                -0.05788283050060272,
-                1.3342312574386597
-            ],
-            "depth": 0,
-            "layer": "behind"
-        },
-        {
-            "id": 23,
-            "name": "extra_cape_2",
-            "parent": "extra_cape_1",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/extra_cape_1/extra_cape_2",
-            "world_head": [
-                -0.05788283050060272,
-                1.3342312574386597
-            ],
-            "world_tail": [
-                -0.1157655417919159,
-                1.0059622526168824
-            ],
-            "depth": 0,
-            "layer": "behind"
-        },
-        {
-            "id": 24,
-            "name": "extra_cape_3",
-            "parent": "extra_cape_2",
-            "path": "RigAgent_Output/armoured_knight_with_a_big_sword_and_a_c/root/hip/spine/chest/extra_cape_1/extra_cape_2/extra_cape_3",
-            "world_head": [
-                -0.1157655417919159,
-                1.0059622526168824
-            ],
-            "world_tail": [
-                -0.1736481785774231,
-                0.6776933073997498
-            ],
-            "depth": 0,
-            "layer": "behind"
         }
     ]
 }

@@ -215,3 +215,11 @@ def test_check_unity_reports_a_busy_editor():
 def test_check_unity_raises_when_nothing_answers():
     with pytest.raises(UnityUnavailable):
         check_unity("http://127.0.0.1:9/mcp")
+
+
+async def test_an_empty_state_during_a_domain_reload_is_waited_out_not_a_crash():
+    fake = FakeUnity()
+    fake.empty_state_reads = 3
+    async with UnityMcpClient(fake.server) as unity:
+        state = await unity.wait_until_ready(timeout=5, poll=0.01)
+    assert state["advice"]["ready_for_tools"] and fake.empty_state_reads == 0

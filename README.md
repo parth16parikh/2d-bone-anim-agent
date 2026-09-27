@@ -79,7 +79,16 @@ uv run rig-agent build --spec spec.json --out out/knight
 uv run rig-agent build --spec examples/knight_side.json --out out/knight
 ```
 
-This writes `out/knight/skeleton.json` and `out/knight/validation_report.json`. Exit code: 0 when the rig passes validation, 1 when it does not (files are still written), 2 when the spec cannot be read or built.
+This writes `out/knight/skeleton.json` and `out/knight/validation_report.json`. Running either `run` or `build` again with the same `--out` folder replaces what's there (there is no separate "override" command; a note is printed when it does). Exit code: 0 when the rig passes validation, 1 when it does not (files are still written), 2 when the spec cannot be read or built.
+
+**3. Remove rigs you don't want:**
+
+```bash
+uv run rig-agent delete out/knight out/elf   # one or more named rigs
+uv run rig-agent delete --all --out out      # every rig under out/
+```
+
+Removes only `skeleton.json` and `validation_report.json` (and the folder itself, if that leaves it empty); anything else you put in that folder is left alone. Never touches Unity.
 
 **Live tests** call the real API and are opt-in: `uv run pytest -m live`.
 
@@ -92,7 +101,8 @@ This writes `out/knight/skeleton.json` and `out/knight/validation_report.json`. 
 1. In Unity, open **Window > MCP for Unity** and start the server (HTTP). The default endpoint is `http://127.0.0.1:8080/mcp`.
 2. The Unity project lives in `unity-project/` inside this repository. Open **that** folder in Unity Hub (*Add > Add project from disk*), not a copy elsewhere, and set `UNITY_PROJECT_PATH=unity-project` in `.env` (already in `.env.example`). A relative path is taken from the repository root; an absolute path also works. Optionally set `UNITY_MCP_URL`.
    If you move the project, close Unity first, move the folder, update `UNITY_PROJECT_PATH`, reopen it from the new place and restart the MCP server: a running editor keeps working on the old path.
-3. `uv run rig-agent unity-check` should show *ready*, *all 5 tools present*, and the project path.
+3. The project needs the **2D Animation** package (`com.unity.2d.animation`, already in this project); `unity-check` and `unity-install` say so if it is missing.
+4. `uv run rig-agent unity-check` should show *ready*, *all 5 tools present*, and the project path.
 
 **Use it**
 
@@ -103,13 +113,15 @@ uv run rig-agent unity-apply-all --out out                                 # sen
 uv run rig-agent unity-apply-all --out out --prefab-dir Assets/Prefabs/Rigs  # ...and save prefabs
 ```
 
-The first delivery installs three C# scripts into `Assets/RigAgent/` (or run `rig-agent unity-install`) and waits for Unity to compile them. Each delivery writes `Assets/Rigs/skeleton.json`, runs **Tools > Rig Agent > Import Latest Skeleton**, and then compares the Transforms Unity actually created (read back into `Assets/Rigs/last_import.json`) with the JSON: bone count, names, parents, depth, layer and positions within 1e-3.
+The first delivery installs six C# scripts into `Assets/RigAgent/` (or run `rig-agent unity-install`) and waits for Unity to compile them. Each delivery writes `Assets/Rigs/skeleton.json`, runs **Tools > Rig Agent > Import Latest Skeleton**, and then compares the Transforms Unity actually created (read back into `Assets/Rigs/last_import.json`) with the JSON: bone count, names, parents, depth, layer and positions within 1e-3.
 
-The rig appears under a `RigAgent_Output` object in the open scene, as bones with a Scene-view gizmo (`BoneGizmo`). Side-view rigs also get a `FacingController` (`Face(false)` flips it to face left). The scene is left unsaved. **Tools > Rig Agent > Clear Output** removes the rigs. If Unity is not reachable the run still succeeds and reports `unity: unavailable`, because `skeleton.json` is already delivered.
+The rig appears under a `RigAgent_Output` object in the open scene. Its bones are drawn by **Unity's own 2D Animation package** (white bones with pivots in the Scene view, while the rig is selected). For that, each rig gets a fully transparent **placeholder sprite** that carries the bones, a `SpriteRenderer` and `SpriteSkin` on the rig root, and a **skeleton asset** (`SkeletonAsset`, the type the PSD and Aseprite importers take as *Main Skeleton*). A `BoneGizmo` component on each bone only holds metadata (depth, layer, IK chain, mirror link, extra flag); it draws nothing. **Arms and legs get 2D IK:** a Limb solver and a target per chain (`IK/<chain>/target_<hand or foot>`), so **drag the target, not the bone**, and the limb bends and stays connected (dragging a bone directly only moves that bone, which is how Unity bones behave, IK or not). A weapon or a toe past the hand/foot (`extra_sword`, `toe_L`/`toe_R`) is a rigid child, not part of the solved chain — it turns with the hand or foot through ordinary parenting. The elbow or knee bends the way `ik_chains[].bend_side` in `skeleton.json` says. Turn it off with `--no-ik`. Side-view rigs also get a `FacingController` (`Face(false)` flips it to face left). The scene is left unsaved. **Tools > Rig Agent > Clear Output** removes the rigs. If Unity is not reachable the run still succeeds and reports `unity: unavailable`, because `skeleton.json` is already delivered.
 
 **Everything in `out/` at once.** `unity-apply-all` finds every `out/<folder>/skeleton.json`, clears the rigs from the previous import under `RigAgent_Output`, and builds them in a row, side by side, each named after its folder (so two runs of the same prompt do not replace each other). Each rig is verified like a single one. A `skeleton.json` that cannot be read is skipped and reported.
 
-**Prefabs.** With `--prefab-dir Assets/Some/Folder` (or `UNITY_PREFAB_DIR` in `.env`), every rig that was **verified in Unity and passed validation** is saved as `<folder>/<rig name>.prefab`, with its root at the origin. This works with `unity-apply`, `unity-apply-all` and `run --unity`. The folder must be inside `Assets/`. An existing prefab is **kept, not overwritten**, because you may have added sprites or components to it; pass `--overwrite-prefab` to replace it. Rigs that failed validation (or have no report) get no prefab. `--prefab-dir ""` switches it off when the environment variable is set.
+**Where the assets go.** Every rig's placeholder sprite and skeleton asset are written into a folder of their own and rewritten on each import (treat them as generated): `Assets/Rigs/Generated/<rig>/` normally, or `<prefab folder>/<rig>/` when the rig gets a prefab, so the folder then holds `<rig>.prefab`, `<rig>_placeholder.png` and `<rig>_skeleton.asset`. (The skeleton is a `.asset` file: Unity does not let a script create a real `.skeleton` file, and the importers accept the asset either way.)
+
+**Prefabs.** With `--prefab-dir Assets/Some/Folder` (or `UNITY_PREFAB_DIR` in `.env`), every rig that was **verified in Unity and passed validation** is saved as `<folder>/<rig name>/<rig name>.prefab`, with its root at the origin. This works with `unity-apply`, `unity-apply-all` and `run --unity`. The folder must be inside `Assets/`. An existing prefab is **kept, not overwritten**, because you may have added sprites or components to it; pass `--overwrite-prefab` to replace it. Rigs that failed validation (or have no report) get no prefab. `--prefab-dir ""` switches it off when the environment variable is set.
 
 Opt-in tests against a real Unity: `uv run pytest -m unity`.
 

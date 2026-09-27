@@ -32,6 +32,8 @@ Optional: `ANTHROPIC_API_KEY` adds a failover provider. See `.env.example` for e
 | Go from a text description to a validated rig | `run` | yes | yes (a few cents) |
 | Only see what spec the model would write | `plan` | yes | yes |
 | Rebuild a rig after editing a spec by hand | `build` | no | no |
+| Replace an existing rig in `out/` | just `run`/`build` with the same `--out` folder | same as above | same as above |
+| Remove one or more rigs from `out/` | `delete` | no | no |
 | Look at any rig in `out/` | `view` | no | no |
 | Build the rig in my open Unity Editor | `run --unity` or `unity-apply` | `run`: yes; `unity-apply`: no | `run`: yes |
 | Build **every** rig of `out/` in Unity, side by side | `unity-apply-all` | no | no |
@@ -142,6 +144,20 @@ uv run rig-agent build --spec examples/knight_side.json --out out/knight
 
 **Bundled example specs:** `examples/knight_side.json` (side view), `examples/elf_front.json` (front, cape), `examples/chibi_mage_front.json` (T-pose, hat, ponytails, staff).
 
+**Replacing a rig:** `run` and `build` always overwrite whatever is already at `--out DIR`; there is no separate "override" command or flag. If `out/DIR/skeleton.json` already exists, both commands print `note: replacing the rig already at out/DIR` before writing, so a replace is never silent.
+
+---
+
+### `delete`: remove one or more rigs from `out/`
+
+```bash
+uv run rig-agent delete out/knight                # one rig
+uv run rig-agent delete out/knight out/elf         # several, in one call
+uv run rig-agent delete --all --out out            # every rig under out/
+```
+
+Removes only `skeleton.json` and `validation_report.json` from each folder (never anything else you put there), and removes the folder itself only if that leaves it empty. A folder that has neither file (a typo, or a folder the agent never wrote to) is refused rather than silently skipped, and any other file in it (a `spec.json` copy, your own notes) is left alone and keeps the folder from being removed. `--all` uses the same rig discovery as `unity-apply-all`, so it skips (and reports) a folder whose `skeleton.json` cannot be read, and is a no-op, not an error, when `out/` is already empty. It never touches Unity or your prefabs. **Exit code:** 0 all named folders deleted, 2 a folder did not exist or wasn't a rig folder, or the arguments were wrong (both `--all` and folders, or neither).
+
 ---
 
 ### `unity-check`: is Unity ready to receive a rig?
@@ -159,7 +175,7 @@ uv run rig-agent unity-install                # uses UNITY_PROJECT_PATH
 uv run rig-agent unity-install --project "/path/to/unity/project"
 ```
 
-Copies `RigImporter.cs`, `BoneGizmo.cs` and `FacingController.cs` into `Assets/RigAgent/` and creates `Assets/Rigs/`. It only rewrites files that changed. Unity recompiles by itself. **When:** usually not needed, because the first delivery does it automatically; use it after updating rig-agent to refresh the scripts.
+Copies `RigImporter.cs`, `RigSkin.cs`, `BoneGizmo.cs` and `FacingController.cs` into `Assets/RigAgent/` and creates `Assets/Rigs/`. It only rewrites files that changed. Unity recompiles by itself. **When:** usually not needed, because the first delivery does it automatically; use it after updating rig-agent to refresh the scripts.
 
 ### `unity-apply`: deliver an existing rig to Unity
 
@@ -179,6 +195,12 @@ uv run rig-agent unity-apply-all --prefab-dir Assets/Prefabs/Rigs
 
 Finds every `<folder>/skeleton.json` under `out/`, clears the previous rigs under `RigAgent_Output`, and builds them in one row, side by side, each named after its **folder** (`out/knight2` becomes the object `knight2`, so runs of the same prompt do not overwrite each other). Every rig is verified like a single one and printed as a table. Unreadable `skeleton.json` files are skipped and named. **Exit code:** 0 all built, 1 some failed, 2 Unity unavailable or no rigs found.
 
+### IK: `--no-ik` (with `unity-apply`, `unity-apply-all`, `run --unity`)
+
+By default every arm (that has a hand) and every leg gets a Limb IK solver and a target, under an `IK` object on the rig root: `IK/arm_R/target_hand_R` and so on. In the Scene view, **move the target** (not the bone): the arm or leg follows and stays connected, and a foot stays flat as the leg moves. A weapon or a toe past the hand or foot (`extra_sword`, `toe_L`/`_R`) is a rigid child of it, not a separate solved link — it turns along with the hand or foot through ordinary parenting, and stays attached whichever way the limb bends (verified on the knight example: dragging the arm and leg targets left the sword's and toe's offset from their parent unchanged, no stretch or detachment). Each solver is verified (one valid solver per chain, bending to the side the JSON says). `--no-ik` builds the bones without solvers. Prefabs made while IK was off do not have it; add `--overwrite-prefab` to regenerate them (which discards edits you made to them).
+
+Dragging a target does the bending: a small `RigIkTicker` script solves every rig's IK once per editor frame, since Unity's own automatic re-solve (`IKManager2D.LateUpdate`) does not fire reliably for a manager built by a menu item. You should not need to do anything for this; it installs alongside the other scripts.
+
 ### Prefabs: `--prefab-dir` (with `unity-apply`, `unity-apply-all`, `run --unity`)
 
 ```bash
@@ -186,7 +208,7 @@ uv run rig-agent unity-apply-all --prefab-dir Assets/Prefabs/Rigs
 uv run rig-agent unity-apply out/elf/skeleton.json --prefab-dir Assets/Prefabs/Rigs --overwrite-prefab
 ```
 
-After a rig is **verified in Unity**, and only if its `validation_report.json` says it **passed**, it is saved as `<folder>/<rig name>.prefab` (root at the origin, gizmos and `FacingController` included). The folder must be inside `Assets/` and is created if missing. An existing prefab is **kept** (you may have edited it); `--overwrite-prefab` replaces it. Set `UNITY_PREFAB_DIR` in `.env` to make it the default; `--prefab-dir ""` turns it off. In the batch table, the detail says `prefab created`, `updated` or `kept`, or why a rig got none.
+After a rig is **verified in Unity**, and only if its `validation_report.json` says it **passed**, it is saved as `<folder>/<rig name>/<rig name>.prefab`, in a folder of its own that also holds the rig's `<rig name>_placeholder.png` and `<rig name>_skeleton.asset` (root at the origin, `SpriteSkin` and `FacingController` included). The folder must be inside `Assets/` and is created if missing. An existing prefab is **kept** (you may have edited it); `--overwrite-prefab` replaces it. Set `UNITY_PREFAB_DIR` in `.env` to make it the default; `--prefab-dir ""` turns it off. In the batch table, the detail says `prefab created`, `updated` or `kept`, or why a rig got none.
 
 ### `run --unity`: the whole pipeline, ending in Unity
 
@@ -196,7 +218,7 @@ uv run rig-agent run "chibi knight with a big sword" --view side --out out/knigh
 
 The same as `run`, and after a **passing** rig is exported, the `[unity]` stages deliver and verify it. A rig that fails validation is exported but never sent to Unity. If Unity is unreachable the run still ends `success`, with `unity: unavailable`.
 
-**In Unity:** the rig appears under `RigAgent_Output` in the open scene as bones with a coloured gizmo (blue left, orange right, purple extras, green center). Re-importing a rig with the same name replaces it. **Tools > Rig Agent > Clear Output** removes all rigs, and the scene is left unsaved. Setup: see the README section "Unity delivery".
+**In Unity:** the rig appears under `RigAgent_Output` in the open scene as bones drawn by Unity's 2D Animation package (select the rig to see them), on a transparent placeholder sprite; the sprite and a skeleton asset are written to `Assets/Rigs/Generated/<rig>/` (or beside the prefab). Re-importing a rig with the same name replaces it. **Tools > Rig Agent > Clear Output** removes all rigs, and the scene is left unsaved. Setup: see the README section "Unity delivery".
 
 ---
 
@@ -259,6 +281,12 @@ Mouse: scroll to zoom, drag to pan, click a bone for details. Keys: `F` fit, `L`
 
 ## 6. Typical workflows
 
+**F. Clean up after trying a few ideas**
+```bash
+uv run rig-agent delete out/attempt1 out/attempt2   # a couple of rigs you don't want
+uv run rig-agent delete --all --out out             # or start out/ over completely
+```
+
 **A. Make a rig from an idea (everyday)**
 ```bash
 uv run rig-agent run "tall elf archer with a long cape" --out out/elf
@@ -300,7 +328,7 @@ uv run rig-agent build --spec examples/knight_side.json --out out/knight
 | `<out>/skeleton.json` | `run`, `build` | the viewer; the Unity importer |
 | `<out>/validation_report.json` | `run`, `build` | the viewer; you |
 
-`skeleton.json` key fields: `view`, `rest_pose`, `height`, and a `bones` list (each with `id`, `name`, `parent_id`, `world_head`, `world_tail`, `local_position`, `local_rotation_deg`, `length`, `depth`, `layer`, `ik_chain`, `mirror_of`).
+`skeleton.json` key fields: `view`, `rest_pose`, `height`, and a `bones` list (each with `id`, `name`, `parent_id`, `world_head`, `world_tail`, `local_position`, `local_rotation_deg`, `length`, `depth`, `layer`, `ik_chain`, `mirror_of`), and an `ik_chains` list (schema 1.1) naming each arm and leg chain's root, joint and effector bones and which side of the limb line its elbow or knee bends to (`bend_side`).
 
 ---
 

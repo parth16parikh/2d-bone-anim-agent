@@ -1,6 +1,7 @@
 """Turns a RigSpec into a Skeleton: head/tail positions, local transforms, depth (LLD 3.4 #4)."""
 
 import re
+from dataclasses import asdict
 
 import rig_agent
 from rig_agent.builder.extras import place_extras
@@ -9,9 +10,9 @@ from rig_agent.builder.layout_front import layout_front
 from rig_agent.builder.layout_side import layout_side
 from rig_agent.builder.proportions import resolve_proportions
 from rig_agent.schemas.rig_spec import RigSpec
-from rig_agent.schemas.skeleton import Bone, Metadata, Skeleton
+from rig_agent.schemas.skeleton import Bone, IKChainInfo, Metadata, Skeleton
 from rig_agent.vocabulary.bones import BONES, present_bones
-from rig_agent.vocabulary.poses import ik_tags
+from rig_agent.vocabulary.poses import ik_chain_defs, ik_tags
 
 DECIMALS = 6
 
@@ -89,6 +90,7 @@ def build_skeleton(
         rest_pose=spec.rest_pose,
         style=spec.style,
         bones=bones,
+        ik_chains=[IKChainInfo(**asdict(c)) for c in ik_chain_defs(present, spec.view)],
         metadata=Metadata(
             generator=f"rig-agent/{rig_agent.__version__}",
             model=model,

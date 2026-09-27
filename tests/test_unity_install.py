@@ -12,13 +12,12 @@ from rig_agent.unity.install import (
     script_files,
     scripts_installed,
 )
+from unity_helpers import make_project
 
 
 @pytest.fixture
 def project(tmp_path):
-    (tmp_path / "Assets").mkdir()
-    (tmp_path / "ProjectSettings").mkdir()
-    return tmp_path
+    return make_project(tmp_path)
 
 
 def read(name):
@@ -30,7 +29,10 @@ def read(name):
 
 def test_the_expected_scripts_ship_with_the_package():
     assert [str(p) for p in script_files()] == [
+        "Editor/RigIk.cs",
+        "Editor/RigIkTicker.cs",
         "Editor/RigImporter.cs",
+        "Editor/RigSkin.cs",
         "Runtime/BoneGizmo.cs",
         "Runtime/FacingController.cs",
     ]
@@ -52,6 +54,8 @@ def test_the_importer_uses_the_shared_names():
         "PrefabFile": contract.PREFAB_FILE,
         "PrefabReportFile": contract.PREFAB_REPORT_FILE,
         "MenuSavePrefabs": contract.SAVE_PREFABS_MENU,
+        "GeneratedDir": contract.GENERATED_DIR,
+        "OptionsFile": contract.IMPORT_OPTIONS_FILE,
     }.items():
         assert f'public const string {name} = "{value}";' in code, name
 
@@ -107,7 +111,10 @@ def test_the_importer_reads_the_fields_the_python_side_writes():
 def test_install_copies_every_script_and_creates_the_rigs_folder(project):
     result = install_scripts(project)
     assert sorted(result.copied) == [
+        "Assets/RigAgent/Editor/RigIk.cs",
+        "Assets/RigAgent/Editor/RigIkTicker.cs",
         "Assets/RigAgent/Editor/RigImporter.cs",
+        "Assets/RigAgent/Editor/RigSkin.cs",
         "Assets/RigAgent/Runtime/BoneGizmo.cs",
         "Assets/RigAgent/Runtime/FacingController.cs",
     ]
@@ -121,7 +128,7 @@ def test_install_copies_every_script_and_creates_the_rigs_folder(project):
 def test_installing_twice_changes_nothing_the_second_time(project):
     install_scripts(project)
     again = install_scripts(project)
-    assert again.copied == [] and len(again.unchanged) == 3 and not again.changed
+    assert again.copied == [] and len(again.unchanged) == 6 and not again.changed
 
 
 def test_an_edited_script_is_restored(project):
@@ -150,3 +157,82 @@ def test_a_folder_that_is_not_a_unity_project_is_refused(tmp_path):
     with pytest.raises(UnityProjectError):
         check_project(tmp_path / "missing")
     assert list(Path(tmp_path).iterdir()) == []
+
+
+# ---- the 2D Animation package --------------------------------------------------------------------
+
+
+def test_a_project_without_the_2d_animation_package_is_refused(tmp_path):
+    make_project(tmp_path, packages={"com.unity.2d.sprite": "1.0.0"})
+    with pytest.raises(UnityProjectError, match="needs the 2D Animation package"):
+        install_scripts(tmp_path)
+    with pytest.raises(UnityProjectError, match="Package Manager"):
+        check_project(tmp_path)
+
+
+def test_a_package_that_is_only_resolved_as_a_dependency_counts(tmp_path):
+    make_project(tmp_path, packages={})
+    (tmp_path / "Packages" / "packages-lock.json").write_text(
+        '{"dependencies": {"com.unity.2d.animation": {"version": "14.0.3"}}}'
+    )
+    assert check_project(tmp_path) == tmp_path
+
+
+def test_a_missing_or_broken_package_list_counts_as_no_package(tmp_path):
+    make_project(tmp_path)
+    (tmp_path / "Packages" / "manifest.json").write_text("{not json")
+    with pytest.raises(UnityProjectError, match="2D Animation"):
+        check_project(tmp_path)
+    (tmp_path / "Packages" / "manifest.json").unlink()
+    with pytest.raises(UnityProjectError, match="2D Animation"):
+        check_project(tmp_path)
+
+
+def test_the_importer_and_skin_scripts_use_the_2d_animation_apis():
+    skin = read("Editor/RigSkin.cs")
+    for needle in (
+        "SpriteSkin",
+        "SkeletonAsset",
+        "ISpriteBoneDataProvider",
+        "ISpriteMeshDataProvider",
+        "SetBoneTransforms",
+        "SetRootBone",
+    ):
+        assert needle in skin, needle
+    assert "OnDrawGizmos" not in read("Runtime/BoneGizmo.cs")  # bones are drawn by Unity's package
+
+
+def test_the_safe_name_rule_is_the_same_in_python_and_csharp():
+    assert 'Regex.Replace(name ?? "", "[^A-Za-z0-9_.-]+", "_").Trim(\'.\', \'_\')' in read(
+        "Editor/RigSkin.cs"
+    )
+    from rig_agent.unity.batch import _UNSAFE
+
+    assert _UNSAFE.pattern == "[^A-Za-z0-9_.-]+"
+
+
+def test_the_ik_script_keeps_the_rest_pose_and_maps_the_bend_side_to_flip():
+    ik = read("Editor/RigIk.cs")
+    # the solver forces each effector to its target's rotation, so the target must start with it
+    assert "SetPositionAndRotation(effector.position, effector.rotation)" in ik
+    assert "solver.constrainRotation = true;" in ik
+    # "right" = clockwise side = flip; the JSON's word is the single source of truth
+    assert 'solver.flip = chain.bend_side == "right";' in ik
+    assert "public string bend_side;" in read("Editor/RigImporter.cs")
+    assert "bend_direction" not in read("Editor/RigImporter.cs")
+
+
+def test_the_importer_reports_what_python_verifies_about_ik():
+    ik = read("Editor/RigIk.cs")
+    for field in ("chain", "effector", "target", "flip", "valid", "enabled", "solvers"):
+        assert re.search(rf"public [\w<>]+ {field}\b", ik), field
+
+
+def test_the_ik_ticker_scans_rather_than_keeps_its_own_list():
+    ticker = read("Editor/RigIkTicker.cs")
+    assert "[InitializeOnLoad]" in ticker
+    assert "EditorApplication.update += Tick;" in ticker
+    assert "manager.UpdateManager();" in ticker
+    # a plain static list would go stale across a recompile; re-scanning the scene does not
+    assert "RigImporter.OutputRoot" in ticker
+    assert "EditorApplication.isPlayingOrWillChangePlaymode" in ticker

@@ -6,6 +6,8 @@ from layout_helpers import bone, good_skeleton
 from rig_agent.export.json_exporter import (
     REPORT_FILE,
     SKELETON_FILE,
+    NotARigFolderError,
+    delete_rig,
     export,
     load_report,
     load_skeleton,
@@ -40,7 +42,7 @@ def test_files_are_indented_json_with_a_trailing_newline(tmp_path):
     text = result.skeleton_path.read_text(encoding="utf-8")
     assert text.endswith("}\n") and "\n  " in text
     data = json.loads(text)
-    assert data["schema_version"] == "1.0"
+    assert data["schema_version"] == "1.1"
     assert data["bones"][0]["name"] == "root"
 
 
@@ -71,3 +73,48 @@ def test_a_string_path_works(tmp_path):
 def test_loading_a_missing_file_raises(tmp_path):
     with pytest.raises(FileNotFoundError):
         load_skeleton(tmp_path / "nope.json")
+
+
+# ---- delete_rig -----------------------------------------------------------------------------------
+
+
+def test_deleting_a_rig_removes_both_files_and_the_now_empty_folder(tmp_path):
+    folder = tmp_path / "knight"
+    export(good_skeleton(), a_report(), folder)
+    result = delete_rig(folder)
+    assert sorted(result.removed_files) == [SKELETON_FILE, REPORT_FILE]
+    assert result.folder_removed and not folder.exists()
+
+
+def test_a_folder_the_agent_never_wrote_to_is_refused(tmp_path):
+    folder = tmp_path / "not_a_rig"
+    folder.mkdir()
+    (folder / "notes.txt").write_text("hello")
+    with pytest.raises(NotARigFolderError, match="neither"):
+        delete_rig(folder)
+    assert (folder / "notes.txt").is_file()  # nothing was touched
+
+
+def test_a_missing_folder_is_refused_the_same_way(tmp_path):
+    with pytest.raises(NotARigFolderError):
+        delete_rig(tmp_path / "nope")
+
+
+def test_extra_files_in_the_folder_are_left_alone_and_so_is_the_folder(tmp_path):
+    folder = tmp_path / "knight"
+    export(good_skeleton(), a_report(), folder)
+    (folder / "spec.json").write_text("{}")
+    result = delete_rig(folder)
+    assert sorted(result.removed_files) == [SKELETON_FILE, REPORT_FILE]
+    assert not result.folder_removed
+    assert folder.is_dir() and (folder / "spec.json").is_file()
+    assert not (folder / SKELETON_FILE).exists() and not (folder / REPORT_FILE).exists()
+
+
+def test_a_rig_missing_its_report_can_still_be_deleted(tmp_path):
+    folder = tmp_path / "knight"
+    export(good_skeleton(), a_report(), folder)
+    (folder / REPORT_FILE).unlink()
+    result = delete_rig(folder)
+    assert result.removed_files == [SKELETON_FILE]
+    assert result.folder_removed and not folder.exists()

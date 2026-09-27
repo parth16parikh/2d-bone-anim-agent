@@ -1,0 +1,362 @@
+fileFormatVersion: 2
+guid: fe420d01007b243ea9f13f718de9f297
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5852168405058398512
+    second: a_chibi_knight_with_a_small_sword_placeholder_0
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 9
+  spritePivot: {x: 0.4996264, y: 0.06896552}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: a_chibi_knight_with_a_small_sword_placeholder_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 113
+        height: 232
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d6daba77dbe8cea0800000000000000
+      internalID: -5852168405058398512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones:
+    - name: root
+      guid: 4a4bf480a7f1175603bde271ec8b853e
+      position: {x: 98.4264, y: 16, z: 0}
+      rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+      length: 5
+      parentId: -1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: hip
+      guid: cdf45ae3329e1dba4528adbbbbac15f5
+      position: {x: 60.000004, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 13.3333
+      parentId: 0
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: spine
+      guid: 853f438f8011437db3625257f13b4fc2
+      position: {x: 13.3333, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 53.3333
+      parentId: 1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: head
+      guid: e7be43aeb8a038a203b6560108f5cb88
+      position: {x: 53.3333, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 73.3333
+      parentId: 2
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: upper_arm_L
+      guid: 530e8faf67bf59f5460bb23e64d441ff
+      position: {x: 46.2803, y: -40, z: 0}
+      rotation: {x: 0, y: 0, z: -0.9238795, w: 0.38268343}
+      length: 22.8
+      parentId: 2
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: upper_arm_R
+      guid: b6dd70e983e6184603e1c3a2c7d397e8
+      position: {x: 46.2803, y: 40, z: 0}
+      rotation: {x: 0, y: 0, z: 0.9238795, w: 0.38268343}
+      length: 22.8
+      parentId: 2
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: forearm_L
+      guid: d6553ea777f7b78f73747301ccc70fd2
+      position: {x: 22.8, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 20.4
+      parentId: 4
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: forearm_R
+      guid: 3376775b7d5c38334f53330a8c7825de
+      position: {x: 22.8, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 20.4
+      parentId: 5
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: hand_L
+      guid: c5ad293f45765be03f4a5cb775c4dc09
+      position: {x: 20.4, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 16.8
+      parentId: 6
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: hand_R
+      guid: f7cb01ae15c4738cae06cfc1d719e365
+      position: {x: 20.4, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 16.8
+      parentId: 7
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: thigh_L
+      guid: 901d0b291962da4cdc52a4c7d2787e29
+      position: {x: 0, y: -20, z: 0}
+      rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+      length: 22.5
+      parentId: 1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: thigh_R
+      guid: 24478dd65fb5ba754763da454c0e2d28
+      position: {x: 0, y: 20, z: 0}
+      rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+      length: 22.5
+      parentId: 1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: shin_L
+      guid: 50cae44e4183050970da2197c9ebf6d9
+      position: {x: 22.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 27.5
+      parentId: 10
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: shin_R
+      guid: e191262628c74efd228312d4b15e1f8a
+      position: {x: 22.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 27.5
+      parentId: 11
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: foot_L
+      guid: a3f67918028f5496f69f5ffb9cbedf0e
+      position: {x: 27.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+      length: 60.000004
+      parentId: 12
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: foot_R
+      guid: 11182606b6bac3740e422062f26b53c0
+      position: {x: 27.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: -0.70710677, w: 0.70710677}
+      length: 60.000004
+      parentId: 13
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: extra_sword
+      guid: 0125e71d27cef55f53444f6870143ef0
+      position: {x: 16.8, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0.7933533, w: 0.6087614}
+      length: 50
+      parentId: 9
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
+    vertices:
+    - {x: 90.4264, y: 8}
+    - {x: 106.4264, y: 8}
+    - {x: 90.4264, y: 24}
+    - {x: 106.4264, y: 24}
+    indices: 000000000100000002000000020000000100000003000000
+    edges:
+    - {x: 0, y: 1}
+    - {x: 1, y: 3}
+    - {x: 3, y: 2}
+    - {x: 2, y: 0}
+    weights:
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      a_chibi_knight_with_a_small_sword_placeholder_0: -5852168405058398512
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -62,6 +62,26 @@ def test_the_decision_guide_covers_the_key_choices():
         assert phrase in PROMPT
 
 
+def test_the_decision_guide_covers_explicit_ratios():
+    for phrase in (
+        "a SHARE of the same fixed height",
+        "base.leg_ratio and base.arm_ratio toward 0.25 together",
+        "drop neck (and usually chest) from optional_bones so its length folds into the head bone",
+        "prefer the preset with the biggest neck_hu",
+    ):
+        assert phrase in PROMPT
+    assert "read describe_proportions' ratios and keep adjusting" in PROMPT
+
+
+def test_the_decision_guide_warns_against_combining_head_scale_with_a_floored_heads_tall():
+    for phrase in (
+        "Leave head_scale at 1.0 once heads_tall, leg_ratio and arm_ratio are already at their",
+        "any head_scale above 1.0 shrinks the whole column further, pushing the resulting",
+        "back a field off the moment a derived value it affects drops out of range",
+    ):
+        assert phrase in PROMPT
+
+
 def test_the_tool_policy_requires_a_dry_run_before_the_answer():
     assert "Call dry_run_validate on your draft before the final answer" in PROMPT
 
@@ -77,21 +97,21 @@ def test_the_prompt_is_cached_and_stable():
 # ---- few-shot examples ---------------------------------------------------------------------------
 
 
-def test_there_are_four_examples_covering_both_views():
+def test_there_are_five_examples_covering_both_views():
     examples = few_shot_examples()
-    assert len(examples) == 4
+    assert len(examples) == 5
     assert {spec.view for _, _, spec in examples} == {"front", "side"}
     assert {spec.preset for _, _, spec in examples} >= {"realistic", "chibi", "stylized"}
 
 
-@pytest.mark.parametrize("index", range(4))
+@pytest.mark.parametrize("index", range(5))
 def test_every_example_passes_the_dry_run_cleanly(index):
     _, _, spec = few_shot_examples()[index]
     report = dry_run_validate(spec)
     assert report.issues == [], report.issues
 
 
-@pytest.mark.parametrize("index", range(4))
+@pytest.mark.parametrize("index", range(5))
 def test_example_json_in_the_prompt_reparses_to_the_same_spec(index):
     description, _, spec = few_shot_examples()[index]
     rendered = spec.model_dump_json(exclude_defaults=True)

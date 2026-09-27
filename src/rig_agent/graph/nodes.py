@@ -3,6 +3,7 @@
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Protocol
 
 from pydantic_ai.exceptions import AgentRunError, FallbackExceptionGroup
@@ -12,7 +13,7 @@ from rig_agent.agent.planner import PlanResult, plan
 from rig_agent.builder.errors import BuildError
 from rig_agent.builder.skeleton_builder import build_skeleton
 from rig_agent.config import Settings, settings
-from rig_agent.export.json_exporter import export
+from rig_agent.export.json_exporter import SKELETON_FILE, export
 from rig_agent.guardrails.input_guard import check_input
 from rig_agent.llm import MissingApiKeyError
 from rig_agent.schemas.guardrail import GuardResult
@@ -57,11 +58,11 @@ class GraphDeps:
 
 
 def default_deps(
-    say: Callable[[str], None] = _silent, prefab: PrefabOptions | None = None
+    say: Callable[[str], None] = _silent, prefab: PrefabOptions | None = None, ik: bool = True
 ) -> GraphDeps:
     """The real guard and planner, using the configured models. Prefab options, if given, make
     the Unity step save each verified rig as a prefab."""
-    unity = UnityDelivery(say=say, prefab=prefab)
+    unity = UnityDelivery(say=say, prefab=prefab, ik=ik)
     return GraphDeps(check_input=check_input, plan=plan, say=say, unity=unity)
 
 
@@ -215,6 +216,8 @@ class RigNodes:
     def export(self, state: RigState) -> dict[str, Any]:
         skeleton, report = state.get("skeleton"), state.get("validation")
         assert skeleton is not None and report is not None
+        if (Path(state["out_dir"]) / SKELETON_FILE).is_file():
+            self.say(f"[export] note: replacing the rig already at {state['out_dir']}")
         result = export(skeleton, report, state["out_dir"])
         self.say(f"[export] wrote {result.skeleton_path} and {result.report_path.name}")
         return {"output_path": str(result.skeleton_path), "status": "success"}
@@ -262,6 +265,8 @@ class RigNodes:
                 "status": "error",
                 "error": "none of the attempts could be built into a skeleton",
             }
+        if (Path(state["out_dir"]) / SKELETON_FILE).is_file():
+            self.say(f"[export] note: replacing the rig already at {state['out_dir']}")
         result = export(best.skeleton, best.report, state["out_dir"])
         self.say(f"[export] wrote {result.skeleton_path} (not import-ready: validation failed)")
         unity = None

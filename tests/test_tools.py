@@ -124,6 +124,35 @@ def test_impossible_proportions_return_an_error_instead_of_raising():
     assert "no room for a torso" in result["error"]
 
 
+def test_a_default_spec_reports_ratios_between_the_main_parts():
+    result = describe_proportions(make_spec(optional_bones=["chest", "neck", "hands"], **FRONT))
+    ratios = result["ratios"]
+    assert set(ratios) == {"head_to_rest_of_body", "leg_to_arm", "leg_to_torso", "arm_to_torso"}
+    assert ratios["head_to_rest_of_body"] == pytest.approx(0.154, abs=1e-3)
+    assert all(v is not None for v in ratios.values())
+
+
+def test_pushing_heads_tall_and_the_limb_ratios_to_their_floor_maximises_the_head_ratio():
+    result = describe_proportions(
+        make_spec(
+            optional_bones=["hands"],
+            base={"heads_tall": 2.0, "leg_ratio": 0.25, "arm_ratio": 0.25},
+            **FRONT,
+        )
+    )
+    assert result["warnings"] == []
+    assert result["ratios"]["head_to_rest_of_body"] == pytest.approx(1.857, abs=1e-3)
+
+
+def test_dropping_neck_grows_the_head_ratio_further_than_keeping_it():
+    common = {"base": {"heads_tall": 2.0, "leg_ratio": 0.25, "arm_ratio": 0.25}, **FRONT}
+    without_neck = describe_proportions(make_spec(optional_bones=["hands"], **common))
+    with_neck = describe_proportions(make_spec(optional_bones=["hands", "neck"], **common))
+    assert (
+        without_neck["ratios"]["head_to_rest_of_body"] > with_neck["ratios"]["head_to_rest_of_body"]
+    )
+
+
 # ---- dry_run_validate ----------------------------------------------------------------------------
 
 
@@ -213,3 +242,40 @@ def test_spec_taking_tools_take_the_rigspec_fields_as_their_arguments():
         schema["properties"]
     )
     assert {"character_summary", "style", "view", "rest_pose"} <= set(schema["required"])
+
+
+def test_the_docstring_warns_against_combining_head_scale_with_a_floored_heads_tall():
+    doc = describe_proportions.__doc__
+    assert (
+        "big neck_hu for that donation reaches the biggest head a valid rig can have. Leave head_scale"
+        in doc
+    )
+    assert (
+        "values, not the numbers you typed, and head_scale above 1.0 shrinks the whole column further,"
+        in doc
+    )
+
+
+def test_head_scale_above_1_pushes_the_derived_heads_tall_below_its_own_floor():
+    """Pins the exact failure a live run hit: heads_tall/leg_ratio/arm_ratio at their floor,
+    plus a head_scale bump on top, silently breaks the very floors it looks like it should help."""
+    at_floor = describe_proportions(
+        make_spec(
+            optional_bones=["hands"],
+            base={"heads_tall": 2.0, "leg_ratio": 0.25, "arm_ratio": 0.25},
+            **FRONT,
+        )
+    )
+    assert at_floor["warnings"] == []
+
+    with_head_scale = describe_proportions(
+        make_spec(
+            optional_bones=["hands"],
+            base={"heads_tall": 2.0, "leg_ratio": 0.25, "arm_ratio": 0.25},
+            overrides={"head_scale": 1.3},
+            **FRONT,
+        )
+    )
+    assert with_head_scale["derived"]["heads_tall"]["in_range"] is False
+    assert with_head_scale["derived"]["leg_ratio"]["in_range"] is False
+    assert with_head_scale["derived"]["heads_tall"]["value"] < 2.0
