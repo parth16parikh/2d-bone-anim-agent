@@ -1,0 +1,582 @@
+{
+  "schema_version": "1.1",
+  "rig_name": "a_wizard_with_a_pointy_hat_and_a_staff",
+  "source_prompt": "a wizard with a pointy hat and a staff",
+  "units": "unity_world",
+  "pixels_per_unit": 100,
+  "height": 2.0,
+  "view": "side",
+  "facing": "right",
+  "rest_pose": "side_neutral",
+  "style": "stylized wizard",
+  "bones": [
+    {
+      "id": 0,
+      "name": "root",
+      "parent_id": -1,
+      "world_head": [
+        0.0,
+        0.0
+      ],
+      "world_tail": [
+        0.0,
+        0.05
+      ],
+      "local_position": [
+        0.0,
+        0.0
+      ],
+      "local_rotation_deg": 90.0,
+      "length": 0.05,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 1,
+      "name": "hip",
+      "parent_id": 0,
+      "world_head": [
+        0.0,
+        0.84
+      ],
+      "world_tail": [
+        0.0,
+        0.992
+      ],
+      "local_position": [
+        0.84,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.152,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 2,
+      "name": "spine",
+      "parent_id": 1,
+      "world_head": [
+        0.0,
+        0.992
+      ],
+      "world_tail": [
+        0.0,
+        1.258
+      ],
+      "local_position": [
+        0.152,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.266,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 3,
+      "name": "chest",
+      "parent_id": 2,
+      "world_head": [
+        0.0,
+        1.258
+      ],
+      "world_tail": [
+        0.0,
+        1.6
+      ],
+      "local_position": [
+        0.266,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.342,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 4,
+      "name": "neck",
+      "parent_id": 3,
+      "world_head": [
+        0.0,
+        1.6
+      ],
+      "world_tail": [
+        0.0,
+        1.666667
+      ],
+      "local_position": [
+        0.342,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.066667,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 5,
+      "name": "head",
+      "parent_id": 4,
+      "world_head": [
+        0.0,
+        1.666667
+      ],
+      "world_tail": [
+        0.0,
+        2.0
+      ],
+      "local_position": [
+        0.066667,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.333333,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 6,
+      "name": "upper_arm_L",
+      "parent_id": 3,
+      "world_head": [
+        -0.03,
+        1.6
+      ],
+      "world_tail": [
+        0.028346,
+        1.269105
+      ],
+      "local_position": [
+        0.342,
+        0.03
+      ],
+      "local_rotation_deg": -170.0,
+      "length": 0.336,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "upper_arm_R"
+    },
+    {
+      "id": 7,
+      "name": "upper_arm_R",
+      "parent_id": 3,
+      "world_head": [
+        0.0,
+        1.6
+      ],
+      "world_tail": [
+        0.058346,
+        1.269105
+      ],
+      "local_position": [
+        0.342,
+        0.0
+      ],
+      "local_rotation_deg": -170.0,
+      "length": 0.336,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "upper_arm_L"
+    },
+    {
+      "id": 8,
+      "name": "forearm_L",
+      "parent_id": 6,
+      "world_head": [
+        0.028346,
+        1.269105
+      ],
+      "world_tail": [
+        0.076967,
+        0.993358
+      ],
+      "local_position": [
+        0.336,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.28,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "forearm_R"
+    },
+    {
+      "id": 9,
+      "name": "forearm_R",
+      "parent_id": 7,
+      "world_head": [
+        0.058346,
+        1.269105
+      ],
+      "world_tail": [
+        0.106967,
+        0.993358
+      ],
+      "local_position": [
+        0.336,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.28,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "forearm_L"
+    },
+    {
+      "id": 10,
+      "name": "hand_L",
+      "parent_id": 8,
+      "world_head": [
+        0.076967,
+        0.993358
+      ],
+      "world_tail": [
+        0.108919,
+        0.812154
+      ],
+      "local_position": [
+        0.28,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.184,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "hand_R"
+    },
+    {
+      "id": 11,
+      "name": "hand_R",
+      "parent_id": 9,
+      "world_head": [
+        0.106967,
+        0.993358
+      ],
+      "world_tail": [
+        0.138919,
+        0.812154
+      ],
+      "local_position": [
+        0.28,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.184,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "hand_L"
+    },
+    {
+      "id": 12,
+      "name": "thigh_L",
+      "parent_id": 1,
+      "world_head": [
+        -0.03,
+        0.84
+      ],
+      "world_tail": [
+        -0.03,
+        0.4752
+      ],
+      "local_position": [
+        0.0,
+        0.03
+      ],
+      "local_rotation_deg": 180.0,
+      "length": 0.3648,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "thigh_R"
+    },
+    {
+      "id": 13,
+      "name": "thigh_R",
+      "parent_id": 1,
+      "world_head": [
+        0.0,
+        0.84
+      ],
+      "world_tail": [
+        0.0,
+        0.4752
+      ],
+      "local_position": [
+        0.0,
+        0.0
+      ],
+      "local_rotation_deg": 180.0,
+      "length": 0.3648,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "thigh_L"
+    },
+    {
+      "id": 14,
+      "name": "shin_L",
+      "parent_id": 12,
+      "world_head": [
+        -0.03,
+        0.4752
+      ],
+      "world_tail": [
+        -0.03,
+        0.08
+      ],
+      "local_position": [
+        0.3648,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.3952,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "shin_R"
+    },
+    {
+      "id": 15,
+      "name": "shin_R",
+      "parent_id": 13,
+      "world_head": [
+        0.0,
+        0.4752
+      ],
+      "world_tail": [
+        0.0,
+        0.08
+      ],
+      "local_position": [
+        0.3648,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.3952,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "shin_L"
+    },
+    {
+      "id": 16,
+      "name": "foot_L",
+      "parent_id": 14,
+      "world_head": [
+        -0.03,
+        0.08
+      ],
+      "world_tail": [
+        0.303333,
+        0.08
+      ],
+      "local_position": [
+        0.3952,
+        0.0
+      ],
+      "local_rotation_deg": 90.0,
+      "length": 0.333333,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "foot_R"
+    },
+    {
+      "id": 17,
+      "name": "foot_R",
+      "parent_id": 15,
+      "world_head": [
+        0.0,
+        0.08
+      ],
+      "world_tail": [
+        0.333333,
+        0.08
+      ],
+      "local_position": [
+        0.3952,
+        0.0
+      ],
+      "local_rotation_deg": 90.0,
+      "length": 0.333333,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "foot_L"
+    },
+    {
+      "id": 18,
+      "name": "toe_L",
+      "parent_id": 16,
+      "world_head": [
+        0.303333,
+        0.08
+      ],
+      "world_tail": [
+        0.403333,
+        0.08
+      ],
+      "local_position": [
+        0.333333,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.1,
+      "depth": -1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": "toe_R"
+    },
+    {
+      "id": 19,
+      "name": "toe_R",
+      "parent_id": 17,
+      "world_head": [
+        0.333333,
+        0.08
+      ],
+      "world_tail": [
+        0.433333,
+        0.08
+      ],
+      "local_position": [
+        0.333333,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.1,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": "toe_L"
+    },
+    {
+      "id": 20,
+      "name": "extra_hat",
+      "parent_id": 5,
+      "world_head": [
+        0.0,
+        2.0
+      ],
+      "world_tail": [
+        0.0,
+        2.3
+      ],
+      "local_position": [
+        0.333333,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.3,
+      "depth": 0,
+      "layer": "front",
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 21,
+      "name": "extra_staff",
+      "parent_id": 11,
+      "world_head": [
+        0.138919,
+        0.812154
+      ],
+      "world_tail": [
+        0.138919,
+        2.012154
+      ],
+      "local_position": [
+        0.184,
+        0.0
+      ],
+      "local_rotation_deg": 170.0,
+      "length": 1.2,
+      "depth": 1,
+      "layer": "front",
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    }
+  ],
+  "ik_chains": [
+    {
+      "name": "arm_L",
+      "root": "upper_arm_L",
+      "joint": "forearm_L",
+      "effector": "hand_L",
+      "bend_side": "right"
+    },
+    {
+      "name": "arm_R",
+      "root": "upper_arm_R",
+      "joint": "forearm_R",
+      "effector": "hand_R",
+      "bend_side": "right"
+    },
+    {
+      "name": "leg_L",
+      "root": "thigh_L",
+      "joint": "shin_L",
+      "effector": "foot_L",
+      "bend_side": "left"
+    },
+    {
+      "name": "leg_R",
+      "root": "thigh_R",
+      "joint": "shin_R",
+      "effector": "foot_R",
+      "bend_side": "left"
+    }
+  ],
+  "metadata": {
+    "generator": "rig-agent/0.1.0",
+    "model": "openai:gpt-5.4-mini",
+    "iterations": 1,
+    "assumptions": [
+      "side view requested by caller",
+      "stylized fit for a wizard",
+      "hat and staff inferred from description"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "issues": [],
+  "metrics": {
+    "required_bone_coverage": 1.0,
+    "joint_connectivity": 1.0,
+    "symmetry_error": 0.0,
+    "proportion_error": 4.807416923483357e-7
+  },
+  "passed": true
+}

@@ -1,0 +1,511 @@
+{
+  "schema_version": "1.1",
+  "rig_name": "a_bodybuilder_with_a_tiny_head",
+  "source_prompt": "a bodybuilder with a tiny head",
+  "units": "unity_world",
+  "pixels_per_unit": 100,
+  "height": 2.0,
+  "view": "front",
+  "facing": null,
+  "rest_pose": "A_pose",
+  "style": "heroic bodybuilder",
+  "bones": [
+    {
+      "id": 0,
+      "name": "root",
+      "parent_id": -1,
+      "world_head": [
+        0.0,
+        0.0
+      ],
+      "world_tail": [
+        0.0,
+        0.05
+      ],
+      "local_position": [
+        0.0,
+        0.0
+      ],
+      "local_rotation_deg": 90.0,
+      "length": 0.05,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 1,
+      "name": "hip",
+      "parent_id": 0,
+      "world_head": [
+        0.0,
+        0.777143
+      ],
+      "world_tail": [
+        0.0,
+        0.794667
+      ],
+      "local_position": [
+        0.777143,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.017524,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 2,
+      "name": "spine",
+      "parent_id": 1,
+      "world_head": [
+        0.0,
+        0.794667
+      ],
+      "world_tail": [
+        0.0,
+        0.820624
+      ],
+      "local_position": [
+        0.017524,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.025958,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 3,
+      "name": "chest",
+      "parent_id": 2,
+      "world_head": [
+        0.0,
+        0.820624
+      ],
+      "world_tail": [
+        0.0,
+        0.864762
+      ],
+      "local_position": [
+        0.025958,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.044137,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 4,
+      "name": "head",
+      "parent_id": 3,
+      "world_head": [
+        0.0,
+        0.864762
+      ],
+      "world_tail": [
+        0.0,
+        2.0
+      ],
+      "local_position": [
+        0.044137,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 1.135238,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 5,
+      "name": "shoulder_L",
+      "parent_id": 3,
+      "world_head": [
+        0.0,
+        0.864762
+      ],
+      "world_tail": [
+        0.99,
+        0.690198
+      ],
+      "local_position": [
+        0.044137,
+        0.0
+      ],
+      "local_rotation_deg": -100.0,
+      "length": 1.005272,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": "shoulder_R"
+    },
+    {
+      "id": 6,
+      "name": "shoulder_R",
+      "parent_id": 3,
+      "world_head": [
+        0.0,
+        0.864762
+      ],
+      "world_tail": [
+        -0.99,
+        0.690198
+      ],
+      "local_position": [
+        0.044137,
+        0.0
+      ],
+      "local_rotation_deg": 100.0,
+      "length": 1.005272,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": "shoulder_L"
+    },
+    {
+      "id": 7,
+      "name": "upper_arm_L",
+      "parent_id": 5,
+      "world_head": [
+        0.99,
+        0.690198
+      ],
+      "world_tail": [
+        1.145069,
+        0.53513
+      ],
+      "local_position": [
+        1.005272,
+        0.0
+      ],
+      "local_rotation_deg": -35.0,
+      "length": 0.2193,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "upper_arm_R"
+    },
+    {
+      "id": 8,
+      "name": "upper_arm_R",
+      "parent_id": 6,
+      "world_head": [
+        -0.99,
+        0.690198
+      ],
+      "world_tail": [
+        -1.145069,
+        0.53513
+      ],
+      "local_position": [
+        1.005272,
+        0.0
+      ],
+      "local_rotation_deg": 35.0,
+      "length": 0.2193,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "upper_arm_L"
+    },
+    {
+      "id": 9,
+      "name": "forearm_L",
+      "parent_id": 7,
+      "world_head": [
+        1.145069,
+        0.53513
+      ],
+      "world_tail": [
+        1.271287,
+        0.408911
+      ],
+      "local_position": [
+        0.2193,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.1785,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "forearm_R"
+    },
+    {
+      "id": 10,
+      "name": "forearm_R",
+      "parent_id": 8,
+      "world_head": [
+        -1.145069,
+        0.53513
+      ],
+      "world_tail": [
+        -1.271287,
+        0.408911
+      ],
+      "local_position": [
+        0.2193,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.1785,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "forearm_L"
+    },
+    {
+      "id": 11,
+      "name": "hand_L",
+      "parent_id": 9,
+      "world_head": [
+        1.271287,
+        0.408911
+      ],
+      "world_tail": [
+        1.350624,
+        0.329574
+      ],
+      "local_position": [
+        0.1785,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.1122,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_L",
+      "mirror_of": "hand_R"
+    },
+    {
+      "id": 12,
+      "name": "hand_R",
+      "parent_id": 10,
+      "world_head": [
+        -1.271287,
+        0.408911
+      ],
+      "world_tail": [
+        -1.350624,
+        0.329574
+      ],
+      "local_position": [
+        0.1785,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.1122,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "arm_R",
+      "mirror_of": "hand_L"
+    },
+    {
+      "id": 13,
+      "name": "thigh_L",
+      "parent_id": 1,
+      "world_head": [
+        0.45,
+        0.777143
+      ],
+      "world_tail": [
+        0.45,
+        0.428571
+      ],
+      "local_position": [
+        0.0,
+        -0.45
+      ],
+      "local_rotation_deg": 180.0,
+      "length": 0.348571,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "thigh_R"
+    },
+    {
+      "id": 14,
+      "name": "thigh_R",
+      "parent_id": 1,
+      "world_head": [
+        -0.45,
+        0.777143
+      ],
+      "world_tail": [
+        -0.45,
+        0.428571
+      ],
+      "local_position": [
+        0.0,
+        0.45
+      ],
+      "local_rotation_deg": 180.0,
+      "length": 0.348571,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "thigh_L"
+    },
+    {
+      "id": 15,
+      "name": "shin_L",
+      "parent_id": 13,
+      "world_head": [
+        0.45,
+        0.428571
+      ],
+      "world_tail": [
+        0.45,
+        0.08
+      ],
+      "local_position": [
+        0.348571,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.348571,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "shin_R"
+    },
+    {
+      "id": 16,
+      "name": "shin_R",
+      "parent_id": 14,
+      "world_head": [
+        -0.45,
+        0.428571
+      ],
+      "world_tail": [
+        -0.45,
+        0.08
+      ],
+      "local_position": [
+        0.348571,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.348571,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "shin_L"
+    },
+    {
+      "id": 17,
+      "name": "foot_L",
+      "parent_id": 15,
+      "world_head": [
+        0.45,
+        0.08
+      ],
+      "world_tail": [
+        1.55,
+        0.08
+      ],
+      "local_position": [
+        0.348571,
+        0.0
+      ],
+      "local_rotation_deg": 90.0,
+      "length": 1.1,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_L",
+      "mirror_of": "foot_R"
+    },
+    {
+      "id": 18,
+      "name": "foot_R",
+      "parent_id": 16,
+      "world_head": [
+        -0.45,
+        0.08
+      ],
+      "world_tail": [
+        -1.55,
+        0.08
+      ],
+      "local_position": [
+        0.348571,
+        0.0
+      ],
+      "local_rotation_deg": -90.0,
+      "length": 1.1,
+      "depth": 1,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": "leg_R",
+      "mirror_of": "foot_L"
+    }
+  ],
+  "ik_chains": [
+    {
+      "name": "arm_L",
+      "root": "upper_arm_L",
+      "joint": "forearm_L",
+      "effector": "hand_L",
+      "bend_side": "right"
+    },
+    {
+      "name": "arm_R",
+      "root": "upper_arm_R",
+      "joint": "forearm_R",
+      "effector": "hand_R",
+      "bend_side": "left"
+    },
+    {
+      "name": "leg_L",
+      "root": "thigh_L",
+      "joint": "shin_L",
+      "effector": "foot_L",
+      "bend_side": "left"
+    },
+    {
+      "name": "leg_R",
+      "root": "thigh_R",
+      "joint": "shin_R",
+      "effector": "foot_R",
+      "bend_side": "right"
+    }
+  ],
+  "metadata": {
+    "generator": "rig-agent/0.1.0",
+    "model": "openai:gpt-5.4-mini",
+    "iterations": 1,
+    "assumptions": [
+      "front view requested",
+      "bodybuilder implies heroic proportions",
+      "tiny head pushed to minimum viable size",
+      "shoulder articulation added for broad shoulders"
+    ]
+  }
+}

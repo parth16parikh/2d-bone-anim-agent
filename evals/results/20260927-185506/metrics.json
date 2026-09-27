@@ -1,0 +1,515 @@
+[
+  {
+    "id": "Q1",
+    "name": "First-pass schema validity",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q2",
+    "name": "Final validity rate",
+    "unit": "%",
+    "value": 0.9150326797385621,
+    "target": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 153,
+    "detail": "",
+    "passed": false
+  },
+  {
+    "id": "Q3",
+    "name": "Required-bone coverage (delivered rigs)",
+    "unit": "",
+    "value": 1.0,
+    "target": {
+      "op": "=",
+      "value": 1.0
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q4",
+    "name": "Structural integrity (delivered rigs)",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": "=",
+      "value": 1.0
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q5",
+    "name": "Joint connectivity (delivered rigs)",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": "=",
+      "value": 1.0
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q3 first",
+    "name": "Required-bone coverage (first attempts)",
+    "unit": "",
+    "value": 1.0,
+    "target": {
+      "op": "=",
+      "value": 1.0
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q4 first",
+    "name": "Structural integrity (first attempts)",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": "=",
+      "value": 1.0
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q5 first",
+    "name": "Joint connectivity (first attempts)",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": "=",
+      "value": 1.0
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q6",
+    "name": "Symmetry error (mean, /H)",
+    "unit": "",
+    "value": 9.328563998365075e-19,
+    "target": {
+      "op": "<=",
+      "value": 0.01
+    },
+    "by_view": {
+      "front": 0.0,
+      "side": 2.0092291688786317e-18
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q6b",
+    "name": "Depth-order correctness (side view)",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": "=",
+      "value": 1.0
+    },
+    "by_view": {},
+    "n": 65,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q7",
+    "name": "Proportion error (mean)",
+    "unit": "",
+    "value": 4.2638656900462627e-07,
+    "target": {
+      "op": "<=",
+      "value": 0.1
+    },
+    "by_view": {
+      "front": 4.158955927181233e-07,
+      "side": 4.3849154164289894e-07
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q8 view",
+    "name": "Spec accuracy: view",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 125,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q8 style",
+    "name": "Spec accuracy: style descriptor",
+    "unit": "%",
+    "value": 0.8448275862068966,
+    "target": {
+      "op": ">=",
+      "value": 0.9
+    },
+    "by_view": {
+      "front": 0.8,
+      "side": 0.8928571428571429
+    },
+    "n": 58,
+    "detail": "",
+    "passed": false
+  },
+  {
+    "id": "Q8 modifier",
+    "name": "Spec accuracy: override direction",
+    "unit": "%",
+    "value": 0.7272727272727273,
+    "target": null,
+    "by_view": {
+      "front": 0.5833333333333334,
+      "side": 0.9
+    },
+    "n": 22,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q8 extras",
+    "name": "Spec accuracy: extra-bone F1",
+    "unit": "",
+    "value": 1.0,
+    "target": {
+      "op": ">=",
+      "value": 0.85
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 21,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q8 bones",
+    "name": "Spec accuracy: bone count in range",
+    "unit": "%",
+    "value": 0.9666666666666667,
+    "target": null,
+    "by_view": {
+      "front": 1.0,
+      "side": 0.9333333333333333
+    },
+    "n": 30,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q8 assumption",
+    "name": "Spec accuracy: assumption recorded (vague prompts)",
+    "unit": "%",
+    "value": 1.0,
+    "target": null,
+    "by_view": {
+      "front": 1.0,
+      "side": null
+    },
+    "n": 15,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q9 recall",
+    "name": "Guardrail recall (should-reject rejected)",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "by_view": {},
+    "n": 18,
+    "detail": "18/18 also with the expected category",
+    "passed": true
+  },
+  {
+    "id": "Q9 precision",
+    "name": "Guardrail precision (rejections that were right)",
+    "unit": "%",
+    "value": 0.6176470588235294,
+    "target": null,
+    "by_view": {},
+    "n": 34,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q9 clamp",
+    "name": "Rejected or clamped (reject_or_clamp cases)",
+    "unit": "%",
+    "value": 1.0,
+    "target": null,
+    "by_view": {},
+    "n": 3,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q9 false-reject",
+    "name": "False-reject rate (valid prompts)",
+    "unit": "%",
+    "value": 0.08496732026143791,
+    "target": {
+      "op": "<=",
+      "value": 0.02
+    },
+    "by_view": {},
+    "n": 153,
+    "detail": "",
+    "passed": false
+  },
+  {
+    "id": "Q9b",
+    "name": "Prompt-guardrail adherence (first attempts caught by code)",
+    "unit": "%",
+    "value": 0.0,
+    "target": {
+      "op": "<=",
+      "value": 0.05
+    },
+    "by_view": {
+      "front": 0.0,
+      "side": 0.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q10 bucket",
+    "name": "Consistency: same heads-tall bucket across runs",
+    "unit": "%",
+    "value": 0.8913043478260869,
+    "target": {
+      "op": ">=",
+      "value": 0.9
+    },
+    "by_view": {
+      "front": 0.88,
+      "side": 0.9047619047619048
+    },
+    "n": 46,
+    "detail": "",
+    "passed": false
+  },
+  {
+    "id": "Q10 sigma",
+    "name": "Consistency: std-dev of proportion ratios",
+    "unit": "",
+    "value": 0.0045663826799181425,
+    "target": {
+      "op": "<=",
+      "value": 0.05
+    },
+    "by_view": {
+      "front": 0.004713646181432603,
+      "side": 0.004391068987639024
+    },
+    "n": 46,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q11",
+    "name": "Convergence: mean iterations to success",
+    "unit": "",
+    "value": 1.0,
+    "target": {
+      "op": "<=",
+      "value": 1.5
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q11 pass@1",
+    "name": "pass@1 (success on the first attempt)",
+    "unit": "%",
+    "value": 0.9150326797385621,
+    "target": null,
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 153,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q11 pass@3",
+    "name": "pass@3 (success within 3 attempts)",
+    "unit": "%",
+    "value": 0.9150326797385621,
+    "target": null,
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 153,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q12 p50 latency",
+    "name": "Latency per rig, p50",
+    "unit": "s",
+    "value": 7.713272645982215,
+    "target": null,
+    "by_view": {
+      "front": 6.875638583995169,
+      "side": 7.8365896249888465
+    },
+    "n": 140,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q12 p95 latency",
+    "name": "Latency per rig, p95",
+    "unit": "s",
+    "value": 11.783434512212986,
+    "target": {
+      "op": "<=",
+      "value": 30.0
+    },
+    "by_view": {
+      "front": 10.798855445702792,
+      "side": 11.921766749798554
+    },
+    "n": 140,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "Q12 p50 tokens",
+    "name": "Tokens per rig, p50",
+    "unit": "tokens",
+    "value": 40557.0,
+    "target": null,
+    "by_view": {
+      "front": 40160.0,
+      "side": 40965.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q12 p95 tokens",
+    "name": "Tokens per rig, p95",
+    "unit": "tokens",
+    "value": 60721.59999999995,
+    "target": null,
+    "by_view": {
+      "front": 61066.999999999985,
+      "side": 60532.0
+    },
+    "n": 140,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q12 cost",
+    "name": "Cost per rig, mean",
+    "unit": "$",
+    "value": null,
+    "target": {
+      "op": "<=",
+      "value": 0.05
+    },
+    "by_view": {},
+    "n": 0,
+    "detail": "not measured: pass --usd-per-mtok-in and --usd-per-mtok-out",
+    "passed": null
+  },
+  {
+    "id": "Q13",
+    "name": "Unity import success",
+    "unit": "%",
+    "value": null,
+    "target": {
+      "op": "=",
+      "value": 1.0
+    },
+    "by_view": {
+      "front": null,
+      "side": null
+    },
+    "n": 0,
+    "detail": "not measured: run with --unity",
+    "passed": null
+  }
+]

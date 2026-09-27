@@ -1,0 +1,52 @@
+[
+  {
+    "id": "Q9 recall",
+    "name": "Guardrail recall (should-reject rejected)",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "by_view": {},
+    "n": 18,
+    "detail": "18/18 also with the expected category",
+    "passed": true
+  },
+  {
+    "id": "Q9 precision",
+    "name": "Guardrail precision (rejections that were right)",
+    "unit": "%",
+    "value": 1.0,
+    "target": null,
+    "by_view": {},
+    "n": 21,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q9 clamp",
+    "name": "Rejected or clamped (reject_or_clamp cases)",
+    "unit": "%",
+    "value": 1.0,
+    "target": null,
+    "by_view": {},
+    "n": 3,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "Q9 false-reject",
+    "name": "False-reject rate (valid prompts)",
+    "unit": "%",
+    "value": 0.0,
+    "target": {
+      "op": "<=",
+      "value": 0.02
+    },
+    "by_view": {},
+    "n": 153,
+    "detail": "",
+    "passed": true
+  }
+]
