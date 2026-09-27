@@ -1,14 +1,14 @@
 {
   "schema_version": "1.1",
-  "rig_name": "a_chibi_knight_with_a_small_sword",
-  "source_prompt": "chibi knight with a small sword",
+  "rig_name": "a_ninja_assassin_with_a_katana",
+  "source_prompt": "Create a ninja assaisin  with a katana in hand.",
   "units": "unity_world",
   "pixels_per_unit": 100,
   "height": 2.0,
   "view": "front",
   "facing": null,
   "rest_pose": "A_pose",
-  "style": "chibi knight",
+  "style": "stylized ninja",
   "bones": [
     {
       "id": 0,
@@ -40,18 +40,18 @@
       "parent_id": 0,
       "world_head": [
         0.0,
-        0.6
+        0.84
       ],
       "world_tail": [
         0.0,
-        0.733333
+        0.992
       ],
       "local_position": [
-        0.6,
+        0.84,
         0.0
       ],
       "local_rotation_deg": 0.0,
-      "length": 0.133333,
+      "length": 0.152,
       "depth": 0,
       "layer": null,
       "rotation_limits_deg": null,
@@ -64,18 +64,18 @@
       "parent_id": 1,
       "world_head": [
         0.0,
-        0.733333
+        0.992
       ],
       "world_tail": [
         0.0,
-        1.266667
+        1.258
       ],
       "local_position": [
-        0.133333,
+        0.152,
         0.0
       ],
       "local_rotation_deg": 0.0,
-      "length": 0.533333,
+      "length": 0.266,
       "depth": 0,
       "layer": null,
       "rotation_limits_deg": null,
@@ -84,22 +84,22 @@
     },
     {
       "id": 3,
-      "name": "head",
+      "name": "chest",
       "parent_id": 2,
       "world_head": [
         0.0,
-        1.266667
+        1.258
       ],
       "world_tail": [
         0.0,
-        2.0
+        1.6
       ],
       "local_position": [
-        0.533333,
+        0.266,
         0.0
       ],
       "local_rotation_deg": 0.0,
-      "length": 0.733333,
+      "length": 0.342,
       "depth": 0,
       "layer": null,
       "rotation_limits_deg": null,
@@ -108,22 +108,70 @@
     },
     {
       "id": 4,
-      "name": "upper_arm_L",
-      "parent_id": 2,
+      "name": "neck",
+      "parent_id": 3,
       "world_head": [
-        0.4,
-        1.196136
+        0.0,
+        1.6
       ],
       "world_tail": [
-        0.56122,
-        1.034916
+        0.0,
+        1.666667
       ],
       "local_position": [
-        0.462803,
-        -0.4
+        0.342,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.066667,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 5,
+      "name": "head",
+      "parent_id": 4,
+      "world_head": [
+        0.0,
+        1.666667
+      ],
+      "world_tail": [
+        0.0,
+        2.0
+      ],
+      "local_position": [
+        0.066667,
+        0.0
+      ],
+      "local_rotation_deg": 0.0,
+      "length": 0.333333,
+      "depth": 0,
+      "layer": null,
+      "rotation_limits_deg": null,
+      "ik_chain": null,
+      "mirror_of": null
+    },
+    {
+      "id": 6,
+      "name": "upper_arm_L",
+      "parent_id": 3,
+      "world_head": [
+        0.3,
+        1.547102
+      ],
+      "world_tail": [
+        0.537588,
+        1.309514
+      ],
+      "local_position": [
+        0.289102,
+        -0.3
       ],
       "local_rotation_deg": -135.0,
-      "length": 0.228,
+      "length": 0.336,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -131,23 +179,23 @@
       "mirror_of": "upper_arm_R"
     },
     {
-      "id": 5,
+      "id": 7,
       "name": "upper_arm_R",
-      "parent_id": 2,
+      "parent_id": 3,
       "world_head": [
-        -0.4,
-        1.196136
+        -0.3,
+        1.547102
       ],
       "world_tail": [
-        -0.56122,
-        1.034916
+        -0.537588,
+        1.309514
       ],
       "local_position": [
-        0.462803,
-        0.4
+        0.289102,
+        0.3
       ],
       "local_rotation_deg": 135.0,
-      "length": 0.228,
+      "length": 0.336,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -155,23 +203,23 @@
       "mirror_of": "upper_arm_L"
     },
     {
-      "id": 6,
+      "id": 8,
       "name": "forearm_L",
-      "parent_id": 4,
+      "parent_id": 6,
       "world_head": [
-        0.56122,
-        1.034916
+        0.537588,
+        1.309514
       ],
       "world_tail": [
-        0.70547,
-        0.890666
+        0.735578,
+        1.111524
       ],
       "local_position": [
-        0.228,
+        0.336,
         0.0
       ],
       "local_rotation_deg": 0.0,
-      "length": 0.204,
+      "length": 0.28,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -179,23 +227,23 @@
       "mirror_of": "forearm_R"
     },
     {
-      "id": 7,
+      "id": 9,
       "name": "forearm_R",
-      "parent_id": 5,
+      "parent_id": 7,
       "world_head": [
-        -0.56122,
-        1.034916
+        -0.537588,
+        1.309514
       ],
       "world_tail": [
-        -0.70547,
-        0.890666
+        -0.735578,
+        1.111524
       ],
       "local_position": [
-        0.228,
+        0.336,
         0.0
       ],
       "local_rotation_deg": 0.0,
-      "length": 0.204,
+      "length": 0.28,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -203,23 +251,23 @@
       "mirror_of": "forearm_L"
     },
     {
-      "id": 8,
+      "id": 10,
       "name": "hand_L",
-      "parent_id": 6,
+      "parent_id": 8,
       "world_head": [
-        0.70547,
-        0.890666
+        0.735578,
+        1.111524
       ],
       "world_tail": [
-        0.824264,
-        0.771872
+        0.865685,
+        0.981416
       ],
       "local_position": [
-        0.204,
+        0.28,
         0.0
       ],
       "local_rotation_deg": 0.0,
-      "length": 0.168,
+      "length": 0.184,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -227,23 +275,23 @@
       "mirror_of": "hand_R"
     },
     {
-      "id": 9,
+      "id": 11,
       "name": "hand_R",
-      "parent_id": 7,
+      "parent_id": 9,
       "world_head": [
-        -0.70547,
-        0.890666
+        -0.735578,
+        1.111524
       ],
       "world_tail": [
-        -0.824264,
-        0.771872
+        -0.865685,
+        0.981416
       ],
       "local_position": [
-        0.204,
+        0.28,
         0.0
       ],
       "local_rotation_deg": 0.0,
-      "length": 0.168,
+      "length": 0.184,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -251,23 +299,23 @@
       "mirror_of": "hand_L"
     },
     {
-      "id": 10,
+      "id": 12,
       "name": "thigh_L",
       "parent_id": 1,
       "world_head": [
-        0.2,
-        0.6
+        0.133333,
+        0.84
       ],
       "world_tail": [
-        0.2,
-        0.375
+        0.133333,
+        0.4752
       ],
       "local_position": [
         0.0,
-        -0.2
+        -0.133333
       ],
       "local_rotation_deg": 180.0,
-      "length": 0.225,
+      "length": 0.3648,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -275,23 +323,23 @@
       "mirror_of": "thigh_R"
     },
     {
-      "id": 11,
+      "id": 13,
       "name": "thigh_R",
       "parent_id": 1,
       "world_head": [
-        -0.2,
-        0.6
+        -0.133333,
+        0.84
       ],
       "world_tail": [
-        -0.2,
-        0.375
+        -0.133333,
+        0.4752
       ],
       "local_position": [
         0.0,
-        0.2
+        0.133333
       ],
       "local_rotation_deg": 180.0,
-      "length": 0.225,
+      "length": 0.3648,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -299,23 +347,23 @@
       "mirror_of": "thigh_L"
     },
     {
-      "id": 12,
+      "id": 14,
       "name": "shin_L",
-      "parent_id": 10,
+      "parent_id": 12,
       "world_head": [
-        0.2,
-        0.375
+        0.133333,
+        0.4752
       ],
       "world_tail": [
-        0.2,
-        0.1
+        0.133333,
+        0.08
       ],
       "local_position": [
-        0.225,
+        0.3648,
         0.0
       ],
       "local_rotation_deg": 0.0,
-      "length": 0.275,
+      "length": 0.3952,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -323,23 +371,23 @@
       "mirror_of": "shin_R"
     },
     {
-      "id": 13,
+      "id": 15,
       "name": "shin_R",
-      "parent_id": 11,
+      "parent_id": 13,
       "world_head": [
-        -0.2,
-        0.375
+        -0.133333,
+        0.4752
       ],
       "world_tail": [
-        -0.2,
-        0.1
+        -0.133333,
+        0.08
       ],
       "local_position": [
-        0.225,
+        0.3648,
         0.0
       ],
       "local_rotation_deg": 0.0,
-      "length": 0.275,
+      "length": 0.3952,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -347,23 +395,23 @@
       "mirror_of": "shin_L"
     },
     {
-      "id": 14,
+      "id": 16,
       "name": "foot_L",
-      "parent_id": 12,
+      "parent_id": 14,
       "world_head": [
-        0.2,
-        0.1
+        0.133333,
+        0.08
       ],
       "world_tail": [
-        0.8,
-        0.1
+        0.466667,
+        0.08
       ],
       "local_position": [
-        0.275,
+        0.3952,
         0.0
       ],
       "local_rotation_deg": 90.0,
-      "length": 0.6,
+      "length": 0.333333,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -371,23 +419,23 @@
       "mirror_of": "foot_R"
     },
     {
-      "id": 15,
+      "id": 17,
       "name": "foot_R",
-      "parent_id": 13,
+      "parent_id": 15,
       "world_head": [
-        -0.2,
-        0.1
+        -0.133333,
+        0.08
       ],
       "world_tail": [
-        -0.8,
-        0.1
+        -0.466667,
+        0.08
       ],
       "local_position": [
-        0.275,
+        0.3952,
         0.0
       ],
       "local_rotation_deg": -90.0,
-      "length": 0.6,
+      "length": 0.333333,
       "depth": 1,
       "layer": null,
       "rotation_limits_deg": null,
@@ -395,23 +443,23 @@
       "mirror_of": "foot_L"
     },
     {
-      "id": 16,
-      "name": "extra_sword",
-      "parent_id": 9,
+      "id": 18,
+      "name": "extra_katana",
+      "parent_id": 11,
       "world_head": [
-        -0.824264,
-        0.771872
+        -0.865685,
+        0.981416
       ],
       "world_tail": [
-        -0.391251,
-        0.521872
+        -0.259468,
+        0.631416
       ],
       "local_position": [
-        0.168,
+        0.184,
         0.0
       ],
       "local_rotation_deg": 105.0,
-      "length": 0.5,
+      "length": 0.7,
       "depth": 1,
       "layer": "front",
       "rotation_limits_deg": null,
@@ -454,9 +502,9 @@
     "model": "openai:gpt-5.4-mini",
     "iterations": 1,
     "assumptions": [
-      "no view was given, so front view",
-      "chibi means the chibi preset",
-      "a small sword is a held weapon on the right hand"
+      "front view requested by caller",
+      "katana held in the right hand",
+      "stylized ninja build inferred"
     ]
   }
 }

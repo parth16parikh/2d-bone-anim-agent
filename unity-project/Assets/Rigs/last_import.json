@@ -1,17 +1,17 @@
 {
     "ok": true,
     "file": "Assets/Rigs/skeleton.json",
-    "rig_name": "a_chibi_knight_with_a_small_sword",
+    "rig_name": "a_ninja_assassin_with_a_katana",
     "view": "front",
-    "bone_count": 17,
-    "root_path": "RigAgent_Output/a_chibi_knight_with_a_small_sword",
-    "max_head_error": 0.00017377738549839705,
-    "max_tail_error": 0.00017377738549839705,
+    "bone_count": 19,
+    "root_path": "RigAgent_Output/a_ninja_assassin_with_a_katana",
+    "max_head_error": 0.0002009140298468992,
+    "max_tail_error": 0.0002009140298468992,
     "skin": {
-        "sprite_path": "Assets/Prefabs/Rigs/a_chibi_knight_with_a_small_sword/a_chibi_knight_with_a_small_sword_placeholder.png",
-        "skeleton_path": "Assets/Prefabs/Rigs/a_chibi_knight_with_a_small_sword/a_chibi_knight_with_a_small_sword_skeleton.asset",
-        "sprite_bones": 17,
-        "bind_poses": 17,
+        "sprite_path": "Assets/Prefabs/Rigs/a_ninja_assassin_with_a_katana/a_ninja_assassin_with_a_katana_placeholder.png",
+        "skeleton_path": "Assets/Prefabs/Rigs/a_ninja_assassin_with_a_katana/a_ninja_assassin_with_a_katana_skeleton.asset",
+        "sprite_bones": 19,
+        "bind_poses": 19,
         "has_weights": true,
         "state": "Ready"
     },
@@ -54,7 +54,7 @@
             "id": 0,
             "name": "root",
             "parent": "",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root",
             "world_head": [
                 0.0,
                 0.0
@@ -70,14 +70,14 @@
             "id": 1,
             "name": "hip",
             "parent": "root",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip",
             "world_head": [
-                -5.960464477539063e-8,
-                0.6000000834465027
+                -1.1920928955078126e-7,
+                0.8400000929832459
             ],
             "world_tail": [
-                -5.960464477539063e-8,
-                0.7333330512046814
+                -1.1920928955078126e-7,
+                0.9920001029968262
             ],
             "depth": 0,
             "layer": ""
@@ -86,238 +86,270 @@
             "id": 2,
             "name": "spine",
             "parent": "hip",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine",
             "world_head": [
-                -5.960464477539063e-8,
-                0.7333330512046814
+                -1.1920928955078126e-7,
+                0.9920001029968262
             ],
             "world_tail": [
                 -1.1920928955078126e-7,
-                1.2666661739349366
+                1.2580000162124634
             ],
             "depth": 0,
             "layer": ""
         },
         {
             "id": 3,
-            "name": "head",
+            "name": "chest",
             "parent": "spine",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/head",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest",
             "world_head": [
                 -1.1920928955078126e-7,
-                1.2666661739349366
+                1.2580000162124634
             ],
             "world_tail": [
                 -2.384185791015625e-7,
-                1.9999991655349732
+                1.600000262260437
             ],
             "depth": 0,
             "layer": ""
         },
         {
             "id": 4,
-            "name": "upper_arm_L",
-            "parent": "spine",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_L",
+            "name": "neck",
+            "parent": "chest",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/neck",
             "world_head": [
-                0.3999999463558197,
-                1.196136236190796
+                -2.384185791015625e-7,
+                1.600000262260437
             ],
             "world_tail": [
-                0.5611238479614258,
-                1.0348193645477296
+                -2.384185791015625e-7,
+                1.6666672229766846
             ],
-            "depth": 1,
+            "depth": 0,
             "layer": ""
         },
         {
             "id": 5,
-            "name": "upper_arm_R",
-            "parent": "spine",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_R",
+            "name": "head",
+            "parent": "neck",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/neck/head",
             "world_head": [
-                -0.4000001847743988,
-                1.1961359977722169
+                -2.384185791015625e-7,
+                1.6666672229766846
             ],
             "world_tail": [
-                -0.5611648559570313,
-                1.0348600149154664
+                -2.384185791015625e-7,
+                2.000000238418579
             ],
-            "depth": 1,
+            "depth": 0,
             "layer": ""
         },
         {
             "id": 6,
-            "name": "forearm_L",
-            "parent": "upper_arm_L",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_L/forearm_L",
+            "name": "upper_arm_L",
+            "parent": "chest",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_L",
             "world_head": [
-                0.5611238479614258,
-                1.0348193645477296
+                0.29999980330467226,
+                1.5471023321151734
             ],
             "world_tail": [
-                0.7054669260978699,
-                0.8906629681587219
+                0.5375878214836121,
+                1.3095142841339112
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 7,
-            "name": "forearm_R",
-            "parent": "upper_arm_R",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_R/forearm_R",
+            "name": "upper_arm_R",
+            "parent": "chest",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_R",
             "world_head": [
-                -0.5611648559570313,
-                1.0348600149154664
+                -0.30000028014183047,
+                1.5471020936965943
             ],
             "world_tail": [
-                -0.7054762244224548,
-                0.8906719088554382
+                -0.5374459624290466,
+                1.3093719482421876
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 8,
-            "name": "hand_L",
-            "parent": "forearm_L",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_L/forearm_L/hand_L",
+            "name": "forearm_L",
+            "parent": "upper_arm_L",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_L/forearm_L",
             "world_head": [
-                0.7054669260978699,
-                0.8906629681587219
+                0.5375878214836121,
+                1.3095142841339112
             ],
             "world_tail": [
-                0.8242610096931458,
-                0.7718690633773804
+                0.7355777621269226,
+                1.1115243434906006
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 9,
-            "name": "hand_R",
-            "parent": "forearm_R",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_R/forearm_R/hand_R",
+            "name": "forearm_R",
+            "parent": "upper_arm_R",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_R/forearm_R",
             "world_head": [
-                -0.7054762244224548,
-                0.8906719088554382
+                -0.5374459624290466,
+                1.3093719482421876
             ],
             "world_tail": [
-                -0.8242701888084412,
-                0.7718779444694519
+                -0.7355732321739197,
+                1.1115195751190186
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 10,
-            "name": "thigh_L",
-            "parent": "hip",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_L",
+            "name": "hand_L",
+            "parent": "forearm_L",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_L/forearm_L/hand_L",
             "world_head": [
-                0.19999997317790986,
-                0.6000001430511475
+                0.7355777621269226,
+                1.1115243434906006
             ],
             "world_tail": [
-                0.19999998807907105,
-                0.37500011920928957
+                0.8656854629516602,
+                0.9814167022705078
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 11,
-            "name": "thigh_R",
-            "parent": "hip",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_R",
+            "name": "hand_R",
+            "parent": "forearm_R",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R",
             "world_head": [
-                -0.2000000923871994,
-                0.6000000238418579
+                -0.7355732321739197,
+                1.1115195751190186
             ],
             "world_tail": [
-                -0.2001737803220749,
-                0.37500011920928957
+                -0.8656809329986572,
+                0.9814118146896362
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 12,
-            "name": "shin_L",
-            "parent": "thigh_L",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_L/shin_L",
+            "name": "thigh_L",
+            "parent": "hip",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_L",
             "world_head": [
-                0.19999998807907105,
-                0.37500011920928957
+                0.13333289325237275,
+                0.8400000929832459
             ],
             "world_tail": [
-                0.20000006258487702,
-                0.10000006854534149
+                0.1333329826593399,
+                0.4752000570297241
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 13,
-            "name": "shin_R",
-            "parent": "thigh_R",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_R/shin_R",
+            "name": "thigh_R",
+            "parent": "hip",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_R",
             "world_head": [
-                -0.2001737803220749,
-                0.37500011920928957
+                -0.13333313167095185,
+                0.8400000929832459
             ],
             "world_tail": [
-                -0.20000623166561128,
-                0.10000011324882508
+                -0.13333304226398469,
+                0.4752000570297241
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 14,
-            "name": "foot_L",
-            "parent": "shin_L",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_L/shin_L/foot_L",
+            "name": "shin_L",
+            "parent": "thigh_L",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_L/shin_L",
             "world_head": [
-                0.20000006258487702,
-                0.10000006854534149
+                0.1333329826593399,
+                0.4752000570297241
             ],
             "world_tail": [
-                0.8000002503395081,
-                0.10000026226043701
+                0.13333305716514588,
+                0.08000000566244126
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 15,
-            "name": "foot_R",
-            "parent": "shin_R",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/thigh_R/shin_R/foot_R",
+            "name": "shin_R",
+            "parent": "thigh_R",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_R/shin_R",
             "world_head": [
-                -0.20000623166561128,
-                0.10000011324882508
+                -0.13333304226398469,
+                0.4752000570297241
             ],
             "world_tail": [
-                -0.8000064492225647,
-                0.09999996423721314
+                -0.1333329677581787,
+                0.07999996840953827
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 16,
-            "name": "extra_sword",
-            "parent": "hand_R",
-            "path": "RigAgent_Output/a_chibi_knight_with_a_small_sword/root/hip/spine/upper_arm_R/forearm_R/hand_R/extra_sword",
+            "name": "foot_L",
+            "parent": "shin_L",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_L/shin_L/foot_L",
             "world_head": [
-                -0.8242701888084412,
-                0.7718779444694519
+                0.13333305716514588,
+                0.08000000566244126
             ],
             "world_tail": [
-                -0.39125731587409975,
-                0.5218777656555176
+                0.4666661322116852,
+                0.08000004291534424
+            ],
+            "depth": 1,
+            "layer": ""
+        },
+        {
+            "id": 17,
+            "name": "foot_R",
+            "parent": "shin_R",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_R/shin_R/foot_R",
+            "world_head": [
+                -0.1333329677581787,
+                0.07999996840953827
+            ],
+            "world_tail": [
+                -0.46666601300239565,
+                0.07999995350837708
+            ],
+            "depth": 1,
+            "layer": ""
+        },
+        {
+            "id": 18,
+            "name": "extra_katana",
+            "parent": "hand_R",
+            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R/extra_katana",
+            "world_head": [
+                -0.8656809329986572,
+                0.9814118146896362
+            ],
+            "world_tail": [
+                -0.25946298241615298,
+                0.6314117908477783
             ],
             "depth": 1,
             "layer": "front"

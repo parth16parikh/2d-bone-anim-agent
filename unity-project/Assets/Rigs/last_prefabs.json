@@ -4,8 +4,8 @@
     "errors": [],
     "results": [
         {
-            "rig": "a_chibi_knight_with_a_small_sword",
-            "path": "Assets/Prefabs/Rigs/a_chibi_knight_with_a_small_sword/a_chibi_knight_with_a_small_sword.prefab",
+            "rig": "a_ninja_assassin_with_a_katana",
+            "path": "Assets/Prefabs/Rigs/a_ninja_assassin_with_a_katana/a_ninja_assassin_with_a_katana.prefab",
             "status": "created",
             "message": ""
         }
