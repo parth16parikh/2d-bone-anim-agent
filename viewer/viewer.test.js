@@ -238,3 +238,69 @@ test('depth colouring renders behind and in front limbs differently', () => {
   const svg = V.renderSvg(model(sk), view, { ...OPTS, color: 'depth' }, SIZE);
   assert.ok(svg.includes('fill="hsl(24') && svg.includes('fill="hsl(214'));
 });
+
+// ---------- animation ----------
+
+const TWO = () => ({
+  height: 2, bones: [
+    { id: 0, name: 'root', parent_id: -1, local_position: [0, 0], local_rotation_deg: 90, length: 1, world_head: [0, 0], world_tail: [0, 1] },
+    { id: 1, name: 'arm', parent_id: 0, local_position: [1, 0], local_rotation_deg: -90, length: 0.5, world_head: [0, 1], world_tail: [0.5, 1] },
+  ],
+});
+const clipOf = (rotations, extra) => Object.assign({ fps: 4, frame_count: 5, loop: true, ground_speed: 0, rotations, positions: {} }, extra);
+
+test('classifyFile recognises an animation clip, and parseAnimation explains problems', () => {
+  const clip = clipOf({ arm: [0, 1, 2, 1, 0] });
+  assert.equal(V.classifyFile(JSON.stringify(clip)).kind, 'animation');
+  assert.throws(() => V.parseAnimation('{"rotations": {}}'), /frame_count/);
+  assert.throws(() => V.parseAnimation(JSON.stringify(clipOf({ arm: [0, 1] }))), /needs 5 frames/);
+});
+
+test('poseAt without a clip reproduces the skeleton', () => {
+  for (const sk of [knight(), elf()]) {
+    const posed = V.poseAt(sk, null, 0);
+    sk.bones.forEach((b, i) => {
+      for (const k of ['world_head', 'world_tail']) {
+        assert.ok(Math.hypot(posed.bones[i][k][0] - b[k][0], posed.bones[i][k][1] - b[k][1]) < 5e-6, b.name + ' ' + k);
+      }
+    });
+  }
+});
+
+test('poseAt applies the clip: rotations turn children with their parent, positions move them', () => {
+  const clip = clipOf({ root: [90, 90, 180, 90, 90] }, { positions: { arm: [[1, 0], [0.5, 0], [1, 0], [1, 0], [1, 0]] } });
+  const f1 = V.poseAt(TWO(), clip, 1).bones, f2 = V.poseAt(TWO(), clip, 2).bones;
+  assert.deepEqual(f1[1].world_head.map((v) => +v.toFixed(9)), [0, 0.5]); // halfway up the root
+  // root turned to point left: the arm (local -90) now points up, starting at (-1, 0)
+  assert.deepEqual(f2[1].world_head.map((v) => +v.toFixed(9)), [-1, 0]);
+  assert.deepEqual(f2[1].world_tail.map((v) => +v.toFixed(9)), [-1, 0.5]);
+});
+
+test('clipMismatch names bones the rig does not have', () => {
+  assert.deepEqual(V.clipMismatch(clipOf({ arm: [0, 0, 0, 0, 0], tail: [0, 0, 0, 0, 0] }), TWO()), ['tail']);
+});
+
+test('frameAt loops over the frames before the closing key', () => {
+  const clip = clipOf({});
+  assert.deepEqual([0, 0.26, 0.5, 0.99, 1.0, 1.3].map((s) => V.frameAt(clip, s)), [0, 1, 2, 3, 0, 1]);
+  assert.equal(V.frameAt(Object.assign(clipOf({}), { loop: false }), 10), 4);
+});
+
+test('onionFrames are distinct neighbours that wrap around the loop', () => {
+  const clip = Object.assign(clipOf({}), { frame_count: 25 }); // 24-frame cycle, step 2
+  assert.deepEqual(V.onionFrames(clip, 0, 2), [22, 2, 20, 4]);
+  assert.ok(!V.onionFrames(clip, 5, 2).includes(5));
+});
+
+test('renderSvg draws onion-skin ghosts and moving ground marks', () => {
+  const sk = knight(), view = V.fitView(sk, SIZE, 40);
+  const plain = V.renderSvg(model(sk), view, OPTS, SIZE);
+  assert.equal(count(plain, /class="ghost"/g), 0);
+  assert.equal(count(plain, /class="ground-mark"/g), 0);
+  const svg = V.renderSvg(model(sk, { ghosts: [sk, sk] }), view, Object.assign({}, OPTS, { groundShift: 0.13 }), SIZE);
+  assert.equal(count(svg, /class="ghost"/g), 2 * sk.bones.length);
+  assert.ok(count(svg, /class="ground-mark"/g) > 5);
+  // the marks move with the shift
+  const later = V.renderSvg(model(sk), view, Object.assign({}, OPTS, { groundShift: 0.2 }), SIZE);
+  assert.notEqual(svg.match(/class="ground-mark"[^>]*/)[0], later.match(/class="ground-mark"[^>]*/)[0]);
+});

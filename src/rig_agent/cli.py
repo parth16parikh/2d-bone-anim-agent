@@ -16,9 +16,12 @@ from pydantic_ai.exceptions import AgentRunError
 
 from rig_agent.agent.planner import plan
 from rig_agent.agent.tools import dry_run_validate
+from rig_agent.animation.baker import BakeError, bake
+from rig_agent.animation.validator import validate_clip
 from rig_agent.builder.errors import BuildError
 from rig_agent.builder.skeleton_builder import build_skeleton
 from rig_agent.config import settings
+from rig_agent.export.animation_exporter import animation_paths, export_animation, load_animation
 from rig_agent.export.json_exporter import (
     SKELETON_FILE,
     NotARigFolderError,
@@ -26,12 +29,17 @@ from rig_agent.export.json_exporter import (
     export,
     load_skeleton,
 )
+from rig_agent.graph.anim_graph import default_anim_deps, run_animation
 from rig_agent.graph.build_graph import run_rig
 from rig_agent.graph.nodes import default_deps
 from rig_agent.guardrails.input_guard import check_input
 from rig_agent.llm import MissingApiKeyError
 from rig_agent.observability.tracing import configure as configure_tracing
+from rig_agent.schemas.animation import CLIP_TYPES, AnimationClip, AnimationSpec
 from rig_agent.schemas.rig_spec import RigSpec
+from rig_agent.schemas.skeleton import Skeleton
+from rig_agent.schemas.state import UnityResult
+from rig_agent.unity.animation import rig_object_names
 from rig_agent.unity.batch import collect_rigs
 from rig_agent.unity.delivery import UnityDelivery
 from rig_agent.unity.install import UnityProjectError, install_scripts, scripts_installed
@@ -114,6 +122,72 @@ def _build(args: argparse.Namespace) -> int:
     for issue in report.issues:
         print(f"  [{issue.severity}] {issue.code.value}: {issue.message}")
     return 0 if report.passed else 1
+
+
+def _animate_build(args: argparse.Namespace) -> int:
+    skeleton_path = args.rig / SKELETON_FILE
+    try:
+        skeleton = load_skeleton(skeleton_path)
+    except OSError as error:
+        print(f"cannot read {skeleton_path}: {error}", file=sys.stderr)
+        return 2
+    except ValidationError as error:
+        print(f"{skeleton_path} is not a valid skeleton.json:\n{error}", file=sys.stderr)
+        return 2
+    if args.spec is not None:
+        try:
+            spec = AnimationSpec.model_validate_json(args.spec.read_text(encoding="utf-8"))
+        except OSError as error:
+            print(f"cannot read {args.spec}: {error}", file=sys.stderr)
+            return 2
+        except ValidationError as error:
+            print(f"{args.spec} is not a valid AnimationSpec:\n{error}", file=sys.stderr)
+            return 2
+    else:
+        spec = AnimationSpec(clip=args.clip, style="default")
+
+    _say(f"[1/3] Baking a {spec.clip} clip onto '{skeleton.rig_name}' ({skeleton.view} view) ...")
+    try:
+        clip = bake(spec, skeleton, name=args.name)
+    except BakeError as error:
+        print(f"cannot bake the clip: {error}", file=sys.stderr)
+        return 2
+    _say(
+        f"      {clip.frame_count} frames at {clip.fps} fps ({clip.duration_s:.2f}s loop), "
+        f"{len(clip.rotations)} animated bones, {len(clip.ik_targets)} IK targets"
+    )
+
+    _say("[2/3] Validating ...")
+    report = validate_clip(clip, skeleton)
+    status = "PASSED" if report.passed else "FAILED"
+    m = report.metrics
+    _say(f"      {status}: {len(report.errors)} errors, {len(report.warnings)} warnings")
+    if "max_foot_slip" in m:
+        _say(
+            f"      foot slip {m['max_foot_slip'] * 100:.3f}% H/frame, loop error {m['loop_error']:.1e}, "
+            f"max joint bend {m['max_joint_bend_deg']:.0f}°"
+        )
+
+    paths = animation_paths(args.rig, clip.name)
+    _say(f"[3/3] Exporting to {paths.clip_path.parent} ...")
+    if paths.clip_path.is_file():
+        _say(f"      note: replacing the clip already at {paths.clip_path}")
+    export_animation(clip, report, args.rig)
+
+    speed = f", ground speed {clip.ground_speed:.3f} units/s" if clip.ground_speed else ""
+    print(f"Baked '{clip.name}' for '{skeleton.rig_name}': {clip.duration_s:.2f}s loop{speed}")
+    print(f"clip:   {paths.clip_path}")
+    print(f"report: {paths.report_path} ({status})")
+    for issue in report.issues:
+        print(f"  [{issue.severity}] {issue.code.value}: {issue.message}")
+    if not report.passed:
+        if args.unity:
+            print("unity: skipped (the clip did not pass validation)")
+        return 1
+    # like run --unity: an unreachable Unity does not fail the command, the clip is written
+    if args.unity and _send_clip(clip, skeleton, args.rig).status == "failed":
+        return 1
+    return 0
 
 
 def _plan(args: argparse.Namespace) -> int:
@@ -224,6 +298,72 @@ def _run(args: argparse.Namespace) -> int:
     return 0
 
 
+def _animate(args: argparse.Namespace) -> int:
+    started = time.perf_counter()
+    skeleton_path = args.rig / SKELETON_FILE
+    try:
+        skeleton = load_skeleton(skeleton_path)
+    except OSError as error:
+        print(f"cannot read {skeleton_path}: {error}", file=sys.stderr)
+        return 2
+    except ValidationError as error:
+        print(f"{skeleton_path} is not a valid skeleton.json:\n{error}", file=sys.stderr)
+        return 2
+    _say(f"Animating '{skeleton.rig_name}' ({skeleton.view} view): \"{args.description}\"")
+    state = run_animation(
+        args.description,
+        skeleton,
+        args.rig,
+        name=args.name,
+        unity_mode=args.unity,
+        deps=default_anim_deps(say=_say),
+    )
+    status = state["status"]
+    usage = state["usage"]
+    attempts = state.get("attempts") or []
+    _say(
+        f"Finished in {time.perf_counter() - started:.1f}s: {len(attempts)} attempt(s), "
+        f"{usage.requests} model calls, {usage.tool_calls} tool calls, {usage.total_tokens:,} tokens"
+    )
+
+    print(f"Status: {status}")
+    if status == "rejected":
+        guard = state.get("guard")
+        if guard:
+            print(f"Request not accepted ({guard.category}): {guard.reason}", file=sys.stderr)
+            if guard.suggestion:
+                print(f"Suggestion: {guard.suggestion}", file=sys.stderr)
+        return 1
+    if status == "error":
+        print(f"Error: {state.get('error')}", file=sys.stderr)
+        return 2
+
+    spec, clip = state.get("spec"), state.get("clip")
+    if spec is not None:
+        print(
+            f"clip:   {spec.clip}, '{spec.style}'"
+            + (f"; assumptions: {'; '.join(spec.assumptions)}" if spec.assumptions else "")
+        )
+    output_path = state.get("output_path")
+    if output_path:
+        print(f"file:   {output_path}")
+        print(f"report: {Path(output_path).with_suffix('.report.json')}")
+    if clip is not None and clip.ground_speed:
+        print(f"ground speed: {clip.ground_speed:.3f} units/s (move the character at this speed)")
+    unity = state.get("unity_result")
+    if unity:
+        print(f"unity:  {unity.status} ({unity.detail})")
+    if status == "best_effort":
+        print("Not import-ready: the clip did not pass validation.")
+        report = state.get("validation")
+        for issue in report.issues if report else []:
+            print(f"  [{issue.severity}] {issue.code.value}: {issue.message}")
+        return 1
+    # as with animate-build --unity: an unreachable Unity is fine (the clip is written), a failed
+    # import is not
+    return 1 if unity and unity.status == "failed" else 0
+
+
 def _unity_check(args: argparse.Namespace) -> int:
     url = args.url or settings.unity_mcp_url
     _say(f"Connecting to the Unity MCP server at {url} ...")
@@ -295,6 +435,36 @@ def _unity_apply(args: argparse.Namespace) -> int:
     result = UnityDelivery(say=_say, prefab=prefab, ik=not args.no_ik).deliver(skeleton)
     detail = f" ({result.detail})" if result.detail else ""
     print(f"unity: {result.status}{detail}")
+    return {"applied": 0, "failed": 1}.get(result.status, 2)
+
+
+def _send_clip(clip: AnimationClip, skeleton: Skeleton, rig_folder: Path) -> UnityResult:
+    result = UnityDelivery(say=_say).deliver_animation(
+        clip, skeleton, rig_object_names(skeleton, rig_folder)
+    )
+    detail = f" ({result.detail})" if result.detail else ""
+    print(f"unity: {result.status}{detail}")
+    return result
+
+
+def _unity_apply_anim(args: argparse.Namespace) -> int:
+    rig_folder = args.rig or args.clip.resolve().parent.parent  # <rig>/animations/<clip>.json
+    try:
+        clip = load_animation(args.clip)
+        skeleton = load_skeleton(rig_folder / SKELETON_FILE)
+    except OSError as error:
+        print(f"cannot read the clip or its rig: {error}", file=sys.stderr)
+        return 2
+    except ValidationError as error:
+        print(f"not a valid clip or skeleton.json:\n{error}", file=sys.stderr)
+        return 2
+    report = validate_clip(clip, skeleton)
+    if not report.passed:
+        print(f"'{clip.name}' does not pass validation for this rig; not sending it to Unity:")
+        for issue in report.errors:
+            print(f"  [error] {issue.code.value}: {issue.message}")
+        return 1
+    result = _send_clip(clip, skeleton, rig_folder)
     return {"applied": 0, "failed": 1}.get(result.status, 2)
 
 
@@ -455,6 +625,48 @@ def main(argv: list[str] | None = None) -> int:
     build.add_argument("--out", type=Path, default=Path("out"), help="output directory")
     build.add_argument("--prompt", default="", help="text recorded as the skeleton's source_prompt")
     build.set_defaults(handler=_build)
+
+    animator = commands.add_parser(
+        "animate-build", help="bake an idle/walk/run clip onto a rig from an AnimationSpec (no LLM)"
+    )
+    animator.add_argument(
+        "--rig", required=True, type=Path, help="rig folder with a skeleton.json, e.g. out/knight"
+    )
+    source = animator.add_mutually_exclusive_group(required=True)
+    source.add_argument("--spec", type=Path, help="path to an AnimationSpec JSON file")
+    source.add_argument("--clip", choices=CLIP_TYPES, help="bake this clip with default settings")
+    animator.add_argument(
+        "--name", help="clip name, used for the file name (default: the clip type)"
+    )
+    animator.add_argument(
+        "--unity", action="store_true", help="also put the clip on the rig in the open Unity Editor"
+    )
+    animator.set_defaults(handler=_animate_build)
+
+    animate = commands.add_parser(
+        "animate",
+        help="description to validated animation clip for a rig: guard, plan, bake, repair",
+    )
+    animate.add_argument("rig", type=Path, help="rig folder with a skeleton.json, e.g. out/knight")
+    animate.add_argument("description", help="the motion, for example 'a heavy, tired walk'")
+    animate.add_argument(
+        "--name", help="clip file name (default: from the description, e.g. heavy_tired_walk)"
+    )
+    animate.add_argument(
+        "--unity", action="store_true", help="also put the clip on the rig in the open Unity Editor"
+    )
+    animate.set_defaults(handler=_animate)
+
+    anim_applier = commands.add_parser(
+        "unity-apply-anim", help="put a baked animation clip on its rig in the open Unity Editor"
+    )
+    anim_applier.add_argument(
+        "clip", type=Path, help="an animation clip, e.g. out/knight/animations/walk.json"
+    )
+    anim_applier.add_argument(
+        "--rig", type=Path, help="the rig folder (default: the folder above the clip's animations/)"
+    )
+    anim_applier.set_defaults(handler=_unity_apply_anim)
 
     deleter = commands.add_parser(
         "delete", help="remove one or more rigs (skeleton.json + validation_report.json) from out/"

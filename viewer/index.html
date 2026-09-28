@@ -100,8 +100,12 @@
   .parent-outline { fill: none; stroke: var(--sel); stroke-width: 1.6; stroke-dasharray: 4 3; pointer-events: none; }
   .child-outline { fill: none; stroke: var(--sel); stroke-width: 1.2; opacity: .7; pointer-events: none; }
   .issue-ring { fill: none; stroke: var(--bad); stroke-width: 2.5; pointer-events: none; }
+  .ghost { stroke: var(--muted); stroke-width: 2; stroke-linecap: round; opacity: .35; pointer-events: none; }
+  .ground-mark { stroke: var(--ground); stroke-width: 1.5; pointer-events: none; }
+  #animControls .row { align-items: center; margin-top: 8px; }
+  #scrub { flex: 1; min-width: 80px; }
 
-  body.dragging::after { content: "Drop skeleton.json (and validation_report.json)"; position: fixed; inset: 12px; display: grid; place-items: center; border: 2px dashed var(--accent); border-radius: 12px; background: color-mix(in srgb, var(--bg) 88%, transparent); font-size: 18px; color: var(--accent); z-index: 10; }
+  body.dragging::after { content: "Drop skeleton.json (and validation_report.json, or an animation clip)"; position: fixed; inset: 12px; display: grid; place-items: center; border: 2px dashed var(--accent); border-radius: 12px; background: color-mix(in srgb, var(--bg) 88%, transparent); font-size: 18px; color: var(--accent); z-index: 10; }
 
   @media (max-width: 820px) {
     .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; min-height: 100vh; }
@@ -129,10 +133,29 @@
         <label class="filebtn">Choose files<input id="pick" type="file" accept=".json,application/json" multiple></label>
         <select id="sample" aria-label="Load a sample"></select>
       </div>
-      <p class="muted" style="margin-top:8px">Or drop <code>skeleton.json</code> and <code>validation_report.json</code> anywhere on the page.</p>
+      <p class="muted" style="margin-top:8px">Or drop <code>skeleton.json</code>, <code>validation_report.json</code> or an animation clip anywhere on the page.</p>
       <p id="notice" role="status"></p>
     </section>
     <section><h2>Rig</h2><div id="meta"><p class="muted">Nothing loaded yet.</p></div></section>
+    <section id="animSection" hidden>
+      <h2>Animation</h2>
+      <select id="clipList" style="width:100%" aria-label="Choose an animation clip"><option value="">Rest pose (no animation)</option></select>
+      <div id="animControls" hidden>
+        <div class="row">
+          <button id="play" title="Play / pause (Space)">Play</button>
+          <button id="prevFrame" title="Previous frame (,)">&lsaquo;</button>
+          <input id="scrub" type="range" min="0" max="0" value="0" step="1" aria-label="Frame">
+          <button id="nextFrame" title="Next frame (.)">&rsaquo;</button>
+        </div>
+        <div class="row">
+          <label>Speed <select id="rate"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+          <label title="Show nearby frames faintly"><input type="checkbox" id="opt-onion" data-opt="onion"> Onion skin</label>
+          <label title="Move the ground at the clip's ground speed: planted feet should stay on the marks"><input type="checkbox" id="opt-treadmill" data-opt="treadmill" checked> Moving ground</label>
+        </div>
+      </div>
+      <p class="muted" id="clipInfo" style="margin-top:6px"></p>
+      <div id="clipReport"></div>
+    </section>
     <section><h2>Validation</h2><div id="report"><p class="muted">Nothing loaded yet.</p></div></section>
     <section><h2>Hierarchy</h2><ul id="tree"></ul></section>
   </aside>
@@ -164,7 +187,7 @@
       <span id="legend"></span>
       <span class="grow"></span>
       <span id="watchState"></span>
-      <span>scroll = zoom · drag = pan · click = select · F = fit · L = labels</span>
+      <span>scroll = zoom · drag = pan · click = select · F = fit · L = labels · Space = play · , . = step</span>
     </div>
   </main>
 </div>

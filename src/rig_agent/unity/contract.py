@@ -26,3 +26,10 @@ SAVE_PREFABS_MENU = "Tools/Rig Agent/Save Rigs As Prefabs"
 # <prefab folder>/<rig> when prefabs are requested, so the prefab sits beside them.
 GENERATED_DIR = "Assets/Rigs/Generated"
 IMPORT_OPTIONS_FILE = "import_options.json"  # {"asset_folder": "...", "ik": true}, single import
+
+# Animation clips (Goal 2, A2): Python writes the clip as flat tracks plus which rig object it is
+# for; the importer builds an AnimationClip, an Animator Controller and an Animator on that rig, and
+# reports samples of the posed rig (by the curves, and after Unity's IK re-solved from the targets).
+ANIMATION_REQUEST_FILE = "animation_request.json"
+ANIMATION_REPORT_FILE = "last_anim_import.json"
+IMPORT_ANIMATION_MENU = "Tools/Rig Agent/Import Latest Animation"

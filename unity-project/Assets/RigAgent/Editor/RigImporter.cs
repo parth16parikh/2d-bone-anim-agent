@@ -123,6 +123,7 @@ namespace RigAgent
             public float max_tail_error;
             public RigSkin.SkinReport skin = new RigSkin.SkinReport();
             public RigIk.IkReport ik = new RigIk.IkReport();
+            public int shapes; // placeholder capsules added (one per bone but the root)
             public List<string> errors = new List<string>();
             public List<BoneReport> bones = new List<BoneReport>();
         }
@@ -419,6 +420,15 @@ namespace RigAgent
             catch (Exception e)
             {
                 report.errors.Add("IK setup: " + e.Message);
+            }
+
+            try
+            {
+                report.shapes = RigShapes.Attach(skeleton, transforms);
+            }
+            catch (Exception e)
+            {
+                report.errors.Add("placeholder shapes: " + e.Message);
             }
 
             ReadBack(skeleton, transforms, output.transform, origin, report);

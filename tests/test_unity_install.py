@@ -29,9 +29,11 @@ def read(name):
 
 def test_the_expected_scripts_ship_with_the_package():
     assert [str(p) for p in script_files()] == [
+        "Editor/RigAnimImporter.cs",
         "Editor/RigIk.cs",
         "Editor/RigIkTicker.cs",
         "Editor/RigImporter.cs",
+        "Editor/RigShapes.cs",
         "Editor/RigSkin.cs",
         "Runtime/BoneGizmo.cs",
         "Runtime/FacingController.cs",
@@ -67,10 +69,63 @@ def test_the_only_menu_items_python_may_run_are_the_rig_agent_ones():
         contract.IMPORT_MENU,
         contract.IMPORT_ALL_MENU,
         contract.SAVE_PREFABS_MENU,
+        contract.IMPORT_ANIMATION_MENU,
     }
     code = read("Editor/RigImporter.cs")
     for constant in ("MenuImportLatest", "MenuImportAll", "MenuSavePrefabs"):
         assert f"[MenuItem({constant})]" in code, constant
+    assert "[MenuItem(MenuImportAnimation)]" in read("Editor/RigAnimImporter.cs")
+
+
+def test_the_animation_importer_uses_the_shared_names():
+    code = read("Editor/RigAnimImporter.cs")
+    for name, value in {
+        "AnimRequestFile": contract.ANIMATION_REQUEST_FILE,
+        "AnimReportFile": contract.ANIMATION_REPORT_FILE,
+        "MenuImportAnimation": contract.IMPORT_ANIMATION_MENU,
+    }.items():
+        assert f'public const string {name} = "{value}";' in code, name
+
+
+def test_the_animation_importer_reads_the_fields_python_writes():
+    """The request is flat lists because JsonUtility cannot read dictionaries."""
+    from rig_agent.animation.baker import bake
+    from rig_agent.builder.skeleton_builder import build_skeleton
+    from rig_agent.schemas.animation import AnimationSpec
+    from rig_agent.schemas.rig_spec import RigSpec
+    from rig_agent.unity.animation import animation_request
+
+    examples = Path(__file__).resolve().parent.parent / "examples"
+    skeleton = build_skeleton(
+        RigSpec.model_validate_json((examples / "knight_side.json").read_text())
+    )
+    request = animation_request(bake(AnimationSpec(clip="walk", style="t"), skeleton), ["knight"])
+    code = read("Editor/RigAnimImporter.cs")
+    for field in request:
+        assert re.search(rf"public [\w\[\]]+ {field}( = [^;]+)?;", code), field
+    for key in ("bone", "values", "x", "y", "chain", "target", "rot"):
+        assert re.search(rf"public [\w\[\]]+ {key};", code), key
+    assert all(
+        isinstance(v, list)
+        for v in (request["rotations"], request["positions"], request["targets"])
+    )
+
+
+def test_the_animation_importer_keys_linear_curves_and_restores_the_scene_after_sampling():
+    code = read("Editor/RigAnimImporter.cs")
+    assert "TangentMode.Linear" in code  # no overshoot between baked frames
+    assert "AnimationMode.StopAnimationMode()" in code and "finally" in code
+    assert "manager.UpdateManager()" in code  # Unity's own IK re-solve is part of the check
+    assert "AssetDatabase.DeleteAsset" not in code and "File.Delete" not in code
+
+
+def test_every_bone_but_the_root_gets_a_placeholder_shape():
+    shapes = read("Editor/RigShapes.cs")
+    assert "if (bone.parent_id < 0)" in shapes and "continue;" in shapes
+    assert "SpriteDrawMode.Sliced" in shapes  # round ends at any length
+    assert "report.shapes = RigShapes.Attach(skeleton, transforms);" in read(
+        "Editor/RigImporter.cs"
+    )
 
 
 def test_the_scripts_are_in_a_namespace_and_named_like_their_files():
@@ -111,9 +166,11 @@ def test_the_importer_reads_the_fields_the_python_side_writes():
 def test_install_copies_every_script_and_creates_the_rigs_folder(project):
     result = install_scripts(project)
     assert sorted(result.copied) == [
+        "Assets/RigAgent/Editor/RigAnimImporter.cs",
         "Assets/RigAgent/Editor/RigIk.cs",
         "Assets/RigAgent/Editor/RigIkTicker.cs",
         "Assets/RigAgent/Editor/RigImporter.cs",
+        "Assets/RigAgent/Editor/RigShapes.cs",
         "Assets/RigAgent/Editor/RigSkin.cs",
         "Assets/RigAgent/Runtime/BoneGizmo.cs",
         "Assets/RigAgent/Runtime/FacingController.cs",
@@ -128,7 +185,7 @@ def test_install_copies_every_script_and_creates_the_rigs_folder(project):
 def test_installing_twice_changes_nothing_the_second_time(project):
     install_scripts(project)
     again = install_scripts(project)
-    assert again.copied == [] and len(again.unchanged) == 6 and not again.changed
+    assert again.copied == [] and len(again.unchanged) == 8 and not again.changed
 
 
 def test_an_edited_script_is_restored(project):

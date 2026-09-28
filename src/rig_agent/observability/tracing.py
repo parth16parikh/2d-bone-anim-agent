@@ -16,15 +16,12 @@ export, the Unity steps).
 
 from __future__ import annotations
 
-from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from collections.abc import Callable, Mapping
+from typing import Any
 
 import logfire
 
 from rig_agent.config import settings
-
-if TYPE_CHECKING:
-    from rig_agent.schemas.state import RigState
 
 _configured = False
 
@@ -44,7 +41,7 @@ def configure() -> None:
     _configured = True
 
 
-Node = Callable[["RigState"], dict[str, Any]]
+Node = Callable[[Any], dict[str, Any]]  # a node of either graph: RigState or AnimState in
 
 
 def traced_node(name: str, fn: Node) -> Callable[..., Any]:
@@ -61,7 +58,7 @@ def traced_node(name: str, fn: Node) -> Callable[..., Any]:
     ever accepted as `Any`, never checked against that Protocol either).
     """
 
-    def wrapped(state: RigState) -> dict[str, Any]:
+    def wrapped(state: Mapping[str, Any]) -> dict[str, Any]:
         with logfire.span("node {node}", node=name, iteration=state.get("iteration")) as span:
             result = fn(state)
             _annotate(span, result)

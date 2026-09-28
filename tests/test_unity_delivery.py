@@ -124,7 +124,7 @@ def test_missing_scripts_are_installed_and_compiled_first(project, skeleton):
     assert (project / SCRIPTS_DIR / "Editor" / "RigImporter.cs").is_file()
     refresh = next(args for name, args in fake.calls if name == "refresh_unity")
     assert refresh == {"mode": "force", "compile": "request"}
-    assert any("installed 6 C# script(s)" in line for line in lines)
+    assert any("installed 8 C# script(s)" in line for line in lines)
 
 
 def test_installed_scripts_are_not_compiled_again(project, skeleton):

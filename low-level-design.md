@@ -2,10 +2,10 @@
 
 | | |
 |---|---|
-| **Document** | Low-Level Design (LLD). The companion HLD is `HLD_2D_Humanoid_Rig_Agent.md`. |
+| **Document** | Low-Level Design (LLD). The companion HLD is `SYSTEM-DESIGN.md`; progress notes are in `IMPLEMENTATION-PLAN.md`. |
 | **Version** | 0.7 (draft): defined `depth` sign convention; added per-style segment splits, within-limb overrides and plausibility bands (§2.4); **side-view near/far corrected: facing right, `_R` limbs are near and `_L` limbs are far (§2.2)**; Unity delivery implemented (§3.11); geometry constants (root marker, far-limb offset, `spine_2` share, `hip` exception); extra-bone rules, mirrored twins, `layer`, and the 16-bone extra budget (§2.6); shoulders, limb roots and hip joint spacing (§2.7); numeric rest poses (§2.8); named IK chains, now written into `skeleton.json` as `ik_chains` with roles and a bend side (schema 1.1, §2.9, §3.5b); required bones cut from 18 to 14, optional `chest`, `neck` and `hands`, parent resolution (§2.3); free style with preset starting points and base proportions (§2.4) |
 | **Date** | 17 Sep 2026 |
-| **Scope** | **Goal 1: generate a 2D humanoid bone structure.** Goal 2 (animation) is covered only under Future Work. |
+| **Scope** | **Goal 1: generate a 2D humanoid bone structure** (§1–§6). **Goal 2: animate it** with idle, walk and run cycles and a standing backflip (§7). |
 | **Target engine** | Unity (2D Animation package) |
 | **LLM provider** | Anthropic (Claude) or OpenAI (GPT). The design is provider-agnostic. |
 
@@ -37,7 +37,7 @@ Before a 2D character can be animated in Unity, someone has to rig it: build a b
 | Two orthographic view types: **front-facing** (A-pose by default, T-pose optional) and **side view** for side-scrollers (facing right, neutral standing pose) | 3/4 view, top-down view, perspective |
 | 14 required bones, up to 10 optional canonical bones, and up to 16 custom `extra_` bones (counting chain segments and mirrored twins) | Sprite generation, mesh tessellation, skin weights |
 | Free-form style: a preset as a starting point, bounded numeric base proportions, and proportion tweaks | Fitting bones to an existing image or PSB |
-| JSON export, C# Editor importer, and Unity MCP build | Animation clips and IK solving (Goal 2) |
+| JSON export, C# Editor importer, and Unity MCP build; Goal 2 adds animation clips and IK (§7) | Motions other than idle, walk, run and a backflip |
 
 ### 1.5 Key technical challenge
 
@@ -71,8 +71,8 @@ The vocabulary is shared by the system prompt, the Pydantic schema (as enums) an
 | **Mirror pair** | Matching `_L`/`_R` bones. Front view: symmetric across the Y-axis. Side view: equal bone lengths and nearly overlapping positions, separated only by depth. |
 | **Depth / sorting** | Signed integer draw-order hint stored per bone. **Positive = toward the camera (drawn in front); negative = away from the camera (drawn behind); 0 = the torso plane.** For example, a far arm in side view has a negative depth and a near arm a positive one. Depth is inherited from connected bones (§2.6). |
 | **Layer** | Accessory-only drawing hint, `front` or `behind`, saying whether an extra bone draws in front of or behind the bone it hangs from. Depth answers "which body plane is this on", layer answers "which side of its parent is this accessory drawn on" (§2.6). |
-| **IK chain hint** | Metadata marking a 2-bone limb for Goal 2's inverse kinematics solver. Chains are named `arm_L`, `arm_R`, `leg_L` and `leg_R` (§2.9). |
-| **Rotation limits** | Min/max local rotation in degrees for a joint. Stored now and used in Goal 2. |
+| **IK chain hint** | Metadata marking a 2-bone limb for the inverse kinematics solvers (Unity's `LimbSolver2D`, and the clip baker in §7). Chains are named `arm_L`, `arm_R`, `leg_L` and `leg_R` (§2.9). |
+| **Rotation limits** | Min/max local rotation in degrees for a joint. Stored, but not used yet: Goal 2 checks joints against each chain's bend side instead (§7.4). |
 | **PPU** | Pixels Per Unit, Unity's sprite-to-world scale. The default is 100. |
 
 ### 2.2 Naming convention
@@ -831,17 +831,140 @@ For Goal 1 alone, Pydantic AI (with its own graph support) could suffice. LangGr
 
 ---
 
-## 7. Future Work: Goal 2 (Animation)
+## 7. Goal 2: Animation
 
-Goal 2 will add nodes to the same LangGraph to generate animation clips (idle, walk, run, attack) for a Goal 1 skeleton. The schema already carries what Goal 2 needs:
+Goal 2 animates a Goal 1 rig from a short motion description. It keeps Goal 1's principle: **the LLM plans a small, bounded spec; deterministic code bakes every frame and validates it.** The LLM never writes keyframes.
 
-- `rest_pose`: the reference pose for keyframes.
-- `rotation_limits_deg`: clamps LLM-proposed joint angles.
-- `ik_chain`: 2-bone IK targets for arms and legs (Unity 2D IK `LimbSolver2D`).
-- `depth`: draw-order changes during motion.
-- `root`: root motion.
+### 7.1 Scope and decisions
 
-Likely additions: an animation vocabulary (gait phases, keyframe, easing, contact/passing poses), a motion-template library (where RAG may become justified), a keyframe builder and validator (joint limits, foot sliding, loop continuity), and export to Unity `.anim` clips via the importer or MCP.
+| Decision | Choice |
+|---|---|
+| Clips | `idle` (front and side view); `walk`, `run` and `backflip` (side view only). A front-view walk would be a march on the spot; a flip turns about the axis the camera looks along. |
+| Travel | **In place.** Walk and run record a `ground_speed` (world units per second) that the game should move the character at, so planted feet don't slide. |
+| Looping | Cycles loop. The backflip plays once, and starts and ends in the rest pose. |
+| Limbs | Keyed **both** as bone rotations and as IK target curves, baked from one solve, so Unity's solvers (which re-solve every frame) reproduce the rotations, and a rig built without IK still plays. |
+| Front-view walk request | Stops with a clear message. Nothing is swapped in. |
+| Unsupported motions | Refused by the guard, with a suggestion. |
+| File names | From the description (`"a heavy, tired walk"` → `heavy_tired_walk.json`); `--name` overrides. |
+
+Of the Goal 1 schema fields listed for Goal 2, `ik_chains` (with `bend_side`) and `depth` are used. `rotation_limits_deg` is not: joint limits are checked relative to each chain's bend side instead (§7.4). `root` stays put, because clips are in place.
+
+### 7.2 Data contracts (`schemas/animation.py`)
+
+**`AnimationSpec`** (the planner's output). Every knob is bounded, and 1.0 (0 for `lean_deg`) is neutral:
+
+| Field | Range | Meaning |
+|---|---|---|
+| `clip` | idle, walk, run, backflip | |
+| `style` | 1–40 chars | a label of the mood |
+| `speed` | 0.5–2.0 | cycles per second relative to the clip's default (idle 3.0 s, walk 1.1 s, run 0.7 s, backflip 1.3 s) |
+| `stride` | 0.5–1.5 | step length (walk, run) |
+| `bounce` | 0–2 | hip motion; for a backflip, extra jump height |
+| `arm_swing` | 0–2 | arm swing; for a backflip, the arm throw |
+| `knee_lift` | 0.5–1.5 | swing-foot height; for a backflip, the tightness of the tuck |
+| `lean_deg` | −10–25 | forward torso lean (side view only) |
+| `fps` | 12–60 | frames per second |
+| `assumptions` | ≤ 5 | interpretations the planner made |
+
+**`AnimationClip`** (`<rig>/animations/<name>.json`, schema 1.0):
+- **Header:** `rig_name`, `name`, `clip`, `view`, `fps`, `frame_count`, `loop` and `ground_speed`.
+- **`rotations`:** `{bone: [local_rotation_deg per frame]}`, for animated bones only. Tracks are unwrapped, so they never jump 179 → −179, which Unity would play as a spin.
+- **`positions`:** `{bone: [local_position per frame]}`; today only the hip.
+- **`ik_targets`:** `[{chain, target, positions, rotations_deg}]`, in the rig root's space (the space of `skeleton.json`'s world coordinates).
+- **`spec`** and **`generator`**.
+
+Frames are keyed at `t = i / fps`. A clip holds **one extra frame**: the template at phase 1.0, computed rather than copied. For a loop it is the closing key, which must equal frame 0.
+
+### 7.3 Baking (`animation/`)
+
+- **`pose.forward`:** forward kinematics from local transforms, with the builder's own maths (reproduces `skeleton.json` to 1e-6).
+- **`ik.solve_two_bone`:** analytic two-bone IK. `"left"` puts the joint on the counter-clockwise side of root → target (`LimbSolver2D.flip = bend_side == "right"`).
+- **`templates`:** each clip is a pure function of the phase `p ∈ [0, 1]`, returning an *intent*: a hip offset, local-rotation deltas, and where each foot should be.
+  - **Idle:** the hip dips (knees give), the chest rises, the head follows late and the arms sway; feet planted.
+  - **Walk and run:**
+    - Duty factor 0.62 and 0.38 (a run has a flight phase). Step length `0.55·L·stride` and `0.9·L·stride` (L = leg length).
+    - A planted foot moves back linearly at the ground speed. The ground speed is computed from the **whole-frame** cycle, `step / (duty · frames / fps)`.
+    - The swing foot returns on a C¹ Hermite arc (leaving and landing at ground speed), lifted `knee_lift · 0.14L` (run 0.28L), raised when the toe points down so the toe clears the ground.
+    - The hip peaks twice per cycle.
+    - Torso lean is the spec's plus 2° (run 8°). The arms counter-swing ±20° (run ±35°) with some elbow bend.
+  - **Backflip:**
+    - Crouch (p < 0.35), then airborne (0.35–0.80): the hip follows a parabola and turns 360° counter-clockwise (backwards, facing +X) on a smootherstep curve.
+    - The feet are placed in the turning body's frame and pulled into a tuck, so the legs keep their shape as the body rotates.
+    - Land and absorb (0.80–1.0).
+    - The arms swing back, throw up, reach to the knees, and return.
+  - **Steady hands** (every clip): a hand holding an accessory turns against its arm's swing, capped at 70°, so a sword or staff stays aligned with the body.
+- **`baker.bake`:** for each of the `n + 1` frames:
+  1. Apply the deltas.
+  2. Offset the hip, lowered if a planted leg could not reach its foot (legs may straighten to 98.5%, run 97%; not applied while airborne).
+  3. Run FK, solve each leg with two-bone IK, and run FK again.
+  4. Record the rotations and the hip, and read every IK target off the final pose.
+
+  For an airborne clip it then measures how far each airborne frame dips below the floor (every bone, with a 1% of H margin; the feet against their ankle line). It raises the arc's peak just enough and bakes again. One correction suffices, because the lift at each frame is the arc share times the peak rise.
+
+### 7.4 Clip validator (`animation/validator.py`)
+
+It recomputes every frame with FK from the clip's own tracks, so it checks what Unity will play. Issues go into a `ValidationReport`, as for skeletons.
+
+| Code | Check (H = rig height) |
+|---|---|
+| `clip_view_mismatch` | The clip's view matches the rig, and the clip is allowed for it. |
+| `clip_rig_mismatch` | Every animated bone and IK target exists on the rig. |
+| `non_finite` | No NaN or infinity. |
+| `ik_target_mismatch` | Each IK target sits on its hand or foot (≤ 1e-4 H, and matching rotation). |
+| `joint_limit` | Knees and elbows bend only their own way (wrong way > 5°, or > 165°, fails); spine, neck and head within 45° of rest; ankles within 70°. |
+| `foot_sliding` | While a foot stays on the ground (within 0.3% H of its rest ankle), it moves at the clip's ground speed (≤ 0.5% H per frame off). |
+| `ground_penetration` | The feet don't go below their ankle line, and no other bone goes below the floor (≤ 0.3% H). Props already on the floor at rest (a staff) are exempt, because they would stay planted. |
+| `loop_discontinuity` | A looping clip's closing frame equals its first pose (≤ 1e-4). |
+
+The report's metrics are the worst foot slip, the ground and body penetration, the joint bend, the target error and the loop error. Every clip at default settings passes on 7 test rigs (the three examples, and side-view knights in each preset). Across 7,128 knob combinations the only failures are a chibi side-view run at extreme knee lift (the ankle limit), which the planner's repair loop can lower.
+
+### 7.5 Planner and pipeline
+
+- **Motion guardrail (`guardrails/anim_guard.py`):** the same deterministic checks as Goal 1, then a classifier with its own rules (`rules.yaml`, areas `anim_input` and `anim_planner`). The new category `unsupported_motion` refuses other motions and suggests the closest supported one.
+- **Animation planner (`agent/anim_planner.py`):**
+  - A Pydantic AI agent whose dependency is the rig.
+  - `list_clip_types` says which clips this rig's view allows. `preview_clip(spec)` bakes and validates a draft on the rig and reports the cycle length, step length and ground speed in heights per second, hip bounce or jump height, joint bend and pass or fail.
+  - The prompt's settings table is generated from the schema's own bounds. Its worked examples are tested to bake and pass. It maps mood words to settings ("heavy, tired" → slower, less bounce, some lean; "sneaky" → short, high steps).
+- **Pipeline (`graph/anim_graph.py`):** `input_guard → plan → bake (bake + validate) → export → unity`.
+  - A clip the rig's view doesn't allow routes to `wrong_view` (a clear error).
+  - A failing clip loops back to `plan` with its issues (at most 3 attempts).
+  - When attempts or budget run out, `best_effort` writes the best attempt with its failing report.
+  - Budgets (`graph/budget.py`) and Logfire tracing are shared with Goal 1.
+- **CLI:** `rig-agent animate <rig> "<motion>" [--name] [--unity]`; `animate-build --rig <rig> --clip <type> | --spec <file>` (no model); `unity-apply-anim <clip.json>`.
+
+### 7.6 Unity (`unity/csharp/Editor/RigAnimImporter.cs`, `RigShapes.cs`)
+
+- **The request:** Python writes `Assets/Rigs/animation_request.json`, the clip as flat lists of tracks (JsonUtility cannot read dictionaries) plus the rig object's candidate names (its `rig_name`, or its folder name after a batch import). The menu item *Tools → Rig Agent → Import Latest Animation* is the only new MCP allowlist entry.
+- **The clip:**
+  - Linear keys (no overshoot between baked frames).
+  - `localEulerAnglesRaw.z` for bones and targets (raw Euler, so a 360° turn plays as one), `m_LocalPosition` for the hip and targets.
+  - `loopTime` from the clip.
+  - Saved as `<rig asset folder>/<name>.anim`, updated in place.
+  - One Animator Controller per rig, one state per clip, and the clip imported last as the default. The rig gets an Animator with root motion off.
+- **The check:** at 4 frames the importer samples the clip (`AnimationMode`), reads every bone, lets `IKManager2D` re-solve from the sampled targets, and reads them again, then restores the scene. Python compares both readings with its FK: ≤ 1e-3 by the curves, ≤ 2e-3 after the IK re-solve. Measured: walk 1.2e-4 and 3.5e-6, backflip 6.4e-7 and 1.9e-4 (including the upside-down frame). A clip with a foot target 0.1 off is caught on every sampled frame.
+- **Placeholder shapes:** every bone except the root gets a `_shape` child: a 9-sliced capsule coloured by side (left blue, right orange, centre green, accessories purple), sorted by depth, with the unlit sprite material. So motion is visible without art.
+- **Known limit:** re-importing a rig replaces its object, and so its Animator; the clip assets remain.
+
+### 7.7 Viewer
+
+`rig-agent view` lists each rig's clips. Its Animation panel plays a clip (play or pause, scrub, frame step, 0.25×–2×), with **onion skin** and a **moving ground**: hatch marks that slide at the clip's ground speed, so a planted foot visibly stays locked to them. Its JS forward kinematics is tested against Python's to 1e-9.
+
+### 7.8 Evaluation (planned)
+
+This will be a golden set of motion prompts with expected attributes, run on the Goal 1 eval harness:
+- the clip type;
+- the direction of each setting relative to neutral ("heavy" → speed < 1, bounce < 1);
+- the view rules;
+- refusal of unsupported motions.
+
+Metrics: first-pass and final validity, spec accuracy, foot slip, loop error, latency and tokens. The prompts must avoid the planner's worked-example wording, which the planner copies verbatim.
+
+### 7.9 Future work
+
+- More clips: attack, jump, a front-view idle variety.
+- Secondary motion: capes and hair that follow through.
+- Optional root motion.
+- The image flow discussed for later: generate the character in an A- or T-pose (or side view), fit the skeleton to it, and slice the image into parts per bone.
 
 ---
 
@@ -852,5 +975,5 @@ Likely additions: an animation vocabulary (gait phases, keyframe, easing, contac
 3. Is the A-pose the right front-view default, or does the team prefer the T-pose?
 4. When no view is given and the prompt has no cue, should the default be `front` (current design) or `side`?
 5. Should side-view rigs also be buildable facing left natively, or is flipping with `scale.x = -1` enough?
-6. Which observability tool: Logfire (Pydantic-native) or LangSmith (LangGraph-native)?
-7. Which Unity version and 2D Animation package version to target?
+6. ~~Which observability tool: Logfire (Pydantic-native) or LangSmith (LangGraph-native)?~~ Answered: Logfire (optional; off without a token).
+7. ~~Which Unity version and 2D Animation package version to target?~~ Answered: Unity 6000.4.0f1 with 2D Animation 14.0.3.

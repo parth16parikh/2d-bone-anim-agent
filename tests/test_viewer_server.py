@@ -127,3 +127,35 @@ def test_nothing_outside_viewer_and_out_is_served(server, path):
 
 def test_the_server_only_listens_on_localhost(server):
     assert server.startswith("http://127.0.0.1:")
+
+
+def test_a_rig_lists_its_animation_clips_with_their_status(out):
+    clips = out / "runner" / "animations"
+    clips.mkdir()
+    (clips / "walk.json").write_text(
+        json.dumps({"clip": "walk", "rotations": {}, "frame_count": 2})
+    )
+    (clips / "walk.report.json").write_text(json.dumps({"issues": [], "passed": True}))
+    (clips / "draft.json").write_text(
+        json.dumps({"clip": "run", "rotations": {}, "frame_count": 2})
+    )
+    (clips / "notes.json").write_text(json.dumps({"hello": "world"}))  # not a clip: skipped
+    runner = next(r for r in list_rigs(out) if r["name"] == "runner")
+    assert runner["animations"] == [
+        {
+            "name": "draft",
+            "clip": "run",
+            "path": "/out/runner/animations/draft.json",
+            "report": None,
+            "passed": None,
+        },
+        {
+            "name": "walk",
+            "clip": "walk",
+            "path": "/out/runner/animations/walk.json",
+            "report": "/out/runner/animations/walk.report.json",
+            "passed": True,
+        },
+    ]
+    knight = next(r for r in list_rigs(out) if r["name"] == "knight")
+    assert knight["animations"] == []

@@ -17,7 +17,7 @@ PATH = re.compile(r"[a-z_.]+:[A-Za-z_][A-Za-z_.0-9]*")
 def test_rules_load_with_unique_ids_and_valid_areas():
     rules = load_rules()
     assert len({r.id for r in rules}) == len(rules) > 15
-    assert {r.area for r in rules} == {"input", "planner", "repair"}
+    assert {r.area for r in rules} == {"input", "planner", "repair", "anim_input", "anim_planner"}
     assert all(r.title for r in rules)
 
 

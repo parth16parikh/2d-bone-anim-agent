@@ -41,12 +41,24 @@
   function parseSkeleton(text) { return checkSkeleton(parseJson(text)); }
   function parseReport(text) { return checkReport(parseJson(text)); }
 
-  /** Decide from the content whether a file is a skeleton or a report. */
+  function checkAnimation(data) {
+    if (!data || typeof data.rotations !== 'object' || data.rotations === null || !Number.isInteger(data.frame_count) || data.frame_count < 2 || !(data.fps > 0)) {
+      fail('This does not look like an animation clip: it needs "rotations", "frame_count" and "fps".');
+    }
+    const tracks = Object.values(data.rotations).concat(Object.values(data.positions || {}));
+    if (tracks.some((t) => !Array.isArray(t) || t.length !== data.frame_count)) fail('Every track in the clip needs ' + data.frame_count + ' frames.');
+    return data;
+  }
+
+  function parseAnimation(text) { return checkAnimation(parseJson(text)); }
+
+  /** Decide from the content whether a file is a skeleton, a report or an animation clip. */
   function classifyFile(text) {
     const data = parseJson(text);
     if (data && Array.isArray(data.bones)) return { kind: 'skeleton', data: checkSkeleton(data) };
     if (data && Array.isArray(data.issues)) return { kind: 'report', data: checkReport(data) };
-    return fail('This is neither a skeleton.json (needs "bones") nor a validation_report.json (needs "issues").');
+    if (data && data.rotations && data.frame_count !== undefined) return { kind: 'animation', data: checkAnimation(data) };
+    return fail('This is neither a skeleton.json (needs "bones"), a validation_report.json (needs "issues") nor an animation clip (needs "rotations").');
   }
 
   // ---------- bones ----------
@@ -156,6 +168,57 @@
     return names;
   }
 
+  // ---------- animation ----------
+
+  /** Bones a clip animates that the skeleton does not have (a clip made for another rig). */
+  function clipMismatch(clip, sk) {
+    const names = new Set(sk.bones.map((b) => b.name));
+    return Object.keys(clip.rotations).concat(Object.keys(clip.positions || {})).filter((n) => !names.has(n));
+  }
+
+  /** The skeleton posed at one frame of a clip: forward kinematics from the local transforms, with
+   *  the clip's tracks replacing the rest values (the same maths as rig_agent/animation/pose.py). */
+  function poseAt(sk, clip, frame) {
+    const byId = new Map(sk.bones.map((b) => [b.id, b]));
+    const world = new Map();
+    const rotations = (clip && clip.rotations) || {}, positions = (clip && clip.positions) || {};
+    const place = (b) => {
+      if (world.has(b.id)) return world.get(b.id);
+      const rot = rotations[b.name] ? rotations[b.name][frame] : b.local_rotation_deg;
+      const pos = positions[b.name] ? positions[b.name][frame] : b.local_position;
+      if (!Number.isFinite(rot) || !isPoint(pos)) fail('Bone ' + b.name + ' has no local transform, so it cannot be animated.');
+      const parent = byId.get(b.parent_id);
+      let w;
+      if (!parent) w = { head: [pos[0], pos[1]], angle: rot };
+      else {
+        const p = place(parent), r = p.angle * Math.PI / 180;
+        w = { head: [p.head[0] + pos[0] * Math.cos(r) - pos[1] * Math.sin(r), p.head[1] + pos[0] * Math.sin(r) + pos[1] * Math.cos(r)], angle: p.angle + rot };
+      }
+      world.set(b.id, w);
+      return w;
+    };
+    const bones = sk.bones.map((b) => {
+      const w = place(b), r = w.angle * Math.PI / 180;
+      return Object.assign({}, b, { world_head: w.head, world_tail: [w.head[0] + b.length * Math.cos(r), w.head[1] + b.length * Math.sin(r)] });
+    });
+    return Object.assign({}, sk, { bones });
+  }
+
+  /** Which frame to show `seconds` into playback. A looping clip's last frame is its closing key
+   *  (the same pose as frame 0), so the loop cycles over frame_count - 1 frames. */
+  function frameAt(clip, seconds) {
+    const frame = Math.floor(Math.max(0, seconds) * clip.fps + 1e-9);
+    if (clip.loop === false) return Math.min(frame, clip.frame_count - 1);
+    return frame % (clip.frame_count - 1);
+  }
+
+  /** Frames to draw faintly around `frame` (onion skin): `count` on each side, spaced evenly. */
+  function onionFrames(clip, frame, count) {
+    const cycle = clip.frame_count - 1, step = Math.max(1, Math.round(cycle / 12)), out = [];
+    for (let k = 1; k <= count; k++) out.push(((frame - k * step) % cycle + cycle) % cycle, (frame + k * step) % cycle);
+    return out.filter((f, i, all) => f !== frame && all.indexOf(f) === i);
+  }
+
   // ---------- colours ----------
 
   const IK_COLORS = { arm_L: '#1c7ed6', arm_R: '#e8590c', leg_L: '#0ca678', leg_R: '#ae3ec9' };
@@ -220,6 +283,15 @@
       }
     }
     out.push('<line class="ground" x1="0" y1="' + num(Y(0)) + '" x2="' + size.w + '" y2="' + num(Y(0)) + '"/>');
+    if (Number.isFinite(o.groundShift)) {
+      // hatch marks on the ground that move back at the clip's ground speed: a planted foot should
+      // stay locked to them (the in-place cycle's "treadmill")
+      const spacing = 0.2 * H, half = size.w / 2 / view.zoom + spacing;
+      const offset = ((o.groundShift % spacing) + spacing) % spacing;
+      for (let x = Math.floor((view.cx - half) / spacing) * spacing - offset; x <= view.cx + half; x += spacing) {
+        out.push('<line class="ground-mark" x1="' + num(X(x)) + '" y1="' + num(Y(0)) + '" x2="' + num(X(x - 0.04 * H)) + '" y2="' + num(Y(-0.04 * H)) + '"/>');
+      }
+    }
     out.push('<line class="axis" x1="' + num(X(0)) + '" y1="0" x2="' + num(X(0)) + '" y2="' + size.h + '"/>');
     out.push('<line class="height" x1="0" y1="' + num(Y(H)) + '" x2="' + size.w + '" y2="' + num(Y(H)) + '"/>');
     out.push('<text class="tick height-label" x="' + (size.w - 8) + '" y="' + num(Y(H) - 4) + '" text-anchor="end">height ' + esc(H) + '</text>');
@@ -231,6 +303,10 @@
     if (o.links) {
       linkGaps(sk).forEach((g) => out.push('<line class="link" x1="' + P(g.from).split(',')[0] + '" y1="' + P(g.from).split(',')[1] + '" x2="' + P(g.to).split(',')[0] + '" y2="' + P(g.to).split(',')[1] + '"/>'));
     }
+
+    (m.ghosts || []).forEach((g) => g.bones.filter((b) => o.extras || kindOf(b.name) !== 'extra').forEach((b) => {
+      out.push('<line class="ghost" x1="' + num(X(b.world_head[0])) + '" y1="' + num(Y(b.world_head[1])) + '" x2="' + num(X(b.world_tail[0])) + '" y2="' + num(Y(b.world_tail[1])) + '"/>');
+    }));
 
     const bones = drawOrder(sk.bones, o.depth).filter((b) => o.extras || kindOf(b.name) !== 'extra');
     bones.forEach((b) => {
@@ -273,9 +349,9 @@
   }
 
   const api = {
-    parseSkeleton, parseReport, classifyFile, sideOf, kindOf, drawKey, drawOrder, worldAngle, boundsOf,
+    parseSkeleton, parseReport, parseAnimation, classifyFile, sideOf, kindOf, drawKey, drawOrder, worldAngle, boundsOf,
     linkGaps, boneShape, treeRows, describeBone, reportBones, colorFor, depthRange, gridStep, fitView,
-    renderSvg, esc, fmt, IK_COLORS,
+    renderSvg, esc, fmt, IK_COLORS, clipMismatch, poseAt, frameAt, onionFrames,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.RigViewer = api;
@@ -284,8 +360,12 @@
 
   if (typeof document === 'undefined') return;
   const $ = (id) => document.getElementById(id);
-  const opts = { labels: true, joints: true, links: true, grid: true, bounds: false, depth: true, extras: true, flip: false, color: 'side' };
-  const state = { skeleton: null, report: null, selected: null, view: { cx: 0, cy: 1, zoom: 200 }, size: { w: 800, h: 600 }, source: '', lastText: '', lastReportText: '', hoverId: null };
+  const opts = { labels: true, joints: true, links: true, grid: true, bounds: false, depth: true, extras: true, flip: false, color: 'side', onion: false, treadmill: true };
+  const state = {
+    skeleton: null, report: null, selected: null, view: { cx: 0, cy: 1, zoom: 200 }, size: { w: 800, h: 600 }, source: '', lastText: '', lastReportText: '', hoverId: null,
+    // animation: the clip being shown (skeleton stays the rest pose; the clip poses a copy of it)
+    clip: null, clipReport: null, clipSrc: '', lastClipText: '', droppedClip: null, frame: 0, time: 0, rate: 1, playing: false, rigs: [],
+  };
 
   function updateLegend() {
     const sw = (color, text) => '<span><i class="sw" style="background:' + color + '"></i>' + text + '</span> ';
@@ -308,10 +388,23 @@
     return { w: Math.max(200, Math.round(r.width)), h: Math.max(200, Math.round(r.height)) };
   }
 
+  /** What to draw: the rest pose, or the skeleton posed at the current frame (with onion skin). */
+  function currentModel() {
+    if (!state.clip) return state;
+    const skeleton = poseAt(state.skeleton, state.clip, state.frame);
+    const ghosts = opts.onion ? onionFrames(state.clip, state.frame, 2).map((f) => poseAt(state.skeleton, state.clip, f)) : [];
+    return { skeleton, ghosts, report: state.report, selected: state.selected };
+  }
+
+  function currentOptions() {
+    if (!state.clip || !opts.treadmill) return opts;
+    return Object.assign({}, opts, { groundShift: state.clip.ground_speed * state.frame / state.clip.fps });
+  }
+
   function render() {
     state.size = stageSize();
     if (!state.skeleton) { $('stage').innerHTML = '<div class="empty">Drop a <code>skeleton.json</code> here, choose files, or load a sample.</div>'; return; }
-    $('stage').innerHTML = renderSvg(state, state.view, opts, state.size);
+    $('stage').innerHTML = renderSvg(currentModel(), state.view, currentOptions(), state.size);
     const sel = $('stage').querySelector('.bone[data-id="' + state.selected + '"]');
     if (sel) sel.classList.add('selected');
   }
@@ -374,9 +467,11 @@
 
   function setSkeleton(sk, keepView) {
     state.skeleton = sk;
+    $('animSection').hidden = false;
     if (state.selected !== null && !sk.bones.some((b) => b.id === state.selected)) state.selected = null;
     buildMeta(); buildTree(); buildReport();
     if (keepView) render(); else fit();
+    updateClipList();
     showDetails(state.selected);
     if (pendingSelect) {
       const wanted = sk.bones.find((b) => b.name === pendingSelect);
@@ -387,8 +482,107 @@
 
   function setReport(report) { state.report = report; buildReport(); buildTree(); render(); }
 
+  // ---- animation clips ----
+
+  function cycleFrames() { return state.clip ? (state.clip.loop === false ? state.clip.frame_count : state.clip.frame_count - 1) : 1; }
+
+  function showClipInfo() {
+    const c = state.clip;
+    $('animControls').hidden = !c;
+    if (!c) { $('clipInfo').textContent = state.skeleton ? 'Rest pose. Choose a clip, or drop an animation .json baked for this rig.' : ''; return; }
+    const speed = c.ground_speed ? ' · ground speed ' + fmt(c.ground_speed, 3) + ' units/s' : '';
+    const length = fmt((c.frame_count - 1) / c.fps, 2) + (c.loop === false ? ' s, plays once' : ' s loop');
+    $('clipInfo').textContent = 'frame ' + state.frame + ' / ' + cycleFrames() + ' · ' + length + ' · ' + c.fps + ' fps' + speed
+      + (c.spec && c.spec.style ? ' · "' + c.spec.style + '"' : '');
+  }
+
+  function buildClipReport() {
+    const box = $('clipReport'), r = state.clipReport;
+    if (!state.clip || !r) { box.innerHTML = ''; return; }
+    const errors = r.issues.filter((i) => i.severity === 'error').length, ok = r.passed !== undefined ? r.passed : errors === 0;
+    const keys = ['max_foot_slip', 'max_ground_penetration', 'max_joint_bend_deg', 'loop_error', 'max_target_error'];
+    box.innerHTML = '<p class="badge ' + (ok ? 'pass' : 'fail') + '">clip ' + (ok ? 'PASSED' : 'FAILED') + ' · ' + errors + ' errors</p>'
+      + (r.issues.length ? '<ul class="issues">' + r.issues.map((i) => '<li><b>' + esc(i.code) + '</b> ' + esc(i.message) + '</li>').join('') + '</ul>' : '')
+      + '<dl class="metrics">' + keys.filter((k) => r.metrics && k in r.metrics).map((k) => '<dt>' + esc(k.replace(/_/g, ' ')) + '</dt><dd>' + esc(fmt(r.metrics[k], 4)) + '</dd>').join('') + '</dl>';
+  }
+
+  function setClip(clip, label, report, keepFrame) {
+    if (!state.skeleton) { notice('Load the rig\'s skeleton.json first, then its animation.', true); return false; }
+    const missing = clipMismatch(clip, state.skeleton);
+    if (missing.length) { notice((label || 'This clip') + ' animates bones this rig does not have (' + missing.slice(0, 4).join(', ') + '): it was baked for another rig.', true); return false; }
+    try { poseAt(state.skeleton, clip, 0); } catch (e) { notice(e.message, true); return false; }
+    state.clip = clip;
+    state.clipReport = report || null;
+    if (!keepFrame || state.frame >= cycleFrames()) { state.frame = 0; state.time = 0; }
+    $('scrub').max = String(cycleFrames() - 1);
+    $('scrub').value = String(state.frame);
+    showClipInfo(); buildClipReport(); render();
+    if (label) notice('Animation: ' + label, false);
+    return true;
+  }
+
+  function clearClip() {
+    pause();
+    state.clip = null; state.clipReport = null; state.clipSrc = ''; state.lastClipText = ''; state.frame = 0; state.time = 0;
+    if ($('clipList').value) $('clipList').value = '';
+    showClipInfo(); buildClipReport(); render();
+  }
+
+  function rigClips() {
+    const rig = state.rigs.find((r) => r.path === state.source);
+    return rig ? rig.animations || [] : [];
+  }
+
+  let pendingClip = null;
+  function updateClipList() {
+    const list = $('clipList'), current = list.value, clips = rigClips();
+    const mark = (c) => c.passed === false ? ' (FAILED)' : '';
+    list.innerHTML = '<option value="">Rest pose (no animation)</option>'
+      + clips.map((c) => '<option value="' + esc(c.path) + '">' + esc(c.name + mark(c)) + '</option>').join('')
+      + (state.droppedClip ? '<option value="dropped">' + esc((state.droppedClip.name || 'clip') + ' (dropped file)') + '</option>' : '');
+    list.value = Array.from(list.options).some((o) => o.value === current) ? current : '';
+    $('animSection').hidden = !state.skeleton;
+    if (pendingClip && state.skeleton) { // ?clip= waits for both the rig and the rig list
+      const wanted = clips.find((c) => c.name === pendingClip);
+      if (wanted) { pendingClip = null; list.value = wanted.path; loadClipFrom(wanted.path, wanted.report); }
+    }
+    showClipInfo();
+  }
+
+  async function loadClipFrom(path, reportPath) {
+    try {
+      const text = await fetchText(path);
+      let report = null;
+      if (reportPath) { try { report = parseReport(await fetchText(reportPath)); } catch (e) { report = null; } }
+      if (setClip(parseAnimation(text), path.split('/').pop(), report, false)) { state.clipSrc = path; state.lastClipText = text; }
+    } catch (e) { notice('Could not load ' + path + ': ' + e.message, true); }
+  }
+
+  let raf = null, lastTs = null;
+  function tick(ts) {
+    if (!state.playing || !state.clip) return;
+    if (lastTs !== null) state.time = (state.time + (ts - lastTs) / 1000 * state.rate) % (cycleFrames() / state.clip.fps);
+    lastTs = ts;
+    const f = frameAt(state.clip, state.time);
+    if (f !== state.frame) { state.frame = f; $('scrub').value = String(f); showClipInfo(); render(); }
+    raf = requestAnimationFrame(tick);
+  }
+  function play() { if (!state.clip) return; state.playing = true; lastTs = null; $('play').textContent = 'Pause'; raf = requestAnimationFrame(tick); }
+  function pause() { state.playing = false; if (raf) cancelAnimationFrame(raf); raf = null; $('play').textContent = 'Play'; }
+  function goTo(frame) {
+    if (!state.clip) return;
+    const n = cycleFrames();
+    state.frame = ((frame % n) + n) % n; state.time = state.frame / state.clip.fps;
+    $('scrub').value = String(state.frame); showClipInfo(); render();
+  }
+
   function loadText(text, label, keepView) {
     const file = classifyFile(text);
+    if (file.kind === 'animation') {
+      state.droppedClip = file.data; updateClipList();
+      if (setClip(file.data, label, null, false)) { state.clipSrc = ''; $('clipList').value = 'dropped'; }
+      return;
+    }
     if (file.kind === 'skeleton') { state.lastText = text; setSkeleton(file.data, keepView); notice(label ? 'Loaded ' + label : '', false); }
     else { state.lastReportText = text; if (state.skeleton) setReport(file.data); else { state.report = file.data; } notice(label ? 'Loaded ' + label : '', false); }
   }
@@ -401,10 +595,11 @@
     for (const t of texts) {
       try { parsed.push({ name: t.name, file: classifyFile(t.text), text: t.text }); } catch (e) { notice(t.name + ': ' + e.message, true); return; }
     }
-    parsed.sort((a, b) => (a.file.kind === 'skeleton' ? -1 : 1) - (b.file.kind === 'skeleton' ? -1 : 1));
-    if (parsed.some((p) => p.file.kind === 'skeleton') && !parsed.some((p) => p.file.kind === 'report')) state.report = null;
-    state.source = '';
-    stopWatching();
+    const order = { skeleton: 0, report: 1, animation: 2 };
+    parsed.sort((a, b) => order[a.file.kind] - order[b.file.kind]);
+    const newRig = parsed.some((p) => p.file.kind === 'skeleton');
+    if (newRig && !parsed.some((p) => p.file.kind === 'report')) state.report = null;
+    if (newRig) { clearClip(); state.droppedClip = null; state.source = ''; stopWatching(); }
     parsed.forEach((p) => loadText(p.text, p.name, false));
     if (parsed.length > 1) notice('Loaded ' + parsed.map((p) => p.name).join(' and '), false);
   }
@@ -414,7 +609,9 @@
     if (!s) { notice('Unknown sample "' + name + '".', true); return; }
     state.report = s.report;
     stopWatching();
+    clearClip(); state.droppedClip = null;
     setSkeleton(checkSkeleton(JSON.parse(JSON.stringify(s.skeleton))), false);
+    updateClipList();
     notice('Sample: ' + name, false);
     $('sample').value = name;
   }
@@ -442,6 +639,15 @@
         } catch (e) { state.report = null; state.lastReportText = ''; buildReport(); buildTree(); render(); } // the report is optional
         $('watchState').textContent = 'updated ' + new Date().toLocaleTimeString();
       }
+      if (state.clipSrc) {
+        const clipText = await fetchText(state.clipSrc);
+        if (clipText !== state.lastClipText) {
+          const reportUrl = state.clipSrc.replace(/\.json$/, '.report.json');
+          let report = null;
+          try { report = parseReport(await fetchText(reportUrl)); } catch (e) { report = null; }
+          if (setClip(parseAnimation(clipText), '', report, true)) state.lastClipText = clipText;
+        }
+      }
     } catch (e) {
       if (first) notice('Could not load ' + src + ': ' + e.message + '. Serve the folder over http (see the README) or drop the file here.', true);
     }
@@ -449,8 +655,9 @@
 
   function startWatching(src) {
     stopWatching();
-    if (src !== state.source) { state.lastText = ''; state.lastReportText = ''; state.report = null; }
+    if (src !== state.source) { state.lastText = ''; state.lastReportText = ''; state.report = null; clearClip(); state.droppedClip = null; }
     state.source = src;
+    updateClipList();
     pollOnce(src, true);
     if ($('opt-watch').checked) timer = setInterval(() => pollOnce(src, false), 1500);
   }
@@ -480,7 +687,9 @@
       if (!res.ok) return false;
       const data = await res.json();
       $('rigsSection').hidden = false;
-      fillRigList(data.rigs || []);
+      state.rigs = data.rigs || [];
+      fillRigList(state.rigs);
+      updateClipList();
       return true;
     } catch (e) { return false; }
   }
@@ -496,9 +705,9 @@
 
   function resolvedSvg() {
     const style = getComputedStyle(document.documentElement);
-    let svg = renderSvg(state, state.view, opts, state.size);
+    let svg = renderSvg(currentModel(), state.view, currentOptions(), state.size);
     svg = svg.replace(/var\((--[\w-]+)\)/g, (m, name) => style.getPropertyValue(name).trim() || m);
-    const css = ['grid', 'ground', 'axis', 'height', 'bounds', 'link', 'joint', 'label', 'tick', 'bone', 'sel-outline', 'parent-outline', 'child-outline', 'issue-ring']
+    const css = ['grid', 'ground', 'axis', 'height', 'bounds', 'link', 'joint', 'label', 'tick', 'bone', 'sel-outline', 'parent-outline', 'child-outline', 'issue-ring', 'ghost', 'ground-mark']
       .map((c) => cssFor(c, style)).join('');
     return svg.replace('>', '><style>' + css + '</style>');
   }
@@ -512,6 +721,7 @@
       label: 'font-size:11px;fill:' + v('--ink') + ';stroke:' + v('--stage-bg') + ';stroke-width:3;paint-order:stroke', tick: 'font-size:10px;fill:' + v('--muted'),
       bone: 'fill-opacity:.55;stroke-width:1.6;stroke-linejoin:round', 'sel-outline': 'fill:none;stroke:' + v('--sel') + ';stroke-width:3', 'parent-outline': 'fill:none;stroke:' + v('--sel') + ';stroke-width:1.6;stroke-dasharray:4 3',
       'child-outline': 'fill:none;stroke:' + v('--sel') + ';stroke-width:1.2;opacity:.7', 'issue-ring': 'fill:none;stroke:' + v('--bad') + ';stroke-width:2.5',
+      ghost: 'stroke:' + v('--muted') + ';stroke-width:2;stroke-linecap:round;opacity:.35', 'ground-mark': 'stroke:' + v('--ground') + ';stroke-width:1.5',
     };
     return '.' + cls + '{' + rules[cls] + '}';
   }
@@ -547,6 +757,18 @@
     $('pick').addEventListener('change', (e) => { if (e.target.files.length) loadFiles(e.target.files); e.target.value = ''; });
     $('sample').innerHTML = '<option value="">Load a sample...</option>' + Object.keys(root.RIG_SAMPLES || {}).map((k) => '<option value="' + esc(k) + '">' + esc(k.replace(/_/g, ' ')) + '</option>').join('');
     $('sample').addEventListener('change', (e) => { if (e.target.value) loadSample(e.target.value); });
+
+    $('clipList').addEventListener('change', (e) => {
+      const v = e.target.value;
+      if (!v) clearClip();
+      else if (v === 'dropped') { if (setClip(state.droppedClip, 'dropped clip', null, false)) state.clipSrc = ''; }
+      else { const c = rigClips().find((x) => x.path === v); loadClipFrom(v, c && c.report); }
+    });
+    $('play').addEventListener('click', () => (state.playing ? pause() : play()));
+    $('scrub').addEventListener('input', (e) => { pause(); goTo(Number(e.target.value)); });
+    $('prevFrame').addEventListener('click', () => { pause(); goTo(state.frame - 1); });
+    $('nextFrame').addEventListener('click', () => { pause(); goTo(state.frame + 1); });
+    $('rate').addEventListener('change', (e) => { state.rate = Number(e.target.value); });
 
     $('tree').addEventListener('click', (e) => { const li = e.target.closest('li'); if (li) select(Number(li.dataset.id)); });
     $('report').addEventListener('click', (e) => {
@@ -594,6 +816,9 @@
       if (e.key === 'f') fit();
       if (e.key === 'l') { $('opt-labels').click(); }
       if (e.key === 'Escape') select(null);
+      if (e.key === ' ' && state.clip) { e.preventDefault(); state.playing ? pause() : play(); }
+      if (e.key === ',' && state.clip) { pause(); goTo(state.frame - 1); }
+      if (e.key === '.' && state.clip) { pause(); goTo(state.frame + 1); }
     });
 
     window.addEventListener('dragover', (e) => { e.preventDefault(); document.body.classList.add('dragging'); });
@@ -603,10 +828,11 @@
 
     const params = new URLSearchParams(location.search);
     pendingSelect = params.get('select');
+    pendingClip = params.get('clip');
     if (params.get('sample')) loadSample(params.get('sample'));
     else if (params.get('src')) startWatching(params.get('src'));
     else render();
-    ['labels', 'joints', 'links', 'grid', 'bounds', 'depth', 'extras', 'flip'].forEach((k) => { if (params.has(k)) { opts[k] = params.get(k) !== '0'; $('opt-' + k).checked = opts[k]; } });
+    ['labels', 'joints', 'links', 'grid', 'bounds', 'depth', 'extras', 'flip', 'onion', 'treadmill'].forEach((k) => { if (params.has(k)) { opts[k] = params.get(k) !== '0'; $('opt-' + k).checked = opts[k]; } });
     if (params.get('color')) { opts.color = params.get('color'); $('opt-color').value = opts.color; }
     updateLegend();
     render();

@@ -6,6 +6,7 @@ verify():      read the importer's report, compare it with the JSON, and check t
                prefab options are set, a verified rig is then saved as a prefab.
 IK is on by default; pass ik=False to build the bones without solvers.
 deliver_all(): build every rig from out/ in one go, side by side, then verify each one.
+deliver_animation(): put a baked clip on a rig already in the scene, and check it (Goal 2, A2).
 
 A failure here never invalidates the rig: the JSON is already delivered (LLD 3.13).
 """
@@ -19,14 +20,19 @@ from pathlib import Path
 from typing import Any, Literal
 
 from rig_agent.config import settings
+from rig_agent.schemas.animation import AnimationClip
 from rig_agent.schemas.skeleton import Skeleton
 from rig_agent.schemas.state import UnityResult
+from rig_agent.unity.animation import animation_request, compare_animation, max_errors
 from rig_agent.unity.batch import BatchRig
 from rig_agent.unity.contract import (
+    ANIMATION_REPORT_FILE,
+    ANIMATION_REQUEST_FILE,
     BATCH_DIR,
     BATCH_FILE,
     BATCH_REPORT_FILE,
     IMPORT_ALL_MENU,
+    IMPORT_ANIMATION_MENU,
     IMPORT_LOG_TAG,
     IMPORT_MENU,
     IMPORT_OPTIONS_FILE,
@@ -113,6 +119,12 @@ class UnityDelivery:
             return BatchResult(status="unavailable", detail=str(error))
         except (UnityMcpError, UnityProjectError) as error:
             return BatchResult(status="failed", detail=str(error))
+
+    def deliver_animation(
+        self, clip: AnimationClip, skeleton: Skeleton, rig_names: Sequence[str]
+    ) -> UnityResult:
+        """Import a clip onto the first rig object found by these names, and check it."""
+        return self._guarded(self._deliver_animation(clip, skeleton, rig_names))
 
     # ---- internals --------------------------------------------------------------------------
 
@@ -202,6 +214,45 @@ class UnityDelivery:
                         f"{result.get('message')}",
                     )
                 detail += f"; prefab {result['path']} ({result['status']})"
+        return UnityResult(status="applied", detail=detail)
+
+    # ---- animation clips ---------------------------------------------------------------------
+
+    async def _deliver_animation(
+        self, clip: AnimationClip, skeleton: Skeleton, rig_names: Sequence[str]
+    ) -> UnityResult:
+        project = self._project_dir()
+        folder = project / RIGS_DIR
+        async with self._client() as unity:
+            self.say(f"[unity] connected to {unity.url}")
+            await unity.wait_until_ready(self.compile_wait)
+            await self._ensure_scripts(unity, project)
+
+            folder.mkdir(parents=True, exist_ok=True)
+            request = animation_request(clip, rig_names)
+            (folder / ANIMATION_REQUEST_FILE).write_text(json.dumps(request), encoding="utf-8")
+            report_path = folder / ANIMATION_REPORT_FILE
+            before = report_path.stat().st_mtime_ns if report_path.exists() else 0
+            await unity.clear_console()
+            await unity.call_tool("execute_menu_item", {"menu_path": IMPORT_ANIMATION_MENU})
+            self.say(f"[unity] animation '{clip.name}' import triggered")
+            report = await self._wait_for_json(report_path, before, "animation import report")
+            problems = compare_animation(clip, skeleton, report)
+            errors = await unity.console_messages(["error"])
+            if errors:
+                problems.append(f"Unity console errors: {errors[:3]}")
+
+        if problems:
+            more = f" (+{len(problems) - 5} more)" if len(problems) > 5 else ""
+            self.say(f"[unity] animation check FAILED: {len(problems)} problem(s)")
+            return UnityResult(status="failed", detail="; ".join(problems[:5]) + more)
+        by_curves, by_solver = max_errors(clip, skeleton, report)
+        detail = (
+            f"{report.get('clip_path')} on {OUTPUT_ROOT}/{report.get('rig_object')}: "
+            f"{clip.frame_count} frames; sampled poses within {by_curves:.1e}, "
+            f"and within {by_solver:.1e} after Unity's IK re-solved from the targets"
+        )
+        self.say(f"[unity] animation verified: {detail}")
         return UnityResult(status="applied", detail=detail)
 
     # ---- everything in out/ -----------------------------------------------------------------

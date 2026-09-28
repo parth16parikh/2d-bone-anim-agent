@@ -33,6 +33,15 @@ class IssueCode(StrEnum):
     SEGMENT_TOO_SHORT = "segment_too_short"
     PROPORTION_OUT_OF_BAND = "proportion_out_of_band"
     MIRROR_COINCIDENT = "mirror_coincident"
+    # animation clips (animation/validator.py)
+    CLIP_VIEW_MISMATCH = "clip_view_mismatch"
+    CLIP_RIG_MISMATCH = "clip_rig_mismatch"
+    NON_FINITE = "non_finite"
+    IK_TARGET_MISMATCH = "ik_target_mismatch"
+    JOINT_LIMIT = "joint_limit"
+    FOOT_SLIDING = "foot_sliding"
+    GROUND_PENETRATION = "ground_penetration"
+    LOOP_DISCONTINUITY = "loop_discontinuity"
 
 
 class ValidationIssue(BaseModel):

@@ -1,0 +1,204 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec8da9418a6bf493e93ef4c7b7575847, type: 3}
+  m_Name: elf_front_skeleton
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SkeletonAsset
+  m_SpriteBones:
+  - m_Name: root
+    m_Guid: 6d83d8a4c2540361b6505443d30125df
+    m_Position: {x: 111.053795, y: 16, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+    m_Length: 5
+    m_ParentId: -1
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: hip
+    m_Guid: 23ca6e3b42ef452ce12b1876a73ae8dd
+    m_Position: {x: 92.5287, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 13.831399
+    m_ParentId: 0
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: spine
+    m_Guid: ccab9a3923ec976c1eb3919ed1f7b193
+    m_Position: {x: 13.831399, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 24.205
+    m_ParentId: 1
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: chest
+    m_Guid: 6893f5e6b9a9b6a9c93a56d7e1d47f10
+    m_Position: {x: 24.205, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 31.120699
+    m_ParentId: 2
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: neck
+    m_Guid: 385a0fef835c274e48b76320072651b1
+    m_Position: {x: 31.120699, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 6.3856997
+    m_ParentId: 3
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: head
+    m_Guid: b5cb2274c198b257eb5ac9dc4774f2b3
+    m_Position: {x: 6.3856997, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 31.928501
+    m_ParentId: 4
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: upper_arm_L
+    m_Guid: 32cbcd37f5019a60a89ca9c454994b69
+    m_Position: {x: 25.8309, y: -30.000002, z: 0}
+    m_Rotation: {x: 0, y: 0, z: -0.9238795, w: 0.38268343}
+    m_Length: 38.640003
+    m_ParentId: 3
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: upper_arm_R
+    m_Guid: 5edc648228ddf0723aee18ba2944ee49
+    m_Position: {x: 25.8309, y: 30.000002, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0.9238795, w: 0.38268343}
+    m_Length: 38.640003
+    m_ParentId: 3
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: forearm_L
+    m_Guid: c558cb8dd541d691b70ddaa97921d0d2
+    m_Position: {x: 38.640003, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 32.2
+    m_ParentId: 6
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: forearm_R
+    m_Guid: 778fbed623ad6126622587375da33173
+    m_Position: {x: 38.640003, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 32.2
+    m_ParentId: 7
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: hand_L
+    m_Guid: ae5f553e16cc80a50336ce1663a39432
+    m_Position: {x: 32.2, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 21.16
+    m_ParentId: 8
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: hand_R
+    m_Guid: 50a85f19c3b3d9a78f3511115780a938
+    m_Position: {x: 32.2, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 21.16
+    m_ParentId: 9
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: thigh_L
+    m_Guid: 5a159b1cdcaa3685c7db95c1b776d32b
+    m_Position: {x: 0, y: -13.3333, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+    m_Length: 40.5738
+    m_ParentId: 1
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: thigh_R
+    m_Guid: 75566be0905be0c3a6bffdbe64d012e1
+    m_Position: {x: 0, y: 13.3333, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+    m_Length: 40.5738
+    m_ParentId: 1
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: shin_L
+    m_Guid: c8b9b5ef39878256f9abdfc40e678b2a
+    m_Position: {x: 40.5738, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 43.9549
+    m_ParentId: 12
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: shin_R
+    m_Guid: 2e6605b093fd20f504067fd12fc5cce6
+    m_Position: {x: 40.5738, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 43.9549
+    m_ParentId: 13
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: foot_L
+    m_Guid: 5c6a58771f3644d51616aeed85ab3da0
+    m_Position: {x: 43.9549, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+    m_Length: 33.333298
+    m_ParentId: 14
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: foot_R
+    m_Guid: b296578728e1bd5501a5fbf20c9824b5
+    m_Position: {x: 43.9549, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: -0.70710677, w: 0.70710677}
+    m_Length: 33.333298
+    m_ParentId: 15
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: extra_cape_1
+    m_Guid: 7be39183b9522857ea1932bcd9b25652
+    m_Position: {x: 31.120699, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+    m_Length: 30.000002
+    m_ParentId: 3
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: extra_cape_2
+    m_Guid: b5b0c4e2ad09d332b34e17585294eebb
+    m_Position: {x: 30.000002, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 30.000002
+    m_ParentId: 18
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: extra_cape_3
+    m_Guid: 9012667a30ea6c1f76a1054a170900b9
+    m_Position: {x: 30.000002, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 30.000002
+    m_ParentId: 19
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295

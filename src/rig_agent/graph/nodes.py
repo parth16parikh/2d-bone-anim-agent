@@ -14,6 +14,7 @@ from rig_agent.builder.errors import BuildError
 from rig_agent.builder.skeleton_builder import build_skeleton
 from rig_agent.config import Settings, settings
 from rig_agent.export.json_exporter import SKELETON_FILE, export
+from rig_agent.graph.budget import budget_problem, remaining_limits
 from rig_agent.guardrails.input_guard import check_input
 from rig_agent.llm import MissingApiKeyError
 from rig_agent.schemas.guardrail import GuardResult
@@ -88,26 +89,12 @@ class RigNodes:
 
     def budget_problem(self, state: RigState) -> str | None:
         """Why the request may not spend any more, or None if budget is left (LLD 3.7)."""
-        cfg = self.config
         usage = state.get("usage") or UsageTotals()
         elapsed = self.deps.clock() - state.get("started_at", self.deps.clock())
-        if elapsed >= cfg.max_seconds:
-            return f"the {cfg.max_seconds}s time budget is used up"
-        if usage.requests >= cfg.max_llm_calls:
-            return f"the budget of {cfg.max_llm_calls} model calls is used up"
-        if usage.total_tokens >= cfg.max_total_tokens:
-            return f"the budget of {cfg.max_total_tokens:,} tokens is used up"
-        if usage.tool_calls >= cfg.max_tool_calls:
-            return f"the budget of {cfg.max_tool_calls} tool calls is used up"
-        return None
+        return budget_problem(self.config, usage, elapsed)
 
     def _limits(self, usage: UsageTotals) -> UsageLimits:
-        cfg = self.config
-        return UsageLimits(
-            request_limit=max(1, cfg.max_llm_calls - usage.requests),
-            tool_calls_limit=max(0, cfg.max_tool_calls - usage.tool_calls),
-            total_tokens_limit=max(1, cfg.max_total_tokens - usage.total_tokens),
-        )
+        return remaining_limits(self.config, usage)
 
     # ---- nodes -------------------------------------------------------------------------------
 

@@ -1,0 +1,222 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec8da9418a6bf493e93ef4c7b7575847, type: 3}
+  m_Name: a_knight_holding_a_sword_with_a_feather_skeleton
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SkeletonAsset
+  m_SpriteBones:
+  - m_Name: root
+    m_Guid: c3adc4dfde562c4b6fc0949d7375ea15
+    m_Position: {x: 19, y: 16, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+    m_Length: 5
+    m_ParentId: -1
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: hip
+    m_Guid: 1dee678428cd7d2432a6039fa07ca3a4
+    m_Position: {x: 100, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 13.249999
+    m_ParentId: 0
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: spine
+    m_Guid: e86160aa4e583fcd0bdc18ef204e8542
+    m_Position: {x: 13.249999, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 23.1875
+    m_ParentId: 1
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: chest
+    m_Guid: ee4ede677c752321033d2c5ce4730dff
+    m_Position: {x: 23.1875, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 29.8125
+    m_ParentId: 2
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: neck
+    m_Guid: 3f6e43c0ee390c44a2f5e093fb2f0da0
+    m_Position: {x: 29.8125, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 8.75
+    m_ParentId: 3
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: head
+    m_Guid: 7f0695ab5b726ee5e13238d918b73d31
+    m_Position: {x: 8.75, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 25
+    m_ParentId: 4
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: upper_arm_L
+    m_Guid: 593eb11eafd6d7ddedc64e2469639502
+    m_Position: {x: 29.8125, y: 3, z: 0}
+    m_Rotation: {x: 0, y: 0, z: -0.9961947, w: 0.087155804}
+    m_Length: 38.7
+    m_ParentId: 3
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: upper_arm_R
+    m_Guid: 2dd77a2e1ab685b7245ff5854bfbb727
+    m_Position: {x: 29.8125, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: -0.9961947, w: 0.087155804}
+    m_Length: 38.7
+    m_ParentId: 3
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: forearm_L
+    m_Guid: eabe71a9d4713051a01d63b8cd9425db
+    m_Position: {x: 38.7, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 31.5
+    m_ParentId: 6
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: forearm_R
+    m_Guid: ab4d0a20db116caf99be08ecc4f07c43
+    m_Position: {x: 38.7, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 31.5
+    m_ParentId: 7
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: hand_L
+    m_Guid: 8512cd92b0c32ff470cac2d4042166c3
+    m_Position: {x: 31.5, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 19.8
+    m_ParentId: 8
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: hand_R
+    m_Guid: 596076c604dcfb9b362419fdc1f86e32
+    m_Position: {x: 31.5, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 19.8
+    m_ParentId: 9
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: thigh_L
+    m_Guid: e88b3dfbaa6da3d560d9b7142e8f2673
+    m_Position: {x: 0, y: 3, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+    m_Length: 46
+    m_ParentId: 1
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: thigh_R
+    m_Guid: 171f80987c8b8c93b05ab9f39da4722d
+    m_Position: {x: 0, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+    m_Length: 46
+    m_ParentId: 1
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: shin_L
+    m_Guid: 74ceab64b25f178b48c437432accd390
+    m_Position: {x: 46, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 46
+    m_ParentId: 12
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: shin_R
+    m_Guid: d533e27be7efb869233e355d6bbe2e55
+    m_Position: {x: 46, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 46
+    m_ParentId: 13
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: foot_L
+    m_Guid: a0421f493a5a4f4a113eb233e0a65da0
+    m_Position: {x: 46, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+    m_Length: 27.5
+    m_ParentId: 14
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: foot_R
+    m_Guid: 759a9a6cb07214ba5c2f09a75958def4
+    m_Position: {x: 46, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+    m_Length: 27.5
+    m_ParentId: 15
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: toe_L
+    m_Guid: 84c6532f1e4720968c07f4cb53ef8077
+    m_Position: {x: 27.5, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 8.25
+    m_ParentId: 16
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: toe_R
+    m_Guid: 7b19554bc6e39c429b7553934fb62cac
+    m_Position: {x: 27.5, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 8.25
+    m_ParentId: 17
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: extra_feather_1
+    m_Guid: b67c32a61ae5c8979d22e2fcb48b0060
+    m_Position: {x: 25, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 12
+    m_ParentId: 5
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: extra_feather_2
+    m_Guid: daa78ab15ba294af59995ac5516cc06f
+    m_Position: {x: 12, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+    m_Length: 12
+    m_ParentId: 20
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+  - m_Name: extra_sword
+    m_Guid: 116a9f11579a52ce76062224e0721562
+    m_Position: {x: 19.8, y: 0, z: 0}
+    m_Rotation: {x: 0, y: 0, z: 0.42261827, w: 0.90630776}
+    m_Length: 80
+    m_ParentId: 11
+    m_Color:
+      serializedVersion: 2
+      rgba: 4294967295

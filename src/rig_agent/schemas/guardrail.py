@@ -13,6 +13,7 @@ GuardCategory = Literal[
     "unsafe",
     "too_long",
     "ambiguous",
+    "unsupported_motion",  # animation requests: a motion other than idle, walk or run
 ]
 
 

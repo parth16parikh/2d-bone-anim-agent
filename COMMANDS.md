@@ -16,6 +16,9 @@ Run everything from the repository folder (the one with `pyproject.toml`). For i
 | Check the Unity connection | `unity-check` | no |
 | Score the agent on the golden set | `python -m evals.run` | yes |
 | Draw rigs to PNG files | `python -m evals.render_skeleton` | no |
+| Animate a rig from a description | `animate` | yes |
+| Animate a rig with chosen settings | `animate-build` | no |
+| Put a clip on its rig in Unity | `unity-apply-anim` or `animate-build --unity` | no |
 
 ## Status and exit codes
 
@@ -84,6 +87,39 @@ uv run rig-agent unity-install                                 # refresh the C# 
 - **IK:** arms (with hands) and legs get a Limb solver. Drag the targets under `IK/`, not the bones. Weapons and toes follow the hand or foot rigidly.
 - **Generated assets:** each rig's placeholder sprite and skeleton asset go in `Assets/Rigs/Generated/<rig>/`, or next to its prefab. They're rewritten on every import.
 - **Exit codes:** 0 built and verified, 1 import or verification failed, 2 Unity unreachable (or, for `unity-apply-all`, no rigs found). With `run --unity`, an unreachable Unity doesn't fail the run: the JSON is already written.
+
+## Animation
+
+**From a description** (needs an API key; the planner chooses the clip and its settings):
+
+```bash
+uv run rig-agent animate out/knight "a heavy, tired walk"          # -> out/knight/animations/heavy_tired_walk.json
+uv run rig-agent animate out/knight "an energetic jog" --unity     # ...and put it on the rig in Unity
+uv run rig-agent animate out/knight "sneaking past a guard" --name sneak
+```
+
+It guards the request, plans an AnimationSpec (it previews each draft on your rig), bakes, validates and repairs up to 3 times, then writes the clip. Supported motions are **idle, walk, run and a standing backflip** (walk, run and backflip need a side-view rig):
+- anything else (front flip, jump, attack, dance) is refused, with a suggested alternative;
+- a walk, run or backflip on a front-view rig stops with a message, because those need a side-view rig.
+
+Exit codes are as for `run`, plus 1 when `--unity` was asked and the Unity import failed.
+
+**By hand** (no model):
+
+```bash
+uv run rig-agent animate-build --rig out/knight --clip walk            # idle (both views); walk, run, backflip (side view)
+uv run rig-agent animate-build --rig out/knight --spec heavy.json --name heavy_walk
+uv run rig-agent animate-build --rig out/knight --clip run --unity      # ...and put it on the rig in Unity
+uv run rig-agent unity-apply-anim out/knight/animations/walk.json       # send an existing clip
+```
+
+- **Backflip:** plays once and starts and ends in the rest pose. The jump is always high enough for the whole body (and anything held) to clear the floor; `bounce` adds height, `knee_lift` tightens the tuck. In Unity its Animator plays it once when you press Play (tick *Loop Time* on the clip to repeat it).
+- **What it does:** bakes an in-place clip onto the rig: bone rotations, the hip bob and the IK targets for every frame. Then it validates the clip: planted feet don't slide, nothing goes below the ground, knees and elbows bend the right way, and the loop closes. It writes `out/<rig>/animations/<name>.json` and a `.report.json`.
+- **Spec file:** `--spec` is an AnimationSpec, for example `{"clip": "walk", "style": "heavy", "speed": 0.7, "stride": 1.2, "bounce": 0.5, "arm_swing": 1.0, "knee_lift": 1.0, "lean_deg": 8, "fps": 24}`. Every knob is bounded, and 1.0 (0 for lean) is neutral.
+- **Ground speed:** the clip records a `ground_speed` (units/s). Move the character at that speed in the game and the feet stay planted.
+- **In Unity** (the rig must be imported first): the clip becomes `<clip>.anim` in the rig's generated folder. The rig gets an Animator whose default state is the latest clip, so press **Play**. The check samples frames and also lets Unity's own IK re-solve from the animated targets; both must match the clip. Rigs imported now also get **placeholder capsules** on every bone, so motion is visible without art.
+- **Viewer:** choose a rig, then a clip in the **Animation** panel. It has play/pause (Space), a frame slider (`,` `.`), onion skin, and a moving ground, whose hatch marks a planted foot should stay locked to.
+- **Exit codes:** as for `build`. With `--unity`, an unreachable Unity doesn't fail the command.
 
 ## Viewer
 

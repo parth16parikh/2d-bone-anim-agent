@@ -1,0 +1,407 @@
+fileFormatVersion: 2
+guid: c849bdd11c48f48d6aa673cb874da29c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 880229368790617197
+    second: chibi_mage_front_placeholder_0
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 9
+  spritePivot: {x: 0.5, y: 0.062305704}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: chibi_mage_front_placeholder_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 232
+        height: 263
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6c81af72f3373c00800000000000000
+      internalID: 880229368790617197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones:
+    - name: root
+      guid: 72c5e5c0467ba0ad6b324eb470c0c6b8
+      position: {x: 116, y: 16.3864, z: 0}
+      rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+      length: 5
+      parentId: -1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: hip
+      guid: 81cecea65591dcca5a8252c95a9a1500
+      position: {x: 60.000004, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 13.3333
+      parentId: 0
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: spine
+      guid: 66917eca7105439cd94f63556430cd84
+      position: {x: 13.3333, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 53.3333
+      parentId: 1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: head
+      guid: f7418125ea71fb2087552063354b11e5
+      position: {x: 53.3333, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 73.3333
+      parentId: 2
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: upper_arm_L
+      guid: 8e50ef25312806578ce5497ffa09d085
+      position: {x: 46.2803, y: -40, z: 0}
+      rotation: {x: 0, y: 0, z: -0.70710677, w: 0.70710677}
+      length: 22.8
+      parentId: 2
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: upper_arm_R
+      guid: fe03357ba7696971ab2dcf308ab408e8
+      position: {x: 46.2803, y: 40, z: 0}
+      rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+      length: 22.8
+      parentId: 2
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: forearm_L
+      guid: 1a35a70d9a712ee3d3ceb2c20eafa98d
+      position: {x: 22.8, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 20.4
+      parentId: 4
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: forearm_R
+      guid: 2c001b8f9c39c35152e8d76c2ca3cee6
+      position: {x: 22.8, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 20.4
+      parentId: 5
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: hand_L
+      guid: e282f85ced6842741b0a5d67771619da
+      position: {x: 20.4, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 16.8
+      parentId: 6
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: hand_R
+      guid: 6c1909e749f5b873d4456cb4ed6ae240
+      position: {x: 20.4, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 16.8
+      parentId: 7
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: thigh_L
+      guid: fd495e5d85d9cc17e5dba7cda46f434a
+      position: {x: 0, y: -20, z: 0}
+      rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+      length: 22.5
+      parentId: 1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: thigh_R
+      guid: 812e00cdca7d307a636ecb7cc5737bf2
+      position: {x: 0, y: 20, z: 0}
+      rotation: {x: 0, y: 0, z: 1, w: -0.00000004371139}
+      length: 22.5
+      parentId: 1
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: shin_L
+      guid: 3ed8e66e78384ff739548761f51c673d
+      position: {x: 22.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 27.5
+      parentId: 10
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: shin_R
+      guid: a263daa9f4c51115eac6d8da6ec96ac7
+      position: {x: 22.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 27.5
+      parentId: 11
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: foot_L
+      guid: c4dc6f9d89f675ee3a6e9fb242cac38c
+      position: {x: 27.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+      length: 60.000004
+      parentId: 12
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: foot_R
+      guid: 957523bd78d00dd36cc497b3f7168354
+      position: {x: 27.5, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: -0.70710677, w: 0.70710677}
+      length: 60.000004
+      parentId: 13
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: extra_hat
+      guid: 607681e054aea30b778313941505aee6
+      position: {x: 73.3333, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 30.000002
+      parentId: 3
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: extra_ponytail_1_L
+      guid: 06f22b35759a78d91f2998e9e228e123
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: -0.9659258, w: 0.25881907}
+      length: 30.000002
+      parentId: 3
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: extra_ponytail_2_L
+      guid: 3d3b4abb4a9b4924e6428678ca847824
+      position: {x: 30.000002, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 30.000002
+      parentId: 17
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: extra_ponytail_1_R
+      guid: 62bf415f6829ffa8bbc1bfa6a03e7c30
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0.9659258, w: 0.25881907}
+      length: 30.000002
+      parentId: 3
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: extra_ponytail_2_R
+      guid: 6a243985137fef01c0efd7647876f74b
+      position: {x: 30.000002, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      length: 30.000002
+      parentId: 19
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    - name: extra_staff
+      guid: 6016652733eab4e53727173e7a4d3f65
+      position: {x: 16.8, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+      length: 120.00001
+      parentId: 9
+      color:
+        serializedVersion: 2
+        rgba: 4294967295
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
+    vertices:
+    - {x: 108, y: 8.3864}
+    - {x: 124, y: 8.3864}
+    - {x: 108, y: 24.3864}
+    - {x: 124, y: 24.3864}
+    indices: 000000000100000002000000020000000100000003000000
+    edges:
+    - {x: 0, y: 1}
+    - {x: 1, y: 3}
+    - {x: 3, y: 2}
+    - {x: 2, y: 0}
+    weights:
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    - 'weight[0]': 1
+      'weight[1]': 0
+      'weight[2]': 0
+      'weight[3]': 0
+      'boneIndex[0]': 0
+      'boneIndex[1]': 0
+      'boneIndex[2]': 0
+      'boneIndex[3]': 0
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      chibi_mage_front_placeholder_0: 880229368790617197
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

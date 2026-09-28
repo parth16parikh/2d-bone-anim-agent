@@ -509,9 +509,9 @@ def test_unity_install_copies_the_scripts(tmp_path, capsys):
     make_project(tmp_path)
     assert main(["unity-install", "--project", str(tmp_path)]) == 0
     out = capsys.readouterr().out
-    assert out.count("installed:") == 6 and "Unity will now recompile" in out
+    assert out.count("installed:") == 8 and "Unity will now recompile" in out
     assert main(["unity-install", "--project", str(tmp_path)]) == 0
-    assert capsys.readouterr().out.count("unchanged:") == 6
+    assert capsys.readouterr().out.count("unchanged:") == 8
 
 
 def test_unity_install_needs_the_2d_animation_package(tmp_path, capsys):

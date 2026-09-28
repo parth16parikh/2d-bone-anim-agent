@@ -1,9 +1,9 @@
-# Implementation Plan: 2D Humanoid Rig Agent (Goal 1)
+# Implementation Plan: 2D Humanoid Rig Agent (Goal 1: rigs; Goal 2: animation)
 
 | | |
 |---|---|
-| **Companion documents** | `HLD_2D_Humanoid_Rig_Agent.md`, `LLD_2D_Humanoid_Rig_Agent.md` (v0.7) |
-| **Repository** | `Project/2d-bone-anim-agent/` |
+| **Companion documents** | `SYSTEM-DESIGN.md` (the HLD), `LOW-LEVEL-DESIGN.md` (the LLD), both in the repository |
+| **Repository** | this one (`2d-bone-anim-agent`), which also holds this plan and the design docs |
 | **Status legend** | ✅ done, ⏳ next, blank = not started |
 
 ---
@@ -27,7 +27,7 @@ The work is split into small coding problems, done one at a time.
 1. Static tables (bones, presets, poses, IK chains) are **frozen dataclasses**. They are constants that only we edit, so they need no validation. Data that crosses a boundary (`RigSpec`, `Skeleton`, `ValidationReport`, `GuardResult`) is **Pydantic**.
 2. Canonical bone names are plain `str` constants and frozensets, with no enum. `RigSpec` uses `Literal` types as in the LLD.
 3. NumPy is used only where it helps (vector maths). The rest is plain Python.
-4. The LLD and HLD stay one level above the repository and are not copied into it.
+4. The LLD and HLD live in the repository (`LOW-LEVEL-DESIGN.md`, `SYSTEM-DESIGN.md`), next to this plan.
 
 ---
 
@@ -111,7 +111,20 @@ The work is split into small coding problems, done one at a time.
 | H1 | Logfire tracing | `observability/tracing.py` | ✅ |
 | H2 | `evals/render_skeleton.py` (Pillow) | `evals/render_skeleton.py` | ✅ |
 | H3 | Golden set of about 50 prompts | `evals/golden.yaml` | ✅ |
-| H4 | Metrics Q1 to Q13 and the eval runner | `evals/metrics/` | ✅ (offline; no live run yet) |
+| H4 | Metrics Q1 to Q13 and the eval runner | `evals/metrics/` | ✅ (two full live runs) |
+
+### Phase M: Motion (Goal 2: animation clips)
+
+Called A1–A4 while it was being built. The same principle as Goal 1: the LLM plans a small, bounded
+`AnimationSpec`; code bakes every frame and validates it.
+
+| # | Step | Files | Status |
+|---|---|---|:-:|
+| M1 | Deterministic core: `AnimationSpec`/`AnimationClip`, FK, two-bone IK, idle/walk/run templates, baker, clip validator, `animate-build`, viewer playback | `schemas/animation.py`, `animation/`, `export/animation_exporter.py`, `viewer/` | ✅ |
+| M2 | Unity: clip import (`RigAnimImporter.cs`), Animator, placeholder capsules (`RigShapes.cs`), delivery and IK re-solve check, `unity-apply-anim` | `unity/csharp/Editor/`, `unity/animation.py`, `unity/delivery.py` | ✅ |
+| M3 | Animation planner and pipeline: motion guard, planner agent with `preview_clip`, LangGraph flow, `animate` | `guardrails/anim_guard.py`, `agent/anim_*.py`, `graph/anim_graph.py` | ✅ |
+| M3b | Backflip (side view): per-rig jump height, whole-body floor check, steady wrists for held items | `animation/templates.py`, `animation/baker.py`, `animation/validator.py` | ✅ |
+| M4 | Animation golden set and metrics | `evals/` | |
 
 ---
 
@@ -339,6 +352,57 @@ The work is split into small coding problems, done one at a time.
 - **Stale facts fixed:** 999 offline tests (was "about 600"), 6 live Unity tests, 6 C# scripts (the list named 4), and the dropped internals (placeholder sprite, IK ticker) are left to the LLD.
 - The Android switch and the server start are Editor steps; they are documented, not executed here.
 
+### Second full eval, with the fixed guard on gpt-5.4-mini (2026-09-28)
+
+`evals/results/20260928-193441` (58 prompts × 3). The two targets the first run missed now pass:
+**Q2 final validity 100%** (was 91.5%) and **Q9 false rejections 0%** (was 8.5%). Q1 first-pass validity 100%, view accuracy 100%, extras F1 0.986, recall and precision 100%, pass@1 100%, p95 latency 10.0 s, about 41k tokens per rig.
+
+Still missed: **Q8 style match 83.3%** (target ≥ 90%) and **Q10 same heads-tall bucket 80.4%** (≥ 90%). Diagnosed as planner-prompt gaps, not code (fixes deferred, see below):
+- "a bodybuilder with a tiny head" sets `heads_tall = 2` (the biggest head) in 3/3 runs: the model misreads heads_tall, possibly primed by the monster few-shot example.
+- neutral prompts (wizard, pirate, samurai, angel) flip between `realistic` (7.5 heads) and `stylized` (6), right across the 6.5 bucket line;
+- descriptors are not mapped to proportions: cartoon kid, fashion model and lanky elf all get the stylized 6 heads.
+
+One failure is the golden set's: `acc_cat_warrior` (side view) expects one ear, and the planner reasonably gives a pair.
+
+### Phase M1: animation core (no model, no Unity)
+
+- **Spec and clip:** `AnimationSpec` has a clip type plus bounded knobs (speed, stride, bounce, arm swing, knee lift, lean, fps). `AnimationClip` (`animation.json`) holds, per frame, every animated bone's local rotation, the hip position and every IK target's position and rotation. Clips are in place, and a gait records the `ground_speed` a game should move the character at so planted feet don't slide.
+- **Motion:** periodic, phase-based templates. The baker solves the legs with two-bone IK using the rig's own `bend_side` (the same convention as Unity's `LimbSolver2D.flip`), lowers the hip if a leg can't reach, and reads the IK targets off the final pose. So rotation curves and targets describe the same motion; FK reproduces `skeleton.json` to 1e-6.
+- **Validator:**
+  - IK targets on their effectors;
+  - knees and elbows bend only their own way;
+  - torso and ankles in range;
+  - planted feet move at the ground speed;
+  - nothing goes below the floor;
+  - a loop's closing frame equals its first.
+- **Two bugs found by sweeping every knob combination:** the ground speed ignored whole-frame rounding of the cycle (fast runs slid 0.65%/frame), and a heuristic loop check misfired on correct 12 fps clips. It was replaced by an exact closing frame.
+- **Also built:** `animate-build`; clips in `<rig>/animations/`, which `delete` also removes; and viewer playback (Animation panel: play, scrub, onion skin, a moving ground to judge foot slip). The viewer's JS forward kinematics is cross-checked against Python to 1e-9.
+
+### Phase M2: animation in Unity
+
+- **`RigAnimImporter.cs`** builds an AnimationClip from a flattened request (JsonUtility can't read dictionaries). It uses linear keys, bone rotation curves, hip position curves and IK target curves. It saves the `.anim` beside the rig's generated assets and adds an Animator Controller and an Animator (the clip imported last is the default state).
+- **The check:** at 4 frames it samples the clip, then lets Unity's own IK re-solve from the targets, and Python compares both with its FK. Live on the knight's walk: the curves match to 1.2e-4 and the IK re-solve to 3.5e-6. A deliberately broken clip (a foot target 0.1 off) is caught on every sampled frame.
+- **`RigShapes.cs`:** placeholder capsules on every bone but the root (coloured by side, sorted by depth, 9-sliced so the ends stay round), so motion is visible without art. Confirmed with Play-mode screenshots.
+- **Also:** `unity-apply-anim`, and `animate-build --unity`. One new MCP menu item was allowlisted.
+
+### Phase M3: animation planner and pipeline (`rig-agent animate`)
+
+- **Guard:** the same code checks as the rig guard, plus a motion classifier with a new `unsupported_motion` category. It needs its own prompt because the rig guard asks "is this a humanoid?".
+- **Planner:** a Pydantic AI agent with the rig as its dependency. `preview_clip` bakes and validates a draft on the real rig and reports it in numbers. The settings table in the prompt is generated from the schema's own bounds. The worked examples are checked to bake and pass.
+- **Pipeline:** a LangGraph flow like `run`, with shared budgets (`graph/budget.py`) and tracing.
+- **Decisions (user):** a walk, run or backflip on a front-view rig stops with a clear message (nothing is swapped in); unsupported motions are refused with a suggestion; files are named from the description.
+- **Live check:** heavy walk, energetic jog, sneaking and a front-view idle all passed first time, the front-view walk stopped as intended, and a backflip (then unsupported) was refused. About 4,300 tokens and 4–7 s per request. Two bugs found and fixed: `animate --unity` exited 0 when the Unity import failed, and a missing rig produced noisy errors.
+- **Observed:** the planner copies its worked examples verbatim for close prompts, so the animation golden set must avoid their wording; "energetic jog" came out as a fast run.
+
+### Phase M3b: backflip
+
+- **The motion:** crouch → take off → one 360° backward turn about the hip with the knees tucked → land and absorb. It's side view only, plays once, stays in place, and starts and ends at rest. In the air the feet are placed relative to the turning body, so Unity's IK reproduces them.
+- **Jump height per rig:** a fixed jump let chibi heads and the knight's sword go through the floor. The baker now bakes once, measures how far each airborne frame dips below the floor, and raises the arc's peak just enough (one correction suffices, because the lift is uniform per frame).
+- **Whole-body floor check:** props already on the floor at rest (the mage's staff) are exempt, because they would stay planted.
+- **Steady wrists:** a hand holding an accessory turns against the arm's swing, capped at 70°, in every clip. This fixes the sword sweeping into the floor in the crouch and over the head in the run.
+- **Tried and reverted:** capping the ankle in the baker (it pushed toes into the floor).
+- **Result:** every clip at default settings passes on 7 rigs, and every backflip passes across all knob combinations. In Unity the upside-down frame matches to 1.9e-4 after IK re-solve.
+
 ### Deferred (decided to do later)
 
 - ~~**Skeleton preview**~~ **Done as a browser viewer** (`viewer/`, see the README). It loads `skeleton.json` and `validation_report.json`, auto-reloads a served file, and supports depth and IK colouring, selection, and PNG export. The offline Python renderer for the eval harness is H2, now done (see *Phase H2* above).
@@ -347,11 +411,16 @@ The work is split into small coding problems, done one at a time.
 - **Plausibility warning for held items that cross the body** (found in a real model run: a sword swung across the center line). Candidate for the eval phase.
 - **Report the dollar cost of a rig, not just token counts.** `run` already prints `X model calls, Y tool calls, Z tokens` (`UsageTotals` in `schemas/state.py`: `requests`, `tool_calls`, `input_tokens`, `output_tokens` separately, and `Skeleton.metadata.model` already records which model produced it) — what's missing is a $-per-token price table (input and output differ, and differ again between `gpt-5.4-mini`/`gpt-5.4-nano` and the Anthropic fallback `claude-sonnet-5`/`claude-haiku-4-5-20251001`) to turn that usage into an actual dollar figure per skeleton. Natural home: a `pricing.py` (or a section of `config.py`) with a per-model rate table, a small `estimate_cost(usage, model) -> float` helper, and print it alongside the existing usage line in `run`'s summary; consider also writing it into `metadata` or a sibling field in `skeleton.json` so a rig's own cost travels with it. Directly serves the LLD's Q12 cost-per-rig target (≤ $0.05/rig) — a natural candidate to build as part of the Phase H eval work, but useful standalone too.
 - **Editing today:** change the `RigSpec` (`spec.json`) and re-run `rig-agent build`. Editing `skeleton.json` directly is not supported.
+- **Rig planner prompt fixes** (from the second full eval):
+  - state that a smaller heads_tall means a bigger head;
+  - default to `realistic` unless the prompt signals stylization;
+  - add a descriptor → heads_tall table (toddler 3–4, child 4.5–5.5, adult 7–8, heroic 8, fashion 8.5–9);
+  - change `acc_cat_warrior`'s golden expectation to two ears.
+- **Animation:** M4 evals (avoid the planner examples' wording); a slower default for "jog"; the `style` label should describe the motion; a prefab saved before a clip lacks the Animator, and re-importing a rig replaces its Animator; a chibi side-view run at extreme knee lift trips the ankle limit (repair lowers it).
 
 
 - **Front-view foot direction.** LLD §2.8 currently makes the foot point sideways. You may prefer it to point down. Decide before B3.
-- **Stale PDF.** `HLD_2D_Humanoid_Rig_Agent.pdf` is out of date relative to the markdown. Regenerate it at the end.
-- **README links.** The README links to the design docs by relative path. Update them if the docs move.
+- **HLD PDF.** The old `HLD_2D_Humanoid_Rig_Agent.pdf` is gone; if a PDF is needed, generate it from `SYSTEM-DESIGN.md`.
 
 ## 9. Verification
 

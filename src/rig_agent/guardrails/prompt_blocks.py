@@ -8,7 +8,7 @@ from typing import Any, Literal
 
 import yaml
 
-Area = Literal["input", "planner", "repair"]
+Area = Literal["input", "planner", "repair", "anim_input", "anim_planner"]
 RULES_FILE = Path(__file__).with_name("rules.yaml")
 
 
@@ -57,6 +57,16 @@ def render_repair_guardrails() -> str:
 def render_input_guard_rules() -> str:
     """The rule list of the input classifier prompt (LLD 3.8.1a)."""
     return _render("input")
+
+
+def render_anim_input_rules() -> str:
+    """The rule list of the animation request classifier (Goal 2, A3)."""
+    return _render("anim_input")
+
+
+def render_anim_planner_guardrails() -> str:
+    """The guardrail block of the animation planner's system prompt (Goal 2, A3)."""
+    return _render("anim_planner")
 
 
 def resolve_check(path: str) -> Any:

@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
+from rig_agent.export.animation_exporter import ANIMATIONS_DIR
 from rig_agent.schemas.skeleton import Skeleton
 from rig_agent.schemas.validation import ValidationReport
 
@@ -20,7 +21,7 @@ class ExportResult:
 @dataclass(frozen=True)
 class DeleteResult:
     folder: Path
-    removed_files: list[str]  # SKELETON_FILE, REPORT_FILE and RENDER_FILE, whichever existed
+    removed_files: list[str]  # the rig files that existed, animations/ clips as animations/<file>
     folder_removed: bool  # true if the folder was empty afterwards and was removed too
 
 
@@ -40,12 +41,13 @@ def export(skeleton: Skeleton, report: ValidationReport, out_dir: str | Path) ->
 
 
 def delete_rig(folder: str | Path) -> DeleteResult:
-    """Remove a rig's skeleton.json and validation_report.json from folder, and its skeleton.png
-    render if there is one (it is drawn from skeleton.json, so it would be stale on its own).
+    """Remove a rig's skeleton.json and validation_report.json from folder, its skeleton.png
+    render, and the clips baked for it in animations/ (*.json: each clip and its report). The
+    render and the clips are made from skeleton.json, so they would be stale on their own.
 
-    Only those files are ever removed. The folder itself is removed too, but only if that
-    leaves it empty; anything else you put there (notes, a spec.json copy) is left untouched and
-    so is the folder. Raises NotARigFolderError if the folder has neither file, so a typo or an
+    Only those files are ever removed (and animations/ itself, if that leaves it empty). The
+    folder itself is removed too, but only if that leaves it empty; anything else you put there
+    (notes, a spec.json copy) is left untouched and so is the folder. Raises NotARigFolderError if the folder has neither file, so a typo or an
     unrelated folder is never silently a no-op.
     """
     directory = Path(folder)
@@ -56,8 +58,13 @@ def delete_rig(folder: str | Path) -> DeleteResult:
         )
     if (directory / RENDER_FILE).is_file():
         present.append(RENDER_FILE)
+    clips = directory / ANIMATIONS_DIR
+    if clips.is_dir():
+        present += [f"{ANIMATIONS_DIR}/{f.name}" for f in sorted(clips.glob("*.json"))]
     for name in present:
         (directory / name).unlink()
+    if clips.is_dir() and not any(clips.iterdir()):
+        clips.rmdir()
     removed = directory.is_dir() and not any(directory.iterdir())
     if removed:
         directory.rmdir()

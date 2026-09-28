@@ -1,17 +1,17 @@
 {
     "ok": true,
     "file": "Assets/Rigs/skeleton.json",
-    "rig_name": "a_ninja_assassin_with_a_katana",
-    "view": "front",
-    "bone_count": 19,
-    "root_path": "RigAgent_Output/a_ninja_assassin_with_a_katana",
-    "max_head_error": 0.0002009140298468992,
-    "max_tail_error": 0.0002009140298468992,
+    "rig_name": "a_knight_holding_a_sword_with_a_feather",
+    "view": "side",
+    "bone_count": 23,
+    "root_path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather",
+    "max_head_error": 0.00018908738275058568,
+    "max_tail_error": 0.00018908738275058568,
     "skin": {
-        "sprite_path": "Assets/Prefabs/Rigs/a_ninja_assassin_with_a_katana/a_ninja_assassin_with_a_katana_placeholder.png",
-        "skeleton_path": "Assets/Prefabs/Rigs/a_ninja_assassin_with_a_katana/a_ninja_assassin_with_a_katana_skeleton.asset",
-        "sprite_bones": 19,
-        "bind_poses": 19,
+        "sprite_path": "Assets/Rigs/Generated/a_knight_holding_a_sword_with_a_feather/a_knight_holding_a_sword_with_a_feather_placeholder.png",
+        "skeleton_path": "Assets/Rigs/Generated/a_knight_holding_a_sword_with_a_feather/a_knight_holding_a_sword_with_a_feather_skeleton.asset",
+        "sprite_bones": 23,
+        "bind_poses": 23,
         "has_weights": true,
         "state": "Ready"
     },
@@ -29,7 +29,7 @@
                 "chain": "arm_R",
                 "effector": "hand_R",
                 "target": "target_hand_R",
-                "flip": false,
+                "flip": true,
                 "valid": true
             },
             {
@@ -43,18 +43,19 @@
                 "chain": "leg_R",
                 "effector": "foot_R",
                 "target": "target_foot_R",
-                "flip": true,
+                "flip": false,
                 "valid": true
             }
         ]
     },
+    "shapes": 22,
     "errors": [],
     "bones": [
         {
             "id": 0,
             "name": "root",
             "parent": "",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root",
             "world_head": [
                 0.0,
                 0.0
@@ -70,14 +71,14 @@
             "id": 1,
             "name": "hip",
             "parent": "root",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip",
             "world_head": [
                 -1.1920928955078126e-7,
-                0.8400000929832459
+                1.0000001192092896
             ],
             "world_tail": [
                 -1.1920928955078126e-7,
-                0.9920001029968262
+                1.1325000524520875
             ],
             "depth": 0,
             "layer": ""
@@ -86,14 +87,14 @@
             "id": 2,
             "name": "spine",
             "parent": "hip",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine",
             "world_head": [
                 -1.1920928955078126e-7,
-                0.9920001029968262
+                1.1325000524520875
             ],
             "world_tail": [
                 -1.1920928955078126e-7,
-                1.2580000162124634
+                1.364375114440918
             ],
             "depth": 0,
             "layer": ""
@@ -102,14 +103,14 @@
             "id": 3,
             "name": "chest",
             "parent": "spine",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest",
             "world_head": [
                 -1.1920928955078126e-7,
-                1.2580000162124634
+                1.364375114440918
             ],
             "world_tail": [
                 -2.384185791015625e-7,
-                1.600000262260437
+                1.6625001430511475
             ],
             "depth": 0,
             "layer": ""
@@ -118,14 +119,14 @@
             "id": 4,
             "name": "neck",
             "parent": "chest",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/neck",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/neck",
             "world_head": [
                 -2.384185791015625e-7,
-                1.600000262260437
+                1.6625001430511475
             ],
             "world_tail": [
                 -2.384185791015625e-7,
-                1.6666672229766846
+                1.750000238418579
             ],
             "depth": 0,
             "layer": ""
@@ -134,10 +135,10 @@
             "id": 5,
             "name": "head",
             "parent": "neck",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/neck/head",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/neck/head",
             "world_head": [
                 -2.384185791015625e-7,
-                1.6666672229766846
+                1.750000238418579
             ],
             "world_tail": [
                 -2.384185791015625e-7,
@@ -150,30 +151,30 @@
             "id": 6,
             "name": "upper_arm_L",
             "parent": "chest",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_L",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/upper_arm_L",
             "world_head": [
-                0.29999980330467226,
-                1.5471023321151734
+                -0.030000241473317148,
+                1.6625001430511475
             ],
             "world_tail": [
-                0.5375878214836121,
-                1.3095142841339112
+                0.03701567277312279,
+                1.2813467979431153
             ],
-            "depth": 1,
+            "depth": -1,
             "layer": ""
         },
         {
             "id": 7,
             "name": "upper_arm_R",
             "parent": "chest",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_R",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/upper_arm_R",
             "world_head": [
-                -0.30000028014183047,
-                1.5471020936965943
+                -2.384185791015625e-7,
+                1.6625001430511475
             ],
             "world_tail": [
-                -0.5374459624290466,
-                1.3093719482421876
+                0.06701567769050598,
+                1.2813467979431153
             ],
             "depth": 1,
             "layer": ""
@@ -182,30 +183,30 @@
             "id": 8,
             "name": "forearm_L",
             "parent": "upper_arm_L",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_L/forearm_L",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/upper_arm_L/forearm_L",
             "world_head": [
-                0.5375878214836121,
-                1.3095142841339112
+                0.03701567277312279,
+                1.2813467979431153
             ],
             "world_tail": [
-                0.7355777621269226,
-                1.1115243434906006
+                0.09190209954977036,
+                0.9711654186248779
             ],
-            "depth": 1,
+            "depth": -1,
             "layer": ""
         },
         {
             "id": 9,
             "name": "forearm_R",
             "parent": "upper_arm_R",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_R/forearm_R",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/upper_arm_R/forearm_R",
             "world_head": [
-                -0.5374459624290466,
-                1.3093719482421876
+                0.06701567769050598,
+                1.2813467979431153
             ],
             "world_tail": [
-                -0.7355732321739197,
-                1.1115195751190186
+                0.12190210819244385,
+                0.9711654186248779
             ],
             "depth": 1,
             "layer": ""
@@ -214,30 +215,30 @@
             "id": 10,
             "name": "hand_L",
             "parent": "forearm_L",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_L/forearm_L/hand_L",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/upper_arm_L/forearm_L/hand_L",
             "world_head": [
-                0.7355777621269226,
-                1.1115243434906006
+                0.09190209954977036,
+                0.9711654186248779
             ],
             "world_tail": [
-                0.8656854629516602,
-                0.9814167022705078
+                0.12628446519374848,
+                0.7761735916137695
             ],
-            "depth": 1,
+            "depth": -1,
             "layer": ""
         },
         {
             "id": 11,
             "name": "hand_R",
             "parent": "forearm_R",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R",
             "world_head": [
-                -0.7355732321739197,
-                1.1115195751190186
+                0.12190210819244385,
+                0.9711654186248779
             ],
             "world_tail": [
-                -0.8656809329986572,
-                0.9814118146896362
+                0.15628446638584138,
+                0.7761735916137695
             ],
             "depth": 1,
             "layer": ""
@@ -246,30 +247,30 @@
             "id": 12,
             "name": "thigh_L",
             "parent": "hip",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_L",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/thigh_L",
             "world_head": [
-                0.13333289325237275,
-                0.8400000929832459
+                -0.030000122264027597,
+                1.0000001192092896
             ],
             "world_tail": [
-                0.1333329826593399,
-                0.4752000570297241
+                -0.030000021681189538,
+                0.5400000214576721
             ],
-            "depth": 1,
+            "depth": -1,
             "layer": ""
         },
         {
             "id": 13,
             "name": "thigh_R",
             "parent": "hip",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_R",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/thigh_R",
             "world_head": [
-                -0.13333313167095185,
-                0.8400000929832459
+                -1.1920928955078126e-7,
+                1.0000001192092896
             ],
             "world_tail": [
-                -0.13333304226398469,
-                0.4752000570297241
+                -1.93901641409866e-8,
+                0.5400000214576721
             ],
             "depth": 1,
             "layer": ""
@@ -278,30 +279,30 @@
             "id": 14,
             "name": "shin_L",
             "parent": "thigh_L",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_L/shin_L",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/thigh_L/shin_L",
             "world_head": [
-                0.1333329826593399,
-                0.4752000570297241
+                -0.030000021681189538,
+                0.5400000214576721
             ],
             "world_tail": [
-                0.13333305716514588,
-                0.08000000566244126
+                -0.029999930411577226,
+                0.07999998331069946
             ],
-            "depth": 1,
+            "depth": -1,
             "layer": ""
         },
         {
             "id": 15,
             "name": "shin_R",
             "parent": "thigh_R",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_R/shin_R",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/thigh_R/shin_R",
             "world_head": [
-                -0.13333304226398469,
-                0.4752000570297241
+                -1.93901641409866e-8,
+                0.5400000214576721
             ],
             "world_tail": [
-                -0.1333329677581787,
-                0.07999996840953827
+                7.297838067188423e-8,
+                0.07999999076128006
             ],
             "depth": 1,
             "layer": ""
@@ -310,46 +311,110 @@
             "id": 16,
             "name": "foot_L",
             "parent": "shin_L",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_L/shin_L/foot_L",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/thigh_L/shin_L/foot_L",
             "world_head": [
-                0.13333305716514588,
-                0.08000000566244126
+                -0.029999930411577226,
+                0.07999998331069946
             ],
             "world_tail": [
-                0.4666661322116852,
-                0.08000004291534424
+                0.24500015377998353,
+                0.08000007271766663
             ],
-            "depth": 1,
+            "depth": -1,
             "layer": ""
         },
         {
             "id": 17,
             "name": "foot_R",
             "parent": "shin_R",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/thigh_R/shin_R/foot_R",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/thigh_R/shin_R/foot_R",
             "world_head": [
-                -0.1333329677581787,
-                0.07999996840953827
+                7.297838067188423e-8,
+                0.07999999076128006
             ],
             "world_tail": [
-                -0.46666601300239565,
-                0.07999995350837708
+                0.2750001549720764,
+                0.08000007271766663
             ],
             "depth": 1,
             "layer": ""
         },
         {
             "id": 18,
-            "name": "extra_katana",
-            "parent": "hand_R",
-            "path": "RigAgent_Output/a_ninja_assassin_with_a_katana/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R/extra_katana",
+            "name": "toe_L",
+            "parent": "foot_L",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/thigh_L/shin_L/foot_L/toe_L",
             "world_head": [
-                -0.8656809329986572,
-                0.9814118146896362
+                0.24500015377998353,
+                0.08000007271766663
             ],
             "world_tail": [
-                -0.25946298241615298,
-                0.6314117908477783
+                0.3275001645088196,
+                0.0800001323223114
+            ],
+            "depth": -1,
+            "layer": ""
+        },
+        {
+            "id": 19,
+            "name": "toe_R",
+            "parent": "foot_R",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/thigh_R/shin_R/foot_R/toe_R",
+            "world_head": [
+                0.2750001549720764,
+                0.08000007271766663
+            ],
+            "world_tail": [
+                0.3575001657009125,
+                0.0800001323223114
+            ],
+            "depth": 1,
+            "layer": ""
+        },
+        {
+            "id": 20,
+            "name": "extra_feather_1",
+            "parent": "head",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/neck/head/extra_feather_1",
+            "world_head": [
+                -2.384185791015625e-7,
+                2.000000238418579
+            ],
+            "world_tail": [
+                -2.384185791015625e-7,
+                2.120000123977661
+            ],
+            "depth": 0,
+            "layer": "front"
+        },
+        {
+            "id": 21,
+            "name": "extra_feather_2",
+            "parent": "extra_feather_1",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/neck/head/extra_feather_1/extra_feather_2",
+            "world_head": [
+                -2.384185791015625e-7,
+                2.120000123977661
+            ],
+            "world_tail": [
+                -2.384185791015625e-7,
+                2.2400002479553224
+            ],
+            "depth": 0,
+            "layer": "front"
+        },
+        {
+            "id": 22,
+            "name": "extra_sword",
+            "parent": "hand_R",
+            "path": "RigAgent_Output/a_knight_holding_a_sword_with_a_feather/root/hip/spine/chest/upper_arm_R/forearm_R/hand_R/extra_sword",
+            "world_head": [
+                0.15628446638584138,
+                0.7761735916137695
+            ],
+            "world_tail": [
+                0.8491050004959106,
+                0.3761736750602722
             ],
             "depth": 1,
             "layer": "front"

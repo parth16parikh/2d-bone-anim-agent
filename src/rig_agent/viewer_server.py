@@ -1,8 +1,8 @@
 """A small local server for the rig viewer.
 
 It serves only the viewer/ folder and your out/ folder (nothing else in the project, so .env and
-the source stay private), plus /api/rigs, a list of every rig found in out/ that the viewer shows
-as a picker. It listens on 127.0.0.1 only.
+the source stay private), plus /api/rigs, a list of every rig found in out/ and the animation
+clips baked for it, which the viewer shows as pickers. It listens on 127.0.0.1 only.
 """
 
 import json
@@ -16,6 +16,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 VIEWER_DIR = PROJECT_ROOT / "viewer"
 SKELETON_FILE = "skeleton.json"
 REPORT_FILE = "validation_report.json"
+ANIMATIONS_DIR = "animations"
+CLIP_REPORT_SUFFIX = ".report.json"
 
 
 def _read_json(path: Path) -> dict[str, Any] | None:
@@ -24,6 +26,33 @@ def _read_json(path: Path) -> dict[str, Any] | None:
     except (OSError, json.JSONDecodeError):
         return None
     return data if isinstance(data, dict) else None
+
+
+def list_clips(folder: Path, prefix: str) -> list[dict[str, Any]]:
+    """The animation clips baked for one rig (its animations/ folder), by name."""
+    directory = folder / ANIMATIONS_DIR
+    if not directory.is_dir():
+        return []
+    clips = []
+    for path in sorted(directory.glob("*.json")):
+        if path.name.endswith(CLIP_REPORT_SUFFIX):
+            continue
+        data = _read_json(path)
+        if data is None or not isinstance(data.get("rotations"), dict):
+            continue
+        report_path = path.with_name(path.stem + CLIP_REPORT_SUFFIX)
+        report = _read_json(report_path) if report_path.is_file() else None
+        url = f"{prefix}/{ANIMATIONS_DIR}"
+        clips.append(
+            {
+                "name": path.stem,
+                "clip": data.get("clip", ""),
+                "path": f"{url}/{path.name}",
+                "report": f"{url}/{report_path.name}" if report else None,
+                "passed": report.get("passed") if report else None,
+            }
+        )
+    return clips
 
 
 def list_rigs(out_dir: Path) -> list[dict[str, Any]]:
@@ -50,6 +79,7 @@ def list_rigs(out_dir: Path) -> list[dict[str, Any]]:
                 "passed": report.get("passed") if report else None,
                 "path": f"{prefix}/{SKELETON_FILE}",
                 "report": f"{prefix}/{REPORT_FILE}" if report else None,
+                "animations": list_clips(folder, prefix),
             }
         )
     return sorted(rigs, key=lambda r: r["modified"], reverse=True)

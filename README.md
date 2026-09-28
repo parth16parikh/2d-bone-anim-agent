@@ -1,8 +1,8 @@
 # 2d-bone-anim-agent
 
-An agent that turns a short description of a humanoid character (*"chibi knight with a big sword"*) into a valid, anatomically plausible 2D bone rig for Unity. It writes `skeleton.json` and can build the rig live in an open Unity Editor, with native 2D bones, IK and prefabs.
+An agent that turns a short description of a humanoid character (*"chibi knight with a big sword"*) into a valid, anatomically plausible 2D bone rig for Unity. It writes `skeleton.json` and can build the rig live in an open Unity Editor, with native 2D bones, IK and prefabs. It can then animate the rig from a description too (*"a heavy, tired walk"*): idle, walk and run cycles and a standing backflip, validated and playable in Unity.
 
-Design: [HLD](../../HLD_2D_Humanoid_Rig_Agent.md) (overview) and [LLD](../../LLD_2D_Humanoid_Rig_Agent.md) (details). Every command is described in [`COMMANDS.md`](COMMANDS.md).
+Design: [`SYSTEM-DESIGN.md`](SYSTEM-DESIGN.md) (overview), [`LOW-LEVEL-DESIGN.md`](LOW-LEVEL-DESIGN.md) (details) and [`IMPLEMENTATION-PLAN.md`](IMPLEMENTATION-PLAN.md) (phases and progress notes). Every command is described in [`COMMANDS.md`](COMMANDS.md).
 
 ## Requirements
 
@@ -47,6 +47,18 @@ uv run rig-agent unity-apply-all --prefab-dir Assets/Prefabs/Rigs               
 
 The first delivery installs the agent's C# scripts into `Assets/RigAgent/`. If Unity can't be reached, `run` still writes `skeleton.json` and reports `unity: unavailable`.
 
+## Animate a rig
+
+```bash
+uv run rig-agent animate out/knight "a heavy, tired walk" --unity    # plan, bake, validate, put on the rig in Unity
+uv run rig-agent animate-build --rig out/knight --clip backflip        # default settings, no model
+```
+
+- **Clips:** idle (front and side view), walk, run and backflip (side view only). Anything else is refused with a suggestion; a walk, run or backflip on a front-view rig stops with a message.
+- **Output:** `out/<rig>/animations/<name>.json`, named after the description, plus a validation report. The validator checks that planted feet don't slide, nothing goes through the floor, joints bend the right way, and cycles loop cleanly.
+- **Watching it:** in the browser, `rig-agent view` has an Animation panel (play, scrub, onion skin, moving ground). In Unity, the clip becomes an `.anim` on the rig's Animator, so press Play. Rigs get placeholder capsules on every bone, so motion is visible without art.
+- **Held items:** accessories in a hand (a sword, a staff) stay steady; the wrist turns against the arm's swing.
+
 ## Evals
 
 ```bash
@@ -61,12 +73,13 @@ Results, including `report.md`, go to `evals/results/<timestamp>/`. Why the guar
 
 ```
 src/rig_agent/
-  agent/          planner prompt, tools, Pydantic AI agent
-  guardrails/     input guard and shared rules
+  agent/          rig and animation planners: prompts, tools, Pydantic AI agents
+  animation/      clip templates (idle, walk, run, backflip), IK, baker, clip validator
+  guardrails/     input guards (rig and animation requests) and shared rules
   builder/        RigSpec -> skeleton geometry (front and side layouts)
   validator/      structure and geometry checks
-  graph/          LangGraph pipeline with the repair loop
-  unity/          MCP client, delivery, prefabs, and the C# scripts (unity/csharp/)
+  graph/          LangGraph pipelines (rig and animation) with the repair loop
+  unity/          MCP client, delivery (rigs and clips), prefabs, and the C# scripts (unity/csharp/)
   schemas/, vocabulary/, export/, observability/, viewer_server.py
 evals/            golden set, eval runner, metrics, PNG renderer
 viewer/           browser viewer

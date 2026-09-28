@@ -18,11 +18,18 @@ from typing import Any, Self, TypeVar
 from mcp import Client
 
 from rig_agent.config import settings
-from rig_agent.unity.contract import IMPORT_ALL_MENU, IMPORT_MENU, SAVE_PREFABS_MENU
+from rig_agent.unity.contract import (
+    IMPORT_ALL_MENU,
+    IMPORT_ANIMATION_MENU,
+    IMPORT_MENU,
+    SAVE_PREFABS_MENU,
+)
 
 T = TypeVar("T")
 
-ALLOWED_MENU_ITEMS = frozenset({IMPORT_MENU, IMPORT_ALL_MENU, SAVE_PREFABS_MENU})
+ALLOWED_MENU_ITEMS = frozenset(
+    {IMPORT_MENU, IMPORT_ALL_MENU, SAVE_PREFABS_MENU, IMPORT_ANIMATION_MENU}
+)
 # tool name -> the argument names it may be called with
 ALLOWED_TOOLS: dict[str, frozenset[str]] = {
     "execute_menu_item": frozenset({"menu_path"}),
