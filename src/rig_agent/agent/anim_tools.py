@@ -22,14 +22,21 @@ CLIP_MEANINGS = {
 }
 
 
+# The planner must return the clip the request asks for even when this rig cannot play it: the
+# pipeline then stops and tells the user why. Showing a clip as "not allowed" made the planner
+# quietly swap in an idle (6 of 6 front-view walk/run runs in the first animation eval).
+KEEP_THE_CLIP = (
+    "Always return the clip the request asks for, even if this rig's view cannot play it: the "
+    "pipeline then explains the limit to the user. Never swap in a different clip."
+)
+
+
 def list_clip_types(ctx: RunContext[Skeleton]) -> dict[str, Any]:
-    """The clip types, which of them this rig's view allows, and their default cycle length."""
-    view = ctx.deps.view
+    """The clip types, what each one is, and their default cycle length."""
     return {
-        "rig_view": view,
+        "rule": KEEP_THE_CLIP,
         "clips": {
             clip: {
-                "allowed_for_this_rig": view in CLIP_VIEWS[clip],
                 "views": list(CLIP_VIEWS[clip]),
                 "default_cycle_seconds": CYCLE_SECONDS[clip],
                 "what": CLIP_MEANINGS[clip],
@@ -44,6 +51,8 @@ def preview_clip(ctx: RunContext[Skeleton], spec: AnimationSpec) -> dict[str, An
     bounce and lean in numbers relative to the character's height, plus the validation result.
     Read these to check that the clip matches the description before you answer."""
     skeleton = ctx.deps
+    if skeleton.view not in CLIP_VIEWS[spec.clip]:
+        return {"clip": spec.clip, "previewed": False, "note": KEEP_THE_CLIP}
     try:
         clip = bake(spec, skeleton)
     except BakeError as error:

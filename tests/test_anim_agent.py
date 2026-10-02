@@ -120,7 +120,7 @@ def test_the_planner_previews_on_the_real_rig_and_returns_the_spec():
     assert isinstance(result, AnimPlanResult) and result.spec.speed == 0.7
     assert (result.requests, result.tool_calls) == (3, 2)
     clips, preview = (json.loads(p.model_response_str()) for p in script.tool_returns())
-    assert clips["clips"]["walk"]["allowed_for_this_rig"] is True
+    assert "Never swap" in clips["rule"] and "allowed_for_this_rig" not in clips["clips"]["walk"]
     assert preview["passed"] and preview["cycle_seconds"] > 1.3  # slower than the default 1.1 s
     assert 0 < preview["hip_bounce_share_of_height"] < 0.02
     assert preview["torso_lean_deg"] == 10.0  # 8 asked + 2 the walk adds
@@ -130,7 +130,8 @@ def test_the_request_tells_the_planner_about_this_rig():
     script = Script(("final", {"clip": "idle", "style": "calm"}))
     plan_animation("standing calmly", ELF, agent=build_anim_planner(FunctionModel(script)))
     prompt = script.first_prompt()
-    assert "front view" in prompt and "allows: idle." in prompt
+    assert "front view" in prompt
+    assert "allows" not in prompt  # a list of allowed clips made the planner swap in an idle
     assert "<motion_description>\nstanding calmly\n</motion_description>" in prompt
 
 
@@ -138,8 +139,9 @@ def test_a_walk_preview_on_a_front_rig_explains_the_limit():
     script = Script(("list_clip_types", {}), ("preview_clip", {"spec": HEAVY}), ("final", HEAVY))
     plan_animation("a walk", ELF, agent=build_anim_planner(FunctionModel(script)))
     clips, preview = (json.loads(p.model_response_str()) for p in script.tool_returns())
-    assert clips["clips"]["walk"]["allowed_for_this_rig"] is False
-    assert "side-view" in preview["error"]
+    assert "Never swap" in clips["rule"]
+    # not an error to fix: the planner is told to keep the clip; the pipeline explains the limit
+    assert preview == {"clip": "walk", "previewed": False, "note": clips["rule"]}
 
 
 def test_a_repair_sends_the_previous_spec_and_its_issues():

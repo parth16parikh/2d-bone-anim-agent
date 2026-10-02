@@ -42,6 +42,8 @@ How to choose:
   energetic, happy, childlike -> speed 1.2-1.5, bounce 1.4-1.8, arm_swing 1.3-1.6;
   confident, proud, marching -> stride 1.1-1.3, arm_swing 1.3-1.6, lean -3 to 0, bounce 0.8;
   sprinting -> run with speed 1.3-1.6, stride 1.3-1.5, knee_lift 1.3, lean 12-18.
+- speed is the step rate and stride the step length; they are separate. Quick, hurried or brisk
+  steps raise speed (1.2-1.5) even when the steps are short; slow steps lower it even when long.
 - style is a short label of the mood (e.g. "heavy, tired"). Record any interpretation you made in
   assumptions."""
 
@@ -135,10 +137,11 @@ def build_anim_system_prompt() -> str:
 
 
 def format_anim_request(description: str, skeleton: Skeleton) -> str:
-    allowed = [c for c in CLIP_TYPES if skeleton.view in CLIP_VIEWS[c]]
+    # no list of the clips this rig "allows": that nudged the planner into swapping in an idle;
+    # the pipeline checks the view after planning and explains it to the user
     return (
         f"The rig: '{skeleton.rig_name}', {skeleton.view} view, style '{skeleton.style}', "
-        f"height {skeleton.height:g} units. Clips this rig's view allows: {', '.join(allowed)}.\n\n"
+        f"height {skeleton.height:g} units.\n\n"
         f"{wrap_motion(description)}"
     )
 

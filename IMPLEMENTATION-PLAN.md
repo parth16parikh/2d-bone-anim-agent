@@ -124,7 +124,7 @@ Called A1–A4 while it was being built. The same principle as Goal 1: the LLM p
 | M2 | Unity: clip import (`RigAnimImporter.cs`), Animator, placeholder capsules (`RigShapes.cs`), delivery and IK re-solve check, `unity-apply-anim` | `unity/csharp/Editor/`, `unity/animation.py`, `unity/delivery.py` | ✅ |
 | M3 | Animation planner and pipeline: motion guard, planner agent with `preview_clip`, LangGraph flow, `animate` | `guardrails/anim_guard.py`, `agent/anim_*.py`, `graph/anim_graph.py` | ✅ |
 | M3b | Backflip (side view): per-rig jump height, whole-body floor check, steady wrists for held items | `animation/templates.py`, `animation/baker.py`, `animation/validator.py` | ✅ |
-| M4 | Animation golden set and metrics | `evals/anim/` | ✅ (offline; no live run yet) |
+| M4 | Animation golden set and metrics | `evals/anim/` | ✅ (full live run + fix + re-run) |
 
 ---
 
@@ -421,6 +421,17 @@ One failure is the golden set's: `acc_cat_warrior` (side view) expects one ear, 
   - A9 latency (p95 ≤ 30 s), tokens and cost (with prices).
 - **Runner and CLI:** `python -m evals.anim.run`, mirroring `evals.run` (records saved per run, `--rescore`, confirmation before a paid run).
 - **Verified offline:** the whole set runs end to end with rule-based fakes and rescores to identical metrics. 16 new tests; 1,091 in total.
+- **First full live run (`evals/results/anim/20261002-175453`, 129 requests, 8.5 min):**
+  - **Passed:** valid 100%, refusals 100% (all with the right category), false rejections 0%, directions 95.1%, consistency 100% (clip) and 96.3% (directions), pass@1 100%, p95 6.4 s, about 4,600 tokens per request.
+  - **Missed: the view rule at 33%.** On front-view rigs, "walk forward" and "run as fast as you can" were quietly turned into idles and written (6/6), against the user's no-swap decision. The cause was what the planner was shown: "Clips this rig's view allows: idle" in the request, and walk marked `allowed_for_this_rig: false` by the tool.
+  - **Missed: "short, quick steps"** kept speed at 1.0 (3/3).
+- **Fixes:**
+  - The request no longer lists the allowed clips.
+  - `list_clip_types` carries a "keep the requested clip" rule instead of an allowed flag, and `preview_clip` answers a front-view walk with that rule instead of an error to fix. The view is still enforced in code after planning.
+  - The prompt now says speed is the step rate, separate from stride.
+- **Targeted re-run (`20261002-194929`, view rule + modifier, 39 requests):**
+  - **Fixed:** view rule 100% (9/9 stopped, nothing swapped or written), clip accuracy 100%, and "short, quick steps" now speeds up.
+  - **One borderline miss:** "walk upright, leaning slightly back" chose lean −2° once, and the eval's "down" requires more than 2°. That single verdict also put this small subset's direction consistency at 88.9%.
 
 ### Deferred (decided to do later)
 
