@@ -124,7 +124,7 @@ Called A1–A4 while it was being built. The same principle as Goal 1: the LLM p
 | M2 | Unity: clip import (`RigAnimImporter.cs`), Animator, placeholder capsules (`RigShapes.cs`), delivery and IK re-solve check, `unity-apply-anim` | `unity/csharp/Editor/`, `unity/animation.py`, `unity/delivery.py` | ✅ |
 | M3 | Animation planner and pipeline: motion guard, planner agent with `preview_clip`, LangGraph flow, `animate` | `guardrails/anim_guard.py`, `agent/anim_*.py`, `graph/anim_graph.py` | ✅ |
 | M3b | Backflip (side view): per-rig jump height, whole-body floor check, steady wrists for held items | `animation/templates.py`, `animation/baker.py`, `animation/validator.py` | ✅ |
-| M4 | Animation golden set and metrics | `evals/` | |
+| M4 | Animation golden set and metrics | `evals/anim/` | ✅ (offline; no live run yet) |
 
 ---
 
@@ -402,6 +402,25 @@ One failure is the golden set's: `acc_cat_warrior` (side view) expects one ear, 
 - **Steady wrists:** a hand holding an accessory turns against the arm's swing, capped at 70°, in every clip. This fixes the sword sweeping into the floor in the crouch and over the head in the run.
 - **Tried and reverted:** capping the ankle in the baker (it pushed toes into the floor).
 - **Result:** every clip at default settings passes on 7 rigs, and every backflip passes across all knob combinations. In Unity the upside-down frame matches to 1.9e-4 after IK re-solve.
+
+### Phase M4: animation evals
+
+- **Golden set (`evals/anim/golden.yaml`):** 43 prompts in 7 categories: neutral 6, mood 10, modifier 8, backflip 5, view rule 5, unsupported 6, adversarial 3. ("Skipping" was moved from mood to unsupported after the first live run: a skip is its own gait, and the user chose refusal over approximation.)
+- **Rigs:** 4 fixed test rigs built from example specs with no model (knight and chibi knight in side view; elf and mage in front view), so only the animation agent is measured.
+- **Expectations per case:** the outcome (accept, reject with allowed categories, or `wrong_view`), the clip, and setting **directions** relative to neutral (up/down beyond 0.05, lean 2°; same within 0.15, lean 3°).
+- **Wording:** a test forbids prompts that copy the planner's or guard's own examples. Three bare-name prompts ("walk", "a run", "idle") were reworded for that.
+- **Metrics (`evals/anim/metrics.py`), overall and per view:**
+  - A1 first-pass schema validity (≥ 95%);
+  - A2 final validity (≥ 98%);
+  - A3 clip accuracy (≥ 95%);
+  - A4 setting directions (≥ 90%);
+  - A5 guard recall (≥ 95%) and false rejections (≤ 2%);
+  - A6 view rule (100%: stopped, nothing swapped or written);
+  - A7 pass@1, attempts (≤ 1.5), and worst slip and floor depth of delivered clips;
+  - A8 consistency of clip (≥ 95%) and direction verdicts (≥ 90%);
+  - A9 latency (p95 ≤ 30 s), tokens and cost (with prices).
+- **Runner and CLI:** `python -m evals.anim.run`, mirroring `evals.run` (records saved per run, `--rescore`, confirmation before a paid run).
+- **Verified offline:** the whole set runs end to end with rule-based fakes and rescores to identical metrics. 16 new tests; 1,091 in total.
 
 ### Deferred (decided to do later)
 

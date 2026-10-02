@@ -1,0 +1,301 @@
+[
+  {
+    "id": "A1",
+    "name": "First-pass schema validity",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 102,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "A2",
+    "name": "Final validity (valid requests end in a passing clip)",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": ">=",
+      "value": 0.98
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 93,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "A3",
+    "name": "Clip accuracy (the planner chose the expected clip)",
+    "unit": "%",
+    "value": 0.9411764705882353,
+    "target": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "by_view": {
+      "front": 0.7777777777777778,
+      "side": 1.0
+    },
+    "n": 102,
+    "detail": "",
+    "passed": false
+  },
+  {
+    "id": "A4",
+    "name": "Setting directions (each expected up/down/same)",
+    "unit": "%",
+    "value": 0.9506172839506173,
+    "target": {
+      "op": ">=",
+      "value": 0.9
+    },
+    "by_view": {
+      "front": 0.8333333333333334,
+      "side": 0.96
+    },
+    "n": 81,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "A4 runs",
+    "name": "Runs with every setting direction right",
+    "unit": "%",
+    "value": 0.9393939393939394,
+    "target": null,
+    "by_view": {
+      "front": 0.8333333333333334,
+      "side": 0.95
+    },
+    "n": 66,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "A5 recall",
+    "name": "Guard recall (unsupported and adversarial refused)",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 27,
+    "detail": "27/27 also with the expected category",
+    "passed": true
+  },
+  {
+    "id": "A5 false-reject",
+    "name": "False rejections (valid requests refused)",
+    "unit": "%",
+    "value": 0.0,
+    "target": {
+      "op": "<=",
+      "value": 0.02
+    },
+    "by_view": {
+      "front": 0.0,
+      "side": 0.0
+    },
+    "n": 102,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "A6",
+    "name": "View rule (front-view walk/run/backflip stopped, nothing swapped or written)",
+    "unit": "%",
+    "value": 0.3333333333333333,
+    "target": {
+      "op": "=",
+      "value": 1.0
+    },
+    "by_view": {
+      "front": 0.3333333333333333,
+      "side": null
+    },
+    "n": 9,
+    "detail": "",
+    "passed": false
+  },
+  {
+    "id": "A7 pass@1",
+    "name": "Passed on the first attempt",
+    "unit": "%",
+    "value": 1.0,
+    "target": null,
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 93,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "A7 attempts",
+    "name": "Mean attempts to a passing clip",
+    "unit": "",
+    "value": 1.0,
+    "target": {
+      "op": "<=",
+      "value": 1.5
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 93,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "A7 slip",
+    "name": "Worst foot slip of a delivered clip (share of height per frame)",
+    "unit": "",
+    "value": 4.695077160742078e-05,
+    "target": null,
+    "by_view": {
+      "front": 9.719842181121763e-09,
+      "side": 4.695077160742078e-05
+    },
+    "n": 93,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "A7 floor",
+    "name": "Worst body depth below the floor, delivered clips (share of height)",
+    "unit": "",
+    "value": 0.0,
+    "target": null,
+    "by_view": {
+      "front": 0.0,
+      "side": 0.0
+    },
+    "n": 93,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "A8 clip",
+    "name": "Consistency: the same clip across runs",
+    "unit": "%",
+    "value": 1.0,
+    "target": {
+      "op": ">=",
+      "value": 0.95
+    },
+    "by_view": {
+      "front": 1.0,
+      "side": 1.0
+    },
+    "n": 34,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "A8 directions",
+    "name": "Consistency: the same direction verdict across runs",
+    "unit": "%",
+    "value": 0.9629629629629629,
+    "target": {
+      "op": ">=",
+      "value": 0.9
+    },
+    "by_view": {
+      "front": 0.5,
+      "side": 1.0
+    },
+    "n": 34,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "A9 p50 latency",
+    "name": "Latency per request, p50",
+    "unit": "s",
+    "value": 4.2282396874943515,
+    "target": null,
+    "by_view": {
+      "front": 4.250442749995273,
+      "side": 4.225736916996539
+    },
+    "n": 102,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "A9 p95 latency",
+    "name": "Latency per request, p95",
+    "unit": "s",
+    "value": 6.44174478156201,
+    "target": {
+      "op": "<=",
+      "value": 30.0
+    },
+    "by_view": {
+      "front": 5.581060866202461,
+      "side": 7.537455942004443
+    },
+    "n": 102,
+    "detail": "",
+    "passed": true
+  },
+  {
+    "id": "A9 p50 tokens",
+    "name": "Tokens per request, p50",
+    "unit": "tokens",
+    "value": 4632.5,
+    "target": null,
+    "by_view": {
+      "front": 4557.0,
+      "side": 4643.0
+    },
+    "n": 102,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "A9 p95 tokens",
+    "name": "Tokens per request, p95",
+    "unit": "tokens",
+    "value": 7183.8,
+    "target": null,
+    "by_view": {
+      "front": 7185.4,
+      "side": 4704.1
+    },
+    "n": 102,
+    "detail": "",
+    "passed": null
+  },
+  {
+    "id": "A9 cost",
+    "name": "Cost per request, mean",
+    "unit": "$",
+    "value": null,
+    "target": {
+      "op": "<=",
+      "value": 0.05
+    },
+    "by_view": {},
+    "n": 0,
+    "detail": "not measured: pass --usd-per-mtok-in and --usd-per-mtok-out",
+    "passed": null
+  }
+]

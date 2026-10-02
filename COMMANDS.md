@@ -160,6 +160,16 @@ A live run asks before starting. Results go to `evals/results/<timestamp>/`:
 - `records.jsonl`, which `--rescore` reads;
 - `rigs/`.
 
+**Animation evals** (43 motion prompts on 4 fixed test rigs built with no model, so only the animation agent is measured):
+
+```bash
+uv run python -m evals.anim.run --category mood --k 1                # a small live run
+uv run python -m evals.anim.run                                      # all 43 x 3
+uv run python -m evals.anim.run --rescore evals/results/anim/<run>   # recompute, no model calls
+```
+
+It checks the clip choice, the direction each setting moves ("exhausted" → speed down), refusals, the front-view rule, validity, consistency, latency and tokens. The same options as above apply (`--case`, `--category`, `--limit`, `--k`, `--yes`, prices). Results go to `evals/results/anim/<timestamp>/report.md`.
+
 ```bash
 uv run python -m evals.render_skeleton out/knight               # -> out/knight/skeleton.png
 uv run python -m evals.render_skeleton --all out --dest renders  # every rig -> renders/<rig>.png

@@ -1,0 +1,14 @@
+{
+  "issues": [],
+  "metrics": {
+    "frame_count": 27.0,
+    "ground_speed": 0.75335,
+    "max_target_error": 4.779648247731828e-7,
+    "max_joint_bend_deg": 64.646509,
+    "max_foot_slip": 8.762631342751348e-9,
+    "max_ground_penetration": 1.9267185538685005e-7,
+    "max_body_below_floor": 0.0,
+    "loop_error": 0.0
+  },
+  "passed": true
+}

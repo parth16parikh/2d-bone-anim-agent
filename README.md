@@ -65,6 +65,7 @@ uv run rig-agent animate-build --rig out/knight --clip backflip        # default
 uv run python -m evals.run --category accessory --k 1    # small live run
 uv run python -m evals.run                               # full golden set: 58 prompts x 3
 uv run python -m evals.run --guard-only                  # only the input guard (cheap)
+uv run python -m evals.anim.run --k 1                    # animation evals: 43 motion prompts
 ```
 
 Results, including `report.md`, go to `evals/results/<timestamp>/`. Why the guard uses `gpt-5.4-mini`: [`GUARD_MODEL_COMPARISON.md`](GUARD_MODEL_COMPARISON.md).
